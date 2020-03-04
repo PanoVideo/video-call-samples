@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="normal_button_size">54dp</dimen>
+    <dimen name="large_button_size">60dp</dimen>
+</resources>
