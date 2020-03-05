@@ -58,6 +58,24 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
         Constants.VideoProfileType maxProfile; // 此用户发布的最大视频能力
         Constants.VideoProfileType subProfile; // 此用户的当前订阅能力
 
+        void initView(int index, RtcView v, TextView tv) {
+            this.view = v;
+            this.textView = tv;
+            this.view.setScalingType(scalingType);
+            this.view.init(new RendererCommon.RendererEvents() {
+                @Override
+                public void onFirstFrameRendered() {}
+                @Override
+                public void onFrameResolutionChanged(int i, int i1, int i2) {}
+            });
+            // 设置长按小图时将此小图的用户和大图用户交换视图
+            this.view.setOnLongClickListener(vv -> {
+                switchToLargeView(index);
+                return true;
+            });
+            this.view.setZOrderMediaOverlay(true); //fix vivo Y67 surfaceView cover bug
+        }
+
         void setVisible(boolean visible) {
             view.setVisibility(visible ? View.VISIBLE : View.GONE);
             textView.setVisibility(visible ? View.VISIBLE : View.GONE);
@@ -123,20 +141,10 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
         mRtcEngine.setLoudspeakerStatus(mLoudspeaker);
 
         // 配置大图的视图参数
-        mUserViewArray[0].view = findViewById(R.id.large_size_view);
-        mUserViewArray[0].view.setScalingType(scalingType);
-        mUserViewArray[0].textView = findViewById(R.id.tv_large_view_user);
-        mUserViewArray[0].view.init(new RendererCommon.RendererEvents() {
-            @Override
-            public void onFirstFrameRendered() {
-
-            }
-
-            @Override
-            public void onFrameResolutionChanged(int i, int i1, int i2) {
-
-            }
-        });
+        mUserViewArray[0].initView(0,
+                findViewById(R.id.large_size_view),
+                findViewById(R.id.tv_large_view_user));
+        mUserViewArray[0].view.setOnLongClickListener(null);
         // 设置点击大图时显示或隐藏控制按钮
         mUserViewArray[0].view.setOnClickListener(v -> {
             if (mIsControlPanelShowed) {
@@ -147,100 +155,24 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
         });
 
         // 配置左上角小图的视图参数
-        mUserViewArray[1].view = findViewById(R.id.small_size_view_righttop);
-        mUserViewArray[1].view.setScalingType(scalingType);
-        mUserViewArray[1].textView = findViewById(R.id.tv_small_view_righttop_user);
-        mUserViewArray[1].view.init(new RendererCommon.RendererEvents() {
-            @Override
-            public void onFirstFrameRendered() {
-
-            }
-
-            @Override
-            public void onFrameResolutionChanged(int i, int i1, int i2) {
-
-            }
-        });
-        // 设置长按小图时将此小图的用户和大图用户交换视图
-        mUserViewArray[1].view.setOnLongClickListener(v -> {
-            switchToLargeView(1);
-            return true;
-        });
-        mUserViewArray[1].view.setZOrderMediaOverlay(true);
+        mUserViewArray[1].initView(1,
+                findViewById(R.id.small_size_view_righttop),
+                findViewById(R.id.tv_small_view_righttop_user));
 
         // 配置右上角小图的视图参数
-        mUserViewArray[2].view = findViewById(R.id.small_size_view_lefttop);
-        mUserViewArray[2].view.setScalingType(scalingType);
-        mUserViewArray[2].textView = findViewById(R.id.tv_small_view_lefttop_user);
-        mUserViewArray[2].view.init(new RendererCommon.RendererEvents() {
-            @Override
-            public void onFirstFrameRendered() {
-
-            }
-
-            @Override
-            public void onFrameResolutionChanged(int i, int i1, int i2) {
-
-            }
-        });
-        // 设置长按小图时将此小图的用户和大图用户交换视图
-        mUserViewArray[2].view.setOnLongClickListener(v -> {
-            switchToLargeView(2);
-            return true;
-        });
-        mUserViewArray[2].view.setZOrderMediaOverlay(true);
+        mUserViewArray[2].initView(2,
+                findViewById(R.id.small_size_view_lefttop),
+                findViewById(R.id.tv_small_view_lefttop_user));
 
         // 配置左下角小图的视图参数
-        mUserViewArray[3].view = findViewById(R.id.small_size_view_leftbottom);
-        mUserViewArray[3].view.setScalingType(scalingType);
-        mUserViewArray[3].textView = findViewById(R.id.tv_small_view_leftbottom_user);
-        mUserViewArray[3].view.init(new RendererCommon.RendererEvents() {
-            @Override
-            public void onFirstFrameRendered() {
-
-            }
-
-            @Override
-            public void onFrameResolutionChanged(int i, int i1, int i2) {
-
-            }
-        });
-        // 设置长按小图时将此小图的用户和大图用户交换视图
-        mUserViewArray[3].view.setOnLongClickListener(v -> {
-            switchToLargeView(3);
-            return true;
-        });
-        mUserViewArray[3].view.setZOrderMediaOverlay(true);
+        mUserViewArray[3].initView(3,
+                findViewById(R.id.small_size_view_leftbottom),
+                findViewById(R.id.tv_small_view_leftbottom_user));
 
         // 配置右下角小图的视图参数，此视图一般用于显示本地用户视频
-        mUserViewArray[4].view = findViewById(R.id.small_size_view_rightbottom);
-        mUserViewArray[4].view.setScalingType(scalingType);
-        mUserViewArray[4].textView = findViewById(R.id.tv_small_view_rightbottom_user);
-        mUserViewArray[4].view.init(new RendererCommon.RendererEvents() {
-            @Override
-            public void onFirstFrameRendered() {
-
-            }
-
-            @Override
-            public void onFrameResolutionChanged(int i, int i1, int i2) {
-
-            }
-        });
-        // 设置长按小图时将此小图的用户和大图用户交换视图
-        mUserViewArray[4].view.setOnLongClickListener(v -> {
-            switchToLargeView(4);
-            return true;
-        });
-        mUserViewArray[4].view.setZOrderMediaOverlay(true);
-
-        // 启动视频预览，并且显示到大图
-        if (mVideoMode) {
-            mUserViewArray[0].isFree = false;
-            mUserViewArray[0].setUser(mUserId);
-            updateLocalVideoRender(mUserViewArray[0].view);
-            mRtcEngine.startPreview(ToVideoProfileType(mLocalProfile), mFrontCamera);
-        }
+        mUserViewArray[4].initView(4,
+                findViewById(R.id.small_size_view_rightbottom),
+                findViewById(R.id.tv_small_view_rightbottom_user));
 
         mGestureHandler = new GestureHandler(this, new Callback() {
             @Override
@@ -297,6 +229,14 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
             }
         });
 
+        // 启动视频预览，并且显示到大图
+        if (mVideoMode) {
+            mUserViewArray[0].isFree = false;
+            mUserViewArray[0].setUser(mUserId);
+            updateLocalVideoRender(mUserViewArray[0].view);
+            mRtcEngine.startPreview(ToVideoProfileType(mLocalProfile), mFrontCamera);
+        }
+
         joinChannel();
     }
 
@@ -314,7 +254,6 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
 
     @Override
     protected void onDestroy() {
-        //stopExternalCapturer(mRtcEngine);
         releaseView();
         // 销毁PANO媒体引擎
         RtcEngine.destroy();
@@ -323,13 +262,19 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
     }
 
     // 加入频道
-    private void joinChannel() {
+    private boolean joinChannel() {
         RtcChannelConfig config = new RtcChannelConfig();
         config.userName = mUserName;
         config.mode_1v1 = mMode1v1;
         // 设置自动订阅所有音频
         config.subscribeAudioAll = true;
-        mRtcEngine.joinChannel(mAppToken, mChannelId, mUserId, config);
+        Constants.QResult ret = mRtcEngine.joinChannel(mAppToken, mChannelId, mUserId, config);
+        if (ret != Constants.QResult.OK) {
+            Toast.makeText(CallActivity.this, "joinChannel failed, result=" + ret, Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        return true;
     }
 
     // 离开当前频道
@@ -732,47 +677,7 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
     private void stopUserVideo(long userId) {
         for (int i=0; i < mUserViewCount; i++) {
             if (userId == mUserViewArray[i].userId) {
-                // check if there is unsubscribed video user, and subscribe it if any
-                if (mUnsubscribedVideoUsers.size() > 0) {
-                    VideoUserInfo vui = mUnsubscribedVideoUsers.valueAt(0);
-                    mUnsubscribedVideoUsers.removeAt(0);
-
-                    boolean isLargeView = i == 0;
-                    Constants.VideoProfileType profile = Constants.VideoProfileType.Lowest;
-                    if (isLargeView) {
-                        profile = ToVideoProfileType(Math.min(mRemoteProfile, vui.maxProfile.getValue()));
-                    }
-                    if (subscribeUserVideo(vui.userId, mUserViewArray[i], profile)) {
-                        mUserViewArray[i].maxProfile = vui.maxProfile;
-                        mUserViewArray[i].subProfile = profile;
-                        return;
-                    }
-                }
-
-                // if large view user left, then try to move other remote user to large view
-                if (i == 0) { // is large view
-                    for (int j = mUserViewCount - 1; j > 0; j--) {
-                        if (!mUserViewArray[j].isFree && mUserViewArray[j].userId != mUserId) {
-                            mUserViewArray[0].userId = mUserViewArray[j].userId;
-                            mUserViewArray[0].isFree = false;
-                            mUserViewArray[0].maxProfile = mUserViewArray[j].maxProfile;
-                            mUserViewArray[0].subProfile = mUserViewArray[j].subProfile;
-                            mUserViewArray[j].isFree = true;
-                            mUserViewArray[j].setVisible(false);
-
-                            Constants.VideoProfileType profile = ToVideoProfileType(Math.min(mRemoteProfile,
-                                    mUserViewArray[0].maxProfile.getValue()));
-                            // resubscribe the video
-                            subscribeUserVideo(mUserViewArray[0].userId, mUserViewArray[0], profile);
-                            mUserViewArray[0].subProfile = profile;
-                            return;
-                        }
-                    }
-                }
-
-                mUserViewArray[i].isFree = true;
-                mUserViewArray[i].setVisible(false);
-
+                stopUserView(userId, i);
                 break;
             }
         }
@@ -781,50 +686,52 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
     // 取消订阅用户桌面共享
     private void stopUserScreen(long userId) {
         if (userId == mUserViewArray[0].userId && mUserViewArray[0].isScreen) {
-            // check if there is unsubscribed video user, and subscribe it if any
-            if (mUnsubscribedVideoUsers.size() > 0) {
-                VideoUserInfo vui = mUnsubscribedVideoUsers.valueAt(0);
-                mUnsubscribedVideoUsers.removeAt(0);
+            stopUserView(userId, 0);
+            mUserViewArray[0].view.setOnTouchListener(null);
+        }
+    }
 
-                boolean isLargeView = true;
-                Constants.VideoProfileType profile = Constants.VideoProfileType.Lowest;
-                if (isLargeView) {
-                    profile = ToVideoProfileType(Math.min(mRemoteProfile, vui.maxProfile.getValue()));
-                }
-                if (subscribeUserVideo(vui.userId, mUserViewArray[0], profile)) {
-                    mUserViewArray[0].maxProfile = vui.maxProfile;
+    private void stopUserView(long userId, int index) {
+        mUserViewArray[index].isScreen = false; // reset screen flag
+        // check if there is unsubscribed video user, and subscribe it if any
+        if (mUnsubscribedVideoUsers.size() > 0) {
+            VideoUserInfo vui = mUnsubscribedVideoUsers.valueAt(0);
+            mUnsubscribedVideoUsers.removeAt(0);
+
+            Constants.VideoProfileType profile = Constants.VideoProfileType.Lowest;
+            if (index == 0) {
+                profile = ToVideoProfileType(Math.min(mRemoteProfile, vui.maxProfile.getValue()));
+            }
+            if (subscribeUserVideo(vui.userId, mUserViewArray[index], profile)) {
+                mUserViewArray[index].maxProfile = vui.maxProfile;
+                mUserViewArray[index].subProfile = profile;
+                return;
+            }
+        }
+
+        // if large view user left, then try to move other remote user to large view
+        if (index == 0) { // is large view
+            for (int j = mUserViewCount - 1; j > 0; j--) {
+                if (!mUserViewArray[j].isFree && mUserViewArray[j].userId != mUserId) {
+                    mUserViewArray[0].userId = mUserViewArray[j].userId;
+                    mUserViewArray[0].isFree = false;
+                    mUserViewArray[0].maxProfile = mUserViewArray[j].maxProfile;
+                    mUserViewArray[0].subProfile = mUserViewArray[j].subProfile;
+                    mUserViewArray[j].isFree = true;
+                    mUserViewArray[j].setVisible(false);
+
+                    Constants.VideoProfileType profile = ToVideoProfileType(Math.min(mRemoteProfile,
+                            mUserViewArray[0].maxProfile.getValue()));
+                    // resubscribe the video
+                    subscribeUserVideo(mUserViewArray[0].userId, mUserViewArray[0], profile);
                     mUserViewArray[0].subProfile = profile;
                     return;
                 }
             }
-
-            // if large view user left, then try to move other remote user to large view
-            { // is always large view
-                for (int j = mUserViewCount - 1; j > 0; j--) {
-                    if (!mUserViewArray[j].isFree && mUserViewArray[j].userId != mUserId) {
-                        mUserViewArray[0].userId = mUserViewArray[j].userId;
-                        mUserViewArray[0].isFree = false;
-                        mUserViewArray[0].isScreen = false;
-                        mUserViewArray[0].maxProfile = mUserViewArray[j].maxProfile;
-                        mUserViewArray[0].subProfile = mUserViewArray[j].subProfile;
-                        mUserViewArray[j].isFree = true;
-                        mUserViewArray[j].setVisible(false);
-
-                        Constants.VideoProfileType profile = ToVideoProfileType(Math.min(mRemoteProfile,
-                                mUserViewArray[0].maxProfile.getValue()));
-                        // resubscribe the video
-                        subscribeUserVideo(mUserViewArray[0].userId, mUserViewArray[0], profile);
-                        mUserViewArray[0].subProfile = profile;
-                        return;
-                    }
-                }
-            }
-
-            mUserViewArray[0].isFree = true;
-            mUserViewArray[0].isScreen = false;
-            mUserViewArray[0].setVisible(false);
-            mUserViewArray[0].view.setOnTouchListener(null);
         }
+
+        mUserViewArray[index].isFree = true;
+        mUserViewArray[index].setVisible(false);
     }
 
     // 更新本地用户视频的视图
