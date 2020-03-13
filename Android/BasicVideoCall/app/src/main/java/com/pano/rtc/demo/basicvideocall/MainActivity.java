@@ -111,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        RtcEngine.destroy();
         super.onDestroy();
     }
 

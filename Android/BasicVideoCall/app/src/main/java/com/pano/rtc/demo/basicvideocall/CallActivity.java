@@ -3,7 +3,6 @@ package com.pano.rtc.demo.basicvideocall;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.LongSparseArray;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -11,7 +10,6 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
 import com.pano.rtc.api.Constants;
-import com.pano.rtc.api.IVideoRender;
 import com.pano.rtc.api.RtcChannelConfig;
 import com.pano.rtc.api.RtcEngine;
 import com.pano.rtc.api.RtcEngineCallback;
@@ -24,9 +22,8 @@ import com.pano.rtc.api.model.stats.RtcSystemStats;
 import com.pano.rtc.api.model.stats.RtcVideoBweStats;
 import com.pano.rtc.api.model.stats.RtcVideoRecvStats;
 import com.pano.rtc.api.model.stats.RtcVideoSendStats;
-import com.pano.rtc.demo.basicvideocall.GestureHandler.Callback;
 
-import org.webrtc.RendererCommon;
+import video.pano.RendererCommon;
 
 
 public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
@@ -35,11 +32,9 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
 
     private boolean mAudioSubscribed = false;
     private boolean mVideoSubscribed = false;
+
     private boolean mScreenSubscribed = false;
     private boolean mScreenStarted = false;
-
-    private GestureHandler mGestureHandler;
-    private IVideoRender.ScalingRatio mPredefinedRatio = IVideoRender.ScalingRatio.SCALE_RATIO_FIT;
 
     // 为订阅用户信息，因为总共有5个视图，所以最多能同时订阅5个用户视频
     class VideoUserInfo {
@@ -96,7 +91,7 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
         }
     }
 
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -173,61 +168,6 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
         mUserViewArray[4].initView(4,
                 findViewById(R.id.small_size_view_rightbottom),
                 findViewById(R.id.tv_small_view_rightbottom_user));
-
-        mGestureHandler = new GestureHandler(this, new Callback() {
-            @Override
-            public void onBegin(float x, float y) {
-            }
-
-            @Override
-            public void onClicked(float x, float y) {
-            }
-
-            @Override
-            public void onRightClicked(float x, float y) {
-            }
-
-            @Override
-            public void onDoubleClicked(float x, float y) {
-                //Log.i(TAG, "onDoubleClicked");
-                if( mUserViewArray[0].isScreen ){
-                    if( mPredefinedRatio == IVideoRender.ScalingRatio.SCALE_RATIO_FIT ){
-                        mPredefinedRatio = IVideoRender.ScalingRatio.SCALE_RATIO_ORIGINAL;
-                    } else {
-                        mPredefinedRatio = IVideoRender.ScalingRatio.SCALE_RATIO_FIT;
-                    }
-                    mUserViewArray[0].view.setScalingRatio(mPredefinedRatio);
-                }
-            }
-
-            @Override
-            public void onMove(float dx, float dy, float vx, float vy) {
-                //Log.i(TAG, "onMove: " + dx + ":" + dy);
-                if( mUserViewArray[0].isScreen ){
-                    mUserViewArray[0].view.setMovingDistance((int)dx, (int)dy);
-                }
-            }
-
-            @Override
-            public void onDrag(float dx, float dy, float vx, float vy) {
-            }
-
-            @Override
-            public void onScroll(float dx, float dy, float vx, float vy) {
-            }
-
-            @Override
-            public void onScale(float factor, float focusX, float focusY) {
-                //Log.i(TAG, "onScale: " + factor + "," + focusX + "," + focusY);
-                if( mUserViewArray[0].isScreen ){
-                    mUserViewArray[0].view.setScalingRatioWithFocus(factor, (int)focusX, (int)focusY);
-                }
-            }
-
-            @Override
-            public void onEnd() {
-            }
-        });
 
         // 启动视频预览，并且显示到大图
         if (mVideoMode) {
@@ -342,6 +282,7 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
             Toast.makeText(CallActivity.this, "onUserLeaveIndication userId=" + userId + ", reason=" + reason, Toast.LENGTH_LONG).show();
             // 取消订阅此用户视频
             stopUserVideo(userId);
+            stopUserScreen(userId);
         });
     }
     public void onUserAudioStart(long userId) {
@@ -607,13 +548,6 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
         viewInfo.setVisible(true);
         viewInfo.isFree = false;
         viewInfo.isScreen = true;
-        viewInfo.view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public  boolean onTouch(View v, MotionEvent event) {
-                CallActivity.this.mGestureHandler.handleEvent(event);
-                return false;
-            }
-        });
         mRtcEngine.setRemoteScreenRender(userId, viewInfo.view);
 
         Constants.QResult ret = mRtcEngine.subscribeScreen(userId);
@@ -676,7 +610,7 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
     // 取消订阅用户视频
     private void stopUserVideo(long userId) {
         for (int i=0; i < mUserViewCount; i++) {
-            if (userId == mUserViewArray[i].userId) {
+            if (userId == mUserViewArray[i].userId && !mUserViewArray[i].isScreen) {
                 stopUserView(userId, i);
                 break;
             }
