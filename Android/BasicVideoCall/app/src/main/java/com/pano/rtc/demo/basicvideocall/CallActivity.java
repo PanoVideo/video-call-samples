@@ -23,6 +23,8 @@ import com.pano.rtc.api.model.stats.RtcVideoBweStats;
 import com.pano.rtc.api.model.stats.RtcVideoRecvStats;
 import com.pano.rtc.api.model.stats.RtcVideoSendStats;
 
+import java.nio.charset.StandardCharsets;
+
 import video.pano.RendererCommon;
 
 
@@ -456,9 +458,8 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
         Log.i(TAG, "onUserScreenStop, userId="+userId);
         runOnUiThread(()->{
             // 取消订阅此用户桌面共享
-            if(mRtcEngine.unsubscribeScreen(userId) == Constants.QResult.OK){
-                stopUserScreen(userId);
-            }
+            mRtcEngine.unsubscribeScreen(userId);
+            stopUserScreen(userId);
         });
     }
     public void onUserScreenSubscribe(long userId, Constants.MediaSubscribeResult result) {
@@ -485,6 +486,12 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
     @Override
     public void onWhiteboardStop() {
 
+    }
+
+    @Override
+    public void onMessage(long userId, byte[] bytes) {
+        String msg = new String(bytes, StandardCharsets.UTF_8);
+        Log.i(TAG, "+++++ onMessage: userId="+userId+", msg="+msg);
     }
 
     @Override
@@ -620,8 +627,8 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
     // 取消订阅用户桌面共享
     private void stopUserScreen(long userId) {
         if (userId == mUserViewArray[0].userId && mUserViewArray[0].isScreen) {
-            stopUserView(userId, 0);
             mUserViewArray[0].view.setOnTouchListener(null);
+            stopUserView(userId, 0);
         }
     }
 
