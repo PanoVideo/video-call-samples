@@ -12,9 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.SeekBar;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,7 +21,6 @@ import com.pano.rtc.api.Constants;
 import com.pano.rtc.api.IVideoRender;
 import com.pano.rtc.api.RtcEngine;
 import com.pano.rtc.api.RtcView;
-import com.pano.rtc.impl.PLogger;
 
 import static com.pano.rtc.api.IVideoRender.ScalingType.SCALE_ASPECT_BALANCED;
 import static com.pano.rtc.api.IVideoRender.ScalingType.SCALE_ASPECT_FILL;

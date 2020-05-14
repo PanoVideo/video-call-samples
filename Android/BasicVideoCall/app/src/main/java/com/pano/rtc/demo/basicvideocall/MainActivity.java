@@ -13,7 +13,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
 import android.text.TextUtils;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -37,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String kVideoHWAcceleration = "video_hw_acceleration";
     private static final int PERMISSION_REQUEST_CODE = 10;
 
-    public static final String APPID = %%填入应用的 APPID%%;
-    private String mAppToken = %%填入从 PANO 获取的临时 APP Token%%;
     private EditText mChannelId;
     private EditText mUserId;
     private EditText mUserName;
@@ -120,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
                 if (RtcEngine.checkPermission(this).size() == 0) {
-                    startCall(mAppToken, mChannelId.getText().toString(),
+                    startCall(PanoApplication.APP_TOKEN, mChannelId.getText().toString(),
                             mUserId.getText().toString(),
                             mUserName.getText().toString());
                 } else {
@@ -179,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        startCall(mAppToken, channelId, userId, userName);
+        startCall(PanoApplication.APP_TOKEN, channelId, userId, userName);
     }
 
     private void startCall(String token, String channelId, String userId, String userName) {

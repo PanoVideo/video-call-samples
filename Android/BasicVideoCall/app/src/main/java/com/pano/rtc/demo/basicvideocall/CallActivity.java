@@ -11,9 +11,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.pano.rtc.api.Constants;
 import com.pano.rtc.api.RtcChannelConfig;
-import com.pano.rtc.api.RtcEngine;
-import com.pano.rtc.api.RtcEngineCallback;
-import com.pano.rtc.api.RtcEngineConfig;
 import com.pano.rtc.api.RtcMediaStatsObserver;
 import com.pano.rtc.api.RtcView;
 import com.pano.rtc.api.model.stats.RtcAudioRecvStats;
@@ -23,12 +20,10 @@ import com.pano.rtc.api.model.stats.RtcVideoBweStats;
 import com.pano.rtc.api.model.stats.RtcVideoRecvStats;
 import com.pano.rtc.api.model.stats.RtcVideoSendStats;
 
-import java.nio.charset.StandardCharsets;
-
 import video.pano.RendererCommon;
 
 
-public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
+public class CallActivity extends CallBaseActivity implements PanoEventHandler,
         RtcMediaStatsObserver {
     private static final String TAG = "VideoCall";
 
@@ -39,7 +34,7 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
     private boolean mScreenStarted = false;
 
     // 为订阅用户信息，因为总共有5个视图，所以最多能同时订阅5个用户视频
-    class VideoUserInfo {
+    static class VideoUserInfo {
         long userId;
         Constants.VideoProfileType maxProfile;
     }
@@ -70,7 +65,9 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
                 switchToLargeView(index);
                 return true;
             });
-            this.view.setZOrderMediaOverlay(true); //fix vivo Y67 surfaceView cover bug
+            if (index != 0) {
+                this.view.setZOrderMediaOverlay(true);
+            }
         }
 
         void setVisible(boolean visible) {
@@ -101,6 +98,10 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        PanoApplication app = (PanoApplication)getApplication();
+        mRtcEngine = app.getPanoEngine();
+        app.registerEventHandler(this);
+
         // 设置点击view时显示或隐藏控制按钮
         View rootView = findViewById(android.R.id.content);
         rootView.setOnClickListener(v -> {
@@ -117,21 +118,6 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
         }
         catch (NullPointerException e){}
 
-        // 设置PANO媒体引擎的配置参数
-        RtcEngineConfig engineConfig = new RtcEngineConfig();
-        engineConfig.appId = MainActivity.APPID;
-        engineConfig.server = kPanoServer;
-        engineConfig.context = getApplicationContext();
-        engineConfig.callback = this;
-        engineConfig.audioAecType = mAudioAecType;
-        engineConfig.videoCodecHwAcceleration = mHwAcceleration;
-        try {
-            mRtcEngine = RtcEngine.create(engineConfig);
-        } catch (Exception e) {
-            e.printStackTrace();
-            finish();
-            return;
-        }
         // 设置媒体统计信息的接收者
         mRtcEngine.setMediaStatsObserver(this);
         // 设置是否使用设备扬声器
@@ -197,8 +183,8 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
     @Override
     protected void onDestroy() {
         releaseView();
-        // 销毁PANO媒体引擎
-        RtcEngine.destroy();
+        PanoApplication app = (PanoApplication)getApplication();
+        app.removeEventHandler(this);
         mRtcEngine = null;
         super.onDestroy();
     }
@@ -208,6 +194,8 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
         RtcChannelConfig config = new RtcChannelConfig();
         config.userName = mUserName;
         config.mode_1v1 = mMode1v1;
+        // enable media service only
+        config.serviceFlags = Constants.kChannelServiceMedia;
         // 设置自动订阅所有音频
         config.subscribeAudioAll = true;
         Constants.QResult ret = mRtcEngine.joinChannel(mAppToken, mChannelId, mUserId, config);
@@ -242,139 +230,122 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
     // -------------------------- RTC Engine Callbacks --------------------------
     public void onChannelJoinConfirm(Constants.QResult result) {
         Log.i(TAG, "onChannelJoinConfirm, result="+result);
-        runOnUiThread(()->{
-            if (result == Constants.QResult.OK) {
-                mIsChannelJoined = true;
-                Toast.makeText(CallActivity.this, "onChannelJoinConfirm success", Toast.LENGTH_LONG).show();
-                mRtcEngine.stopPreview();
-                // 启动本地视频
-                if(mVideoMode){
-                    updateLocalVideoRender(mUserViewArray[0].view);
-                    mRtcEngine.startVideo(ToVideoProfileType(mLocalProfile), mFrontCamera);
-                }
-                // 启动本地音频
-                mRtcEngine.startAudio();
-            } else {
-                mIsChannelJoined = false;
-                Toast.makeText(CallActivity.this, "onChannelJoinConfirm result=" + result, Toast.LENGTH_LONG).show();
+        if (result == Constants.QResult.OK) {
+            mIsChannelJoined = true;
+            Toast.makeText(CallActivity.this, "onChannelJoinConfirm success", Toast.LENGTH_LONG).show();
+            mRtcEngine.stopPreview();
+            // 启动本地视频
+            if(mVideoMode){
+                updateLocalVideoRender(mUserViewArray[0].view);
+                mRtcEngine.startVideo(ToVideoProfileType(mLocalProfile), mFrontCamera);
             }
-        });
+            // 启动本地音频
+            mRtcEngine.startAudio();
+        } else {
+            mIsChannelJoined = false;
+            Toast.makeText(CallActivity.this, "onChannelJoinConfirm result=" + result, Toast.LENGTH_LONG).show();
+        }
     }
 
     public void onChannelLeaveIndication(Constants.QResult result) {
         Log.i(TAG, "onChannelLeaveIndication, result="+result);
-        runOnUiThread(()-> {
-            mIsChannelJoined = false;
-            Toast.makeText(CallActivity.this, "onChannelLeaveIndication result=" + result, Toast.LENGTH_LONG).show();
-            finish();
-        });
+        mIsChannelJoined = false;
+        Toast.makeText(CallActivity.this, "onChannelLeaveIndication result=" + result, Toast.LENGTH_LONG).show();
+        finish();
     }
     public void onChannelCountDown(long remain) {
         Log.i(TAG, "onChannelCountDown, remain="+remain);
     }
     public void onUserJoinIndication(long userId, String userName) {
         Log.i(TAG, "onUserJoinIndication, userId="+userId+", userName="+userName);
-        runOnUiThread(()-> {
-            Toast.makeText(CallActivity.this, "onUserJoinIndication userId=" + userId, Toast.LENGTH_LONG).show();
-        });
+        Toast.makeText(CallActivity.this, "onUserJoinIndication userId=" + userId, Toast.LENGTH_LONG).show();
     }
     public void onUserLeaveIndication(long userId, Constants.UserLeaveReason reason) {
         Log.i(TAG, "onUserLeaveIndication, userId="+userId);
-        runOnUiThread(()-> {
-            Toast.makeText(CallActivity.this, "onUserLeaveIndication userId=" + userId + ", reason=" + reason, Toast.LENGTH_LONG).show();
-            // 取消订阅此用户视频
-            stopUserVideo(userId);
-            stopUserScreen(userId);
-        });
+        Toast.makeText(CallActivity.this, "onUserLeaveIndication userId=" + userId + ", reason=" + reason, Toast.LENGTH_LONG).show();
+        // 取消订阅此用户视频
+        stopUserVideo(userId);
+        stopUserScreen(userId);
     }
     public void onUserAudioStart(long userId) {
         Log.i(TAG, "onUserAudioStart, userId="+userId);
-        runOnUiThread(()->{
-            // 设置了自动订阅用户音频，所以无需手动订阅
-        });
+        // 设置了自动订阅用户音频，所以无需手动订阅
     }
     public void onUserAudioStop(long userId) {
         Log.i(TAG, "onUserAudioStop, userId="+userId);
-        runOnUiThread(()->{
-
-        });
     }
     public void onUserAudioSubscribe(long userId, Constants.MediaSubscribeResult result) {
         Log.i(TAG, "onUserAudioSubscribe, userId="+userId + ", result=" + result);
     }
     public void onUserVideoStart(long userId, Constants.VideoProfileType maxProfile) {
         Log.i(TAG, "onUserVideoStart, userId="+userId+", profile="+maxProfile);
-        runOnUiThread(()->{
-            if (!mVideoMode) {
-                return;
-            }
+        if (!mVideoMode) {
+            return;
+        }
 
-            int viewIndex = -1;
-            // 先检查大图是否空闲，如空闲则将此用户显示到大图
-            if (mUserViewArray[0].isFree || mUserViewArray[0].userId == mUserId) {
-                // large view is free or used by local user, then make this user to large view
-                // 如果大图被本地用户占用，则将本地用户移到小图，如果没有空闲的小图，则不显示本地用户视频
-                if (mUserViewArray[0].userId == mUserId) {
-                    // move local user to last view
-                    mLocalView = null;
-                    if (mUserViewArray[mUserViewCount-1].isFree) {
-                        mLocalView = mUserViewArray[mUserViewCount-1].view;
-                        mUserViewArray[mUserViewCount-1].setVisible(true);
-                        mUserViewArray[mUserViewCount-1].isFree = false;
-                        mUserViewArray[mUserViewCount-1].isScreen = false;
-                        mUserViewArray[mUserViewCount-1].setUser(mUserId);
-                    }
-                    updateLocalVideoRender(mLocalView);
+        int viewIndex = -1;
+        // 先检查大图是否空闲，如空闲则将此用户显示到大图
+        if (mUserViewArray[0].isFree || mUserViewArray[0].userId == mUserId) {
+            // large view is free or used by local user, then make this user to large view
+            // 如果大图被本地用户占用，则将本地用户移到小图，如果没有空闲的小图，则不显示本地用户视频
+            if (mUserViewArray[0].userId == mUserId) {
+                // move local user to last view
+                mLocalView = null;
+                if (mUserViewArray[mUserViewCount-1].isFree) {
+                    mLocalView = mUserViewArray[mUserViewCount-1].view;
+                    mUserViewArray[mUserViewCount-1].setVisible(true);
+                    mUserViewArray[mUserViewCount-1].isFree = false;
+                    mUserViewArray[mUserViewCount-1].isScreen = false;
+                    mUserViewArray[mUserViewCount-1].setUser(mUserId);
                 }
-                mUserViewArray[0].setUser(userId);
-                mUserViewArray[0].isFree = false;
-                mUserViewArray[0].isScreen = false;
-                mUserViewArray[0].maxProfile = maxProfile;
-                viewIndex = 0;
-            } else {
-                // 如大图不空闲，则尝试找到一个空闲的小图
-                // try to find a free small view
-                for (int i=1; i < mUserViewCount; i++) {
-                    if (mUserViewArray[i].isFree) {
-                        mUserViewArray[i].setUser(userId);
-                        mUserViewArray[i].isFree = false;
-                        mUserViewArray[i].isScreen = false;
-                        viewIndex = i;
-                        break;
-                    }
+                updateLocalVideoRender(mLocalView);
+            }
+            mUserViewArray[0].setUser(userId);
+            mUserViewArray[0].isFree = false;
+            mUserViewArray[0].isScreen = false;
+            mUserViewArray[0].maxProfile = maxProfile;
+            viewIndex = 0;
+        } else {
+            // 如大图不空闲，则尝试找到一个空闲的小图
+            // try to find a free small view
+            for (int i=1; i < mUserViewCount; i++) {
+                if (mUserViewArray[i].isFree) {
+                    mUserViewArray[i].setUser(userId);
+                    mUserViewArray[i].isFree = false;
+                    mUserViewArray[i].isScreen = false;
+                    viewIndex = i;
+                    break;
                 }
             }
+        }
 
-            if (viewIndex != -1) {
-                Constants.VideoProfileType profile = Constants.VideoProfileType.Lowest;
-                if (viewIndex == 0) {
-                    profile = ToVideoProfileType(Math.min(mRemoteProfile, maxProfile.getValue()));
-                }
-                // 订阅此用户视频到指定视图
-                if (subscribeUserVideo(userId, mUserViewArray[viewIndex], profile)) {
-                    mUserViewArray[viewIndex].maxProfile = maxProfile;
-                    mUserViewArray[viewIndex].subProfile = profile;
-                } else {
-                    mUserViewArray[viewIndex].isFree = true;
-                }
-            } else {
-                // 如果没有空闲视图，将此用户加入未订阅视频用户列表，以等待空闲视图
-                // no view available
-                VideoUserInfo vui = new VideoUserInfo();
-                vui.userId = userId;
-                vui.maxProfile = maxProfile;
-                mUnsubscribedVideoUsers.put(userId, vui);
+        if (viewIndex != -1) {
+            Constants.VideoProfileType profile = Constants.VideoProfileType.Lowest;
+            if (viewIndex == 0) {
+                profile = ToVideoProfileType(Math.min(mRemoteProfile, maxProfile.getValue()));
             }
-        });
+            // 订阅此用户视频到指定视图
+            if (subscribeUserVideo(userId, mUserViewArray[viewIndex], profile)) {
+                mUserViewArray[viewIndex].maxProfile = maxProfile;
+                mUserViewArray[viewIndex].subProfile = profile;
+            } else {
+                mUserViewArray[viewIndex].isFree = true;
+            }
+        } else {
+            // 如果没有空闲视图，将此用户加入未订阅视频用户列表，以等待空闲视图
+            // no view available
+            VideoUserInfo vui = new VideoUserInfo();
+            vui.userId = userId;
+            vui.maxProfile = maxProfile;
+            mUnsubscribedVideoUsers.put(userId, vui);
+        }
     }
     public void onUserVideoStop(long userId) {
         Log.i(TAG, "onUserVideoStop, userId="+userId);
-        runOnUiThread(()->{
-            // 取消订阅此用户视频
-            if(mRtcEngine.unsubscribeVideo(userId) == Constants.QResult.OK){
-                stopUserVideo(userId);
-            }
-        });
+        // 取消订阅此用户视频
+        if(mRtcEngine.unsubscribeVideo(userId) == Constants.QResult.OK){
+            stopUserVideo(userId);
+        }
     }
     public void onUserVideoSubscribe(long userId, Constants.MediaSubscribeResult result) {
         Log.i(TAG, "onUserVideoSubscribe, userId="+userId + ", result=" + result);
@@ -386,81 +357,77 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
 
     public void onUserScreenStart(long userId) {
         Log.i(TAG, "onUserScreenStart, userId="+userId);
-        runOnUiThread(()->{
-            mScreenStarted = true;
-            if (!mVideoMode) {
-                return;
-            }
-            // 有用户开启桌面共享，始终显示桌面共享到大图
-            if (!mUserViewArray[0].isFree) {
-                // 如果大图已经在显示桌面共享，则首先取消订阅之前的共享
-                if (mUserViewArray[0].isScreen) {
-                    mRtcEngine.unsubscribeScreen(mUserViewArray[0].userId);
-                } else if (mUserViewArray[0].userId == mUserId) {
-                    // 如果大图被本地用户占用，则将本地用户移到小图，如果没有空闲的小图，则不显示本地用户视频
-                    // large view is used by local user, move local user to last view
-                    mLocalView = null;
-                    if (mUserViewArray[mUserViewCount-1].isFree) {
-                        mLocalView = mUserViewArray[mUserViewCount-1].view;
-                        mUserViewArray[mUserViewCount-1].setVisible(true);
-                        mUserViewArray[mUserViewCount-1].isFree = false;
-                        mUserViewArray[mUserViewCount-1].isScreen = false;
-                        mUserViewArray[mUserViewCount-1].setUser(mUserId);
-                    }
-                    updateLocalVideoRender(mLocalView);
-                } else {
-                    // 尝试找到一个空闲的小图给当前大图用户
-                    // try to find a free small view
-                    int viewIndex = -1;
-                    for (int i=1; i < mUserViewCount; i++) {
-                        if (mUserViewArray[i].isFree) {
-                            mUserViewArray[i].setUser(mUserViewArray[0].userId);
-                            mUserViewArray[i].isFree = false;
-                            mUserViewArray[i].isScreen = false;
-                            viewIndex = i;
-                            break;
-                        }
-                    }
-                    if (viewIndex != -1) {
-                        // 找到了一个空闲视图，将大图用户迁移到此空闲视图
-                        Constants.VideoProfileType profile = Constants.VideoProfileType.Lowest;
-                        if (subscribeUserVideo(mUserViewArray[0].userId, mUserViewArray[viewIndex], profile)) {
-                            mUserViewArray[viewIndex].maxProfile = mUserViewArray[0].maxProfile;
-                            mUserViewArray[viewIndex].subProfile = profile;
-                        } else {
-                            mRtcEngine.unsubscribeVideo(mUserViewArray[0].userId);
-                            mUserViewArray[viewIndex].isFree = true;
-                        }
-                    } else {
-                        // 找不到空闲视图，取消订阅此用户，并将此用户加入未订阅视频用户列表，以等待空闲视图
-                        // no view available
-                        mRtcEngine.unsubscribeVideo(mUserViewArray[0].userId);
-                        VideoUserInfo vui = new VideoUserInfo();
-                        vui.userId = mUserViewArray[0].userId;
-                        vui.maxProfile = mUserViewArray[0].maxProfile;
-                        mUnsubscribedVideoUsers.put(vui.userId, vui);
+        mScreenStarted = true;
+        if (!mVideoMode) {
+            return;
+        }
+        // 有用户开启桌面共享，始终显示桌面共享到大图
+        if (!mUserViewArray[0].isFree) {
+            // 如果大图已经在显示桌面共享，则首先取消订阅之前的共享
+            if (mUserViewArray[0].isScreen) {
+                mRtcEngine.unsubscribeScreen(mUserViewArray[0].userId);
+            } else if (mUserViewArray[0].userId == mUserId) {
+                // 如果大图被本地用户占用，则将本地用户移到小图，如果没有空闲的小图，则不显示本地用户视频
+                // large view is used by local user, move local user to last view
+                mLocalView = null;
+                if (mUserViewArray[mUserViewCount-1].isFree) {
+                    mLocalView = mUserViewArray[mUserViewCount-1].view;
+                    mUserViewArray[mUserViewCount-1].setVisible(true);
+                    mUserViewArray[mUserViewCount-1].isFree = false;
+                    mUserViewArray[mUserViewCount-1].isScreen = false;
+                    mUserViewArray[mUserViewCount-1].setUser(mUserId);
+                }
+                updateLocalVideoRender(mLocalView);
+            } else {
+                // 尝试找到一个空闲的小图给当前大图用户
+                // try to find a free small view
+                int viewIndex = -1;
+                for (int i=1; i < mUserViewCount; i++) {
+                    if (mUserViewArray[i].isFree) {
+                        mUserViewArray[i].setUser(mUserViewArray[0].userId);
+                        mUserViewArray[i].isFree = false;
+                        mUserViewArray[i].isScreen = false;
+                        viewIndex = i;
+                        break;
                     }
                 }
-                mUserViewArray[0].isFree = true;
-                mUserViewArray[0].isScreen = false;
+                if (viewIndex != -1) {
+                    // 找到了一个空闲视图，将大图用户迁移到此空闲视图
+                    Constants.VideoProfileType profile = Constants.VideoProfileType.Lowest;
+                    if (subscribeUserVideo(mUserViewArray[0].userId, mUserViewArray[viewIndex], profile)) {
+                        mUserViewArray[viewIndex].maxProfile = mUserViewArray[0].maxProfile;
+                        mUserViewArray[viewIndex].subProfile = profile;
+                    } else {
+                        mRtcEngine.unsubscribeVideo(mUserViewArray[0].userId);
+                        mUserViewArray[viewIndex].isFree = true;
+                    }
+                } else {
+                    // 找不到空闲视图，取消订阅此用户，并将此用户加入未订阅视频用户列表，以等待空闲视图
+                    // no view available
+                    mRtcEngine.unsubscribeVideo(mUserViewArray[0].userId);
+                    VideoUserInfo vui = new VideoUserInfo();
+                    vui.userId = mUserViewArray[0].userId;
+                    vui.maxProfile = mUserViewArray[0].maxProfile;
+                    mUnsubscribedVideoUsers.put(vui.userId, vui);
+                }
             }
+            mUserViewArray[0].isFree = true;
+            mUserViewArray[0].isScreen = false;
+        }
 
-            // 订阅此用户桌面共享，并显示到大图
-            if (subscribeUserScreen(userId, mUserViewArray[0])) {
-                //mUserViewArray[0].maxProfile = Constants.VideoProfileType.HD1080P;
-                //mUserViewArray[0].subProfile = Constants.VideoProfileType.HD1080P;
-            } else {
-                mUserViewArray[0].isFree = true;
-            }
-        });
+        // 订阅此用户桌面共享，并显示到大图
+        if (subscribeUserScreen(userId, mUserViewArray[0])) {
+            //mUserViewArray[0].maxProfile = Constants.VideoProfileType.HD1080P;
+            //mUserViewArray[0].subProfile = Constants.VideoProfileType.HD1080P;
+        } else {
+            mUserViewArray[0].isFree = true;
+        }
     }
     public void onUserScreenStop(long userId) {
         Log.i(TAG, "onUserScreenStop, userId="+userId);
-        runOnUiThread(()->{
-            // 取消订阅此用户桌面共享
-            mRtcEngine.unsubscribeScreen(userId);
-            stopUserScreen(userId);
-        });
+        // 取消订阅此用户桌面共享
+        mRtcEngine.unsubscribeScreen(userId);
+        stopUserScreen(userId);
     }
     public void onUserScreenSubscribe(long userId, Constants.MediaSubscribeResult result) {
         Log.i(TAG, "onUserScreenSubscribe, userId="+userId + ", result=" + result);
@@ -486,12 +453,6 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
     @Override
     public void onWhiteboardStop() {
 
-    }
-
-    @Override
-    public void onMessage(long userId, byte[] bytes) {
-        String msg = new String(bytes, StandardCharsets.UTF_8);
-        Log.i(TAG, "+++++ onMessage: userId="+userId+", msg="+msg);
     }
 
     @Override
@@ -627,7 +588,6 @@ public class CallActivity extends CallBaseActivity implements RtcEngineCallback,
     // 取消订阅用户桌面共享
     private void stopUserScreen(long userId) {
         if (userId == mUserViewArray[0].userId && mUserViewArray[0].isScreen) {
-            mUserViewArray[0].view.setOnTouchListener(null);
             stopUserView(userId, 0);
         }
     }
