@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{b4debced-463f-4a99-a34f-0b86ed92279f}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;def;odl;idl;hpj;bat;asm</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{b625ee31-becf-468e-8085-44edffcbb513}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{35b0c2b9-7d29-41cf-b68d-0abf620c5323}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;jpg;jpeg;jpe;manifest</Extensions>
+    </Filter>
+    <Filter Include="Source Files\pano">
+      <UniqueIdentifier>{995bf149-ad98-4697-ac78-960f8ef1afdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\pano">
+      <UniqueIdentifier>{b2ff82a3-0451-48bf-b78b-e94a6c434795}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PanoDemo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LocalVideoWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainViewController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PreviewVideoWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RemoteVideoWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UIThreadExecutorWin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoRenderWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WBViewController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pano\RtcTester.cpp">
+      <Filter>Source Files\pano</Filter>
+    </ClCompile>
+    <ClCompile Include="pano\UserInfo.cpp">
+      <Filter>Source Files\pano</Filter>
+    </ClCompile>
+    <ClCompile Include="pano\UserManager.cpp">
+      <Filter>Source Files\pano</Filter>
+    </ClCompile>
+    <ClCompile Include="pano\utils.cpp">
+      <Filter>Source Files\pano</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AboutDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pano\RtcTester.h">
+      <Filter>Header Files\pano</Filter>
+    </ClInclude>
+    <ClInclude Include="pano\RtcViewController.h">
+      <Filter>Header Files\pano</Filter>
+    </ClInclude>
+    <ClInclude Include="pano\TestDefs.h">
+      <Filter>Header Files\pano</Filter>
+    </ClInclude>
+    <ClInclude Include="pano\UIThreadExecutor.h">
+      <Filter>Header Files\pano</Filter>
+    </ClInclude>
+    <ClInclude Include="pano\UserInfo.h">
+      <Filter>Header Files\pano</Filter>
+    </ClInclude>
+    <ClInclude Include="pano\UserManager.h">
+      <Filter>Header Files\pano</Filter>
+    </ClInclude>
+    <ClInclude Include="pano\utils.h">
+      <Filter>Header Files\pano</Filter>
+    </ClInclude>
+    <ClInclude Include="LocalVideoWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainViewController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PreviewVideoWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RemoteVideoWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UIThreadExecutorWin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoRenderWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WBViewController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WhiteboardWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WhiteboardView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PanoDemo.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\PanoDemo.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\toolbar_wb.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
