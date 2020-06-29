@@ -8,8 +8,8 @@
 const int kDefaultVideoViewWidth = 960;
 const int kDefaultVideoViewHeight = 540;
 
-const std::string kAppId = "243540d6698e4463a52cebc72ba977de";
-const std::string kPanoToken = "01000003YmF6bDlVYWyVJkiQqMJC/aTX4cYHzh0mashbt8Pr3+egNVNhnNIhWzzkPR5MsKhDR1vLRkVcnOPxv79k78F1l3z9w9sHPrVWmSCVY10jhWGgpRU6su9xyythvd+OV2V1PeqJ8PRrnEC7RNm+a8Dmm8ObJ+L94rXKyKtr++XmApr6Fb3YETrgi9aAiDYTqFjfUcnIhHwbFMIuYqiMOAuJxeKZrcfBs+1qFTi07Tzkgbb74OktkPQNGkHtowTYDvNDjqfiUrmEVkU=";
+const std::string kAppId = %%enter APPID of your APP%%;
+const std::string kPanoToken = %%enter APP Token which is got from PANO%%;
 
 using namespace pano::utils;
 using namespace panortc;
