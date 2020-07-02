@@ -256,4 +256,22 @@ public class PanoEngineCallback implements RtcEngineCallback {
             }
         });
     }
+
+    @Override
+    public void onActiveSpeakerListUpdated(long[] userIds) {
+        runOnUiThread(()-> {
+            for (PanoEventHandler handler : mHandler) {
+                handler.onActiveSpeakerListUpdated(userIds);
+            }
+        });
+    }
+
+    @Override
+    public void onVideoSnapshotCompleted(boolean succeed, long userId, String filename) {
+        runOnUiThread(()-> {
+            for (PanoEventHandler handler : mHandler) {
+                handler.onVideoSnapshotCompleted(succeed, userId, filename);
+            }
+        });
+    }
 }

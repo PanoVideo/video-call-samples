@@ -13,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,6 +47,7 @@ public abstract class CallBaseActivity extends AppCompatActivity implements Cont
     protected RtcEngine mRtcEngine = null;
     protected boolean mIsChannelJoined = false;
     protected boolean mFrontCamera = true;
+    protected boolean mIsWhiteboardAvailable = false;
     protected RtcView mLocalView;
 
     private ControlPanel mControlPanel;
@@ -193,7 +195,8 @@ public abstract class CallBaseActivity extends AppCompatActivity implements Cont
                 dialog.dismiss();
             }
         });
-
+        //dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
         dialog.show();
     }
 
@@ -233,6 +236,13 @@ public abstract class CallBaseActivity extends AppCompatActivity implements Cont
         w.addFlags(keepScreenOnFlag);
     }
 
+    void startWhiteboardActivity() {
+        if (mIsWhiteboardAvailable) {
+            WhiteboardActivity.launch(CallBaseActivity.this, mUserId);
+        } else {
+            Toast.makeText(CallBaseActivity.this, "whiteboard is unavailable currently", Toast.LENGTH_LONG).show();
+        }
+    }
 
     // 控制按钮回调处理
     // -------------------------- Control Panel Callbacks --------------------------
@@ -260,12 +270,13 @@ public abstract class CallBaseActivity extends AppCompatActivity implements Cont
 
     @Override
     public void onWhiteboard() {
-
+        hideControlPanel();
+        startWhiteboardActivity();
     }
 
     @Override
-    public void onSettings()
-    {
+    public void onSettings() {
+        hideControlPanel();
         onDlgSettings();
     }
 

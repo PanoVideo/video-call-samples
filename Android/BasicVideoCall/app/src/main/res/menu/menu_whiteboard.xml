@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
+
+    <item
+        android:id="@+id/action_toolbox"
+        android:title="Toolbox"
+        android:orderInCategory="100" />
+
+    <item
+        android:id="@+id/action_page"
+        android:title="Page"
+        android:orderInCategory="100" />
+
+    <item
+        android:id="@+id/action_background"
+        android:title="Background"
+        android:orderInCategory="100" />
+
+    <item
+        android:id="@+id/action_fullscreen"
+        android:title="Fullscreen"
+        android:orderInCategory="100" />
+
+</menu>

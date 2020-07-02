@@ -66,4 +66,8 @@ public interface PanoEventHandler {
                                    Constants.VideoDeviceState deviceState);
 
     void onChannelFailover(Constants.FailoverState state);
+
+    void onActiveSpeakerListUpdated(long[] userIds);
+
+    void onVideoSnapshotCompleted(boolean succeed, long userId, String filename);
 }

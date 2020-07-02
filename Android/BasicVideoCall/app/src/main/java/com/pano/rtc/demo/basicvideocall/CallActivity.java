@@ -98,10 +98,6 @@ public class CallActivity extends CallBaseActivity implements PanoEventHandler,
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        PanoApplication app = (PanoApplication)getApplication();
-        mRtcEngine = app.getPanoEngine();
-        app.registerEventHandler(this);
-
         // 设置点击view时显示或隐藏控制按钮
         View rootView = findViewById(android.R.id.content);
         rootView.setOnClickListener(v -> {
@@ -118,6 +114,10 @@ public class CallActivity extends CallBaseActivity implements PanoEventHandler,
         }
         catch (NullPointerException e){}
 
+        PanoApplication app = (PanoApplication)getApplication();
+        app.registerEventHandler(this);
+        app.initPanoEngine();
+        mRtcEngine = app.getPanoEngine();
         // 设置媒体统计信息的接收者
         mRtcEngine.setMediaStatsObserver(this);
         // 设置是否使用设备扬声器
@@ -170,9 +170,7 @@ public class CallActivity extends CallBaseActivity implements PanoEventHandler,
 
     @Override
     public void onBackPressed() {
-        if (mIsChannelJoined) {
-            leaveChannel();
-        }
+        leaveChannel();
         int count = getSupportFragmentManager().getBackStackEntryCount();
         for (int i=0; i<count; i++) {
             getSupportFragmentManager().popBackStack();
@@ -194,8 +192,7 @@ public class CallActivity extends CallBaseActivity implements PanoEventHandler,
         RtcChannelConfig config = new RtcChannelConfig();
         config.userName = mUserName;
         config.mode_1v1 = mMode1v1;
-        // enable media service only
-        config.serviceFlags = Constants.kChannelServiceMedia;
+        config.serviceFlags = Constants.kChannelServiceMedia | Constants.kChannelServiceWhiteboard;
         // 设置自动订阅所有音频
         config.subscribeAudioAll = true;
         Constants.QResult ret = mRtcEngine.joinChannel(mAppToken, mChannelId, mUserId, config);
@@ -209,6 +206,7 @@ public class CallActivity extends CallBaseActivity implements PanoEventHandler,
 
     // 离开当前频道
     private void leaveChannel() {
+        mRtcEngine.stopPreview();
         mRtcEngine.stopVideo();
         mRtcEngine.stopAudio();
         mRtcEngine.leaveChannel();
@@ -437,12 +435,12 @@ public class CallActivity extends CallBaseActivity implements PanoEventHandler,
 
     @Override
     public void onWhiteboardAvailable() {
-
+        mIsWhiteboardAvailable = true;
     }
 
     @Override
     public void onWhiteboardUnavailable() {
-
+        mIsWhiteboardAvailable = false;
     }
 
     @Override
@@ -487,6 +485,16 @@ public class CallActivity extends CallBaseActivity implements PanoEventHandler,
     @Override
     public void onChannelFailover(Constants.FailoverState state) {
         Log.i(TAG, "+++++ onChannelFailover: state="+state.getValue());
+    }
+
+    @Override
+    public void onActiveSpeakerListUpdated(long[] userIds) {
+        Log.i(TAG, "+++++ onActiveSpeakerListUpdated: count="+userIds.length);
+    }
+
+    @Override
+    public void onVideoSnapshotCompleted(boolean succeed, long userId, String filename) {
+        Log.i(TAG, "+++++ onVideoSnapshotCompleted: succeed="+succeed+" userId="+userId+" filename="+filename);
     }
 
     // 订阅用户视频
