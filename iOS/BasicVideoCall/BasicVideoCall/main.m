@@ -1,6 +1,6 @@
 //
 //  main.m
-//  PanoVideoCall
+//  BasicVideoCall
 //
 //  Copyright © 2020 Pano. All rights reserved.
 //

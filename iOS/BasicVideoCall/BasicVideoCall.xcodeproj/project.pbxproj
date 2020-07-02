@@ -38,7 +38,7 @@
 /* Begin PBXFileReference section */
 		573F614E2403B5AB00DD8E8E /* UserInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserInfo.h; sourceTree = "<group>"; };
 		573F614F2403B5AB00DD8E8E /* UserInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserInfo.m; sourceTree = "<group>"; };
-		5793BBD92402192900EC9137 /* PanoVideoCall.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PanoVideoCall.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5793BBD92402192900EC9137 /* BasicVideoCall.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BasicVideoCall.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5793BBDC2402192900EC9137 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		5793BBDD2402192900EC9137 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		5793BBDF2402192900EC9137 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
@@ -72,7 +72,7 @@
 		5793BBD02402192900EC9137 = {
 			isa = PBXGroup;
 			children = (
-				5793BBDB2402192900EC9137 /* PanoVideoCall */,
+				5793BBDB2402192900EC9137 /* BasicVideoCall */,
 				5793BBFE24021D4800EC9137 /* Frameworks */,
 				5793BBDA2402192900EC9137 /* Products */,
 			);
@@ -81,12 +81,12 @@
 		5793BBDA2402192900EC9137 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5793BBD92402192900EC9137 /* PanoVideoCall.app */,
+				5793BBD92402192900EC9137 /* BasicVideoCall.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		5793BBDB2402192900EC9137 /* PanoVideoCall */ = {
+		5793BBDB2402192900EC9137 /* BasicVideoCall */ = {
 			isa = PBXGroup;
 			children = (
 				5793BBDC2402192900EC9137 /* AppDelegate.h */,
@@ -107,7 +107,7 @@
 				5793BBED2402192B00EC9137 /* Info.plist */,
 				5793BBEE2402192B00EC9137 /* main.m */,
 			);
-			path = PanoVideoCall;
+			path = BasicVideoCall;
 			sourceTree = "<group>";
 		};
 		5793BBFE24021D4800EC9137 /* Frameworks */ = {
@@ -121,9 +121,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		5793BBD82402192900EC9137 /* PanoVideoCall */ = {
+		5793BBD82402192900EC9137 /* BasicVideoCall */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5793BBF22402192B00EC9137 /* Build configuration list for PBXNativeTarget "PanoVideoCall" */;
+			buildConfigurationList = 5793BBF22402192B00EC9137 /* Build configuration list for PBXNativeTarget "BasicVideoCall" */;
 			buildPhases = (
 				5793BBD52402192900EC9137 /* Sources */,
 				5793BBD62402192900EC9137 /* Frameworks */,
@@ -134,9 +134,9 @@
 			);
 			dependencies = (
 			);
-			name = PanoVideoCall;
+			name = BasicVideoCall;
 			productName = PanoVideoCall;
-			productReference = 5793BBD92402192900EC9137 /* PanoVideoCall.app */;
+			productReference = 5793BBD92402192900EC9137 /* BasicVideoCall.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -153,7 +153,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 5793BBD42402192900EC9137 /* Build configuration list for PBXProject "PanoVideoCall" */;
+			buildConfigurationList = 5793BBD42402192900EC9137 /* Build configuration list for PBXProject "BasicVideoCall" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -166,7 +166,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				5793BBD82402192900EC9137 /* PanoVideoCall */,
+				5793BBD82402192900EC9137 /* BasicVideoCall */,
 			);
 		};
 /* End PBXProject section */
@@ -340,12 +340,12 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/../SDK",
 				);
-				INFOPLIST_FILE = PanoVideoCall/Info.plist;
+				INFOPLIST_FILE = BasicVideoCall/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = video.pano.PanoVideoCall;
+				PRODUCT_BUNDLE_IDENTIFIER = video.pano.BasicVideoCall;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -362,12 +362,12 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/../SDK",
 				);
-				INFOPLIST_FILE = PanoVideoCall/Info.plist;
+				INFOPLIST_FILE = BasicVideoCall/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = video.pano.PanoVideoCall;
+				PRODUCT_BUNDLE_IDENTIFIER = video.pano.BasicVideoCall;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -376,7 +376,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5793BBD42402192900EC9137 /* Build configuration list for PBXProject "PanoVideoCall" */ = {
+		5793BBD42402192900EC9137 /* Build configuration list for PBXProject "BasicVideoCall" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5793BBF02402192B00EC9137 /* Debug */,
@@ -385,7 +385,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5793BBF22402192B00EC9137 /* Build configuration list for PBXNativeTarget "PanoVideoCall" */ = {
+		5793BBF22402192B00EC9137 /* Build configuration list for PBXNativeTarget "BasicVideoCall" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5793BBF32402192B00EC9137 /* Debug */,
