@@ -287,13 +287,13 @@ public class WhiteboardActivity extends AppCompatActivity implements PanoWhitebo
     @Override
     public void onSwitchDoc(Constants.QResult result, String fileId) {
         Log.i(TAG, "onSwitchDoc " + result + ", " + fileId);
-        List<String> fileList = mWhiteboard.enumerateFiles();
+        /*List<String> fileList = mWhiteboard.enumerateFiles();
         int count = fileList.size();
         for (int i = 0; i < count; i++) {
             Log.i(TAG, "onSwitchDoc enum " + i + ": " + fileList.get(i) );
         }
         String curFile = mWhiteboard.getCurrentFileId();
-        Log.i(TAG, "onSwitchDoc current: " + curFile);
+        Log.i(TAG, "onSwitchDoc current: " + curFile);*/
     }
 
 
