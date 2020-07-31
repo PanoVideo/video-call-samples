@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pano SDK Demo&Debug page</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+      }
+      body {
+        padding: 0 30px;
+      }
+      td input {
+        border: none;
+        outline: none;
+        padding-left: 10px;
+      }
+    </style>
+</head>
+<body>
+  <div id="params" style="display: flex; justify-content: center; white-space: nowrap">
+    <table border="1"  align = "center">
+      <tr align="center" height="50">
+        <td colspan="2">Channel Parameters</td>
+    </tr>
+    <tr align="center" height="50"> 
+      <td width="20%">App ID</td>
+      <td><input id="appID" style="width: 500px;height: 48px;font-size:18px;" type="text" value=""></td>
+    </tr>
+    <tr align="center" height="50"> 
+      <td width="20%">Token</td>
+      <td><input id="token" style="width: 500px;height: 48px;font-size:18px;" type="text" value="">
+      </td>
+    </tr>
+    <tr align="center" height="50"> 
+      <td width="20%">Channel ID</td>
+      <td><input id="channelID" style="width: 500px;height: 48px;font-size:18px;" type="text" value=""></td>
+    </tr>
+    <tr align="center" height="50"> 
+      <td width="20%">ChannelMode</td>
+      <td style="text-align: left;">
+        meeting <input type="radio" value="meeting" name="channelMode" checked>
+        1_on_1 <input type="radio" value="1v1" name="channelMode">
+      </td>
+    </tr>
+    <tr align="center" height="50"> 
+      <td width="20%">User ID</td>
+      <td><input id="userID" style="width: 500px;height: 48px;font-size:18px;" type="text"></td>
+    </tr>
+    <tr align="center" height="50"> 
+      <td width="20%">User Name</td>
+      <td><input id="userName" style="width: 500px;height: 48px;font-size:18px;" type="text"></td>
+    </tr>
+    </table>
+  </div>
+  <div id="meeting_control" align="center" style="background-color: lightgrey; width:880px; margin: 10px auto; padding: 5px">
+    <table>
+      <tr>
+        <td><button id="joinChannel" style="height:30px;width:100px;color: green;font-size:13px;">Join Channel</button></td>
+        <td><button id="leaveChannel" style="height:30px;width:110px;font-size:13px;" disabled>Leave Channel</button></td>
+        <td><button id="muteMic" style="height:30px;width:90px;color: green;font-size:13px;">Mute Mic</button></td>
+        <td><button id="audioButton" style="height:30px;width:110px;color: green;font-size:13px;">Start Audio</button></td>
+        <td><button id="videoButton" style="height:30px;width:110px;color: green;font-size:13px;">Start Video</button></td>
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <td><button id="getPreview" style="height:30px;width:150px;color: green;font-size:13px;">Get Preview</button></td>
+        <td><button id="subscribeVideo" style="height:30px;width:150px;color: green;font-size:13px;">Subscribe Video</button></td>
+        <td><select id="videoUsers" style="height:30px;width:150px;"></select></td>
+        <td><select id="subQuality" style="height:30px;width:80px;">
+          <option value="2">180P</option>
+          <option value="4">360P</option>
+          <option value="8" selected>720P</option>
+          <option value="16">1080P</option>
+        </select></td>
+        <td><button id="unSubscribeVideo" style="height:30px;width:150px;color: green;font-size:13px;">Unsubscribe Video</button></td>
+      </tr>
+    </table>
+  </div>
+  <div id="countdown" align="center" style="background-color: lightgrey; width:60px;margin: 10px auto; padding: 5px; display: none;"></div>
+  <div id="deviceArea" align="center" style="background-color: lightgrey; width: 100%; margin: 10px auto; padding: 5px">
+    <table>
+      <tr>
+        <td width="250"><button id="getMics" style="height:30px;width:100px;color: green;font-size:13px;">Get Mics</button></td>
+        <td width="250"><button id="setMic" style="height:30px;width:100px;color: green;font-size:13px;">Set Mic</button></td>
+        <td width="250"><button id="getSpeakers" style="height:30px;width:100px;color: green;font-size:13px;">Get Speakers</button></td>
+        <td width="250"><button id="setSpeaker" style="height:30px;width:100px;color: green;font-size:13px;">Set Speaker</button></td>
+        <td width="250"><button id="getCams" style="height:30px;width:100px;color: green;font-size:13px;">Get Cameras</button></td>
+        <td width="250"><button id="setCam" style="height:30px;width:100px;color: green;font-size:13px;">Set Camera</button></td>
+      </tr>
+      <tr>
+        <td colspan="2" width="400"><select style="width: 400px" id="mic_sel"></select></td>
+        <td colspan="2" width="400"><select style="width: 400px" id="speaker_sel"></select></button></td>
+        <td colspan="2" width="400"><select style="width: 400px" id="cam_sel"></select></button></td>
+      </tr>
+    </table>
+  </div>
+  <div id="inMeetingArea" align="center" style="background-color: lightgrey; width:100%; margin: 10px auto; padding: 5px; display: block; height: 800px;">
+    <div id="videoArea" align="center" style="width:calc(100% - 610px); height:auto; float:left;">
+      <table>
+        <tr>
+          <td colspan="7" style="width:700px;height:500px"><div id="activeVideoArea" align="left"></div></td>
+        </tr>
+        <tr>
+          <td style="width:150px;height:150px"><div id="thumbnail1"></div></td>
+          <td style="width:150px;height:150px"><div id="thumbnail2"></div></td>
+          <td style="width:150px;height:150px"><div id="thumbnail3"></div></td>
+          <td style="width:150px;height:150px"><div id="thumbnail4"></div></td>
+          <td style="width:150px;height:150px"><div id="thumbnail5"></div></td>
+          <td style="width:150px;height:150px"><div id="thumbnail6"></div></td>
+          <td style="width:150px;height:150px"><div id="selfVideoArea"></div></td>
+          <td style="width:150px;height:150px"><div id="previewVideoArea" style=" position: relative;"></div></td>
+        </tr>
+      </table>
+    </div>
+    <div style="width:300px; float: right; margin-left: 10px; height: 500px;">
+      <label>Events</label>
+      <textarea id="events" style="width:100%; height: 500px;">
+      </textarea>
+    </div>
+    <div id="roster" align="center" style="width:300px; float: right; height: 500px;">
+      <label>Roster List</label>
+      <textarea id="meeting_roster" style="width:100%; height: 500px;">
+      </textarea>
+    </div>
+  </div>
+<script src="./index.js"></script>
+
+</body>
+</html>
