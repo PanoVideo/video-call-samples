@@ -117,10 +117,10 @@ function joinChannel() {
     userName: PanoDemo.userName,
     subscribeAudioAll: true
   };
-  rtcEngine.joinChannel(channelParam, {
+  const joinChannelResult = rtcEngine.joinChannel(channelParam, {
     joinChannelType: PanoRtc.Constants.JoinChannelType.mediaOnly
   });
-
+  console.log('joinChannelResult: ', joinChannelResult);
 } 
 
 
