@@ -5,7 +5,7 @@ let PanoDemo = {
 };
 
 // UI
-const appId = document.getElementById('appID').value;
+const appId = document.getElementById('appID').value || 'temp';
 const countdownDic = document.getElementById('countdown');
 let rtcEngine = new PanoRtc.RtcEngine(appId);
 
