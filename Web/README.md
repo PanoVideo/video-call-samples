@@ -1,4 +1,4 @@
-# 拍乐云实时音视频 Demo 使用指导
+# 拍乐云实时互动白板 Demo 使用指导
 
 ## 1. 注册拍乐云账号
 进入拍乐云 [控制台](https://console.pano.video/) 页面，根据指导创建拍乐云账号。
@@ -16,4 +16,4 @@
 在 web demo 目录下，运行 `npm i`
 
 ## 6. 编译运行
-在 BasicVideoCall 目录下，运行 `npm run dev`, 打开 https://localhost:8082/ 即可使用。
+在 BasicVideoCall 目录下，运行 `npm run dev`, 打开 http://localhost:8083/ 即可使用。
