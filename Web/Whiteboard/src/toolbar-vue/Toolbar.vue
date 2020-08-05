@@ -255,15 +255,6 @@ import PanoRtc from '@pano.video/panortc'
 import { ColorPicker } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-/**
- *  0 透明 - 100 不透明
- * @param color rgba 颜色值
- */
-function getAlphaOfRGBA(color) {
-  const rgb = color.match(/(\d(\.\d+)?)+/g)
-  return Number(get(rgb, 3, 0)) * 100
-}
-
 const { Constants, RtcWhiteboard } = PanoRtc
 export default {
   data() {
@@ -286,9 +277,6 @@ export default {
       insertType: this.whiteboard.getToolType(),
       fillStyle: this.whiteboard.fillStyle,
       fillType: this.whiteboard.fillType,
-      strokeStyleAlpha: getAlphaOfRGBA(this.whiteboard.strokeStyle),
-      fillStyleAlpha: getAlphaOfRGBA(this.whiteboard.fillStyle),
-      backgroundColorAlpha: getAlphaOfRGBA(this.whiteboard.backgroundColor),
       inputTypes: [
         { type: Constants.ShapeType.Select, icon: 'select', size: '12px' },
         { type: Constants.ShapeType.Pen, icon: 'pencil', size: '24px' },
@@ -532,9 +520,6 @@ export default {
       this.pageCount = this.whiteboard.getTotalNumberOfPages()
       this.pageIndex = this.whiteboard.getCurrentPageNumber()
       this.insertType = this.whiteboard.getToolType()
-      this.strokeStyleAlpha = getAlphaOfRGBA(this.strokeStyle)
-      this.fillStyleAlpha = getAlphaOfRGBA(this.fillStyle)
-      this.backgroundColorAlpha = getAlphaOfRGBA(this.backgroundColor)
     }
   },
   mounted() {
