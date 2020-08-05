@@ -62,31 +62,10 @@
           />
           Fill height
         </label>
-        <button
-          class="wb-img-wrapper__confirm"
-          @click="
-            () => {
-              this.whiteboard.uploadImage((err) => {
-                if (err) {
-                  alert('上传失败:' + err.message)
-                }
-              })
-            }
-          "
-        >
+        <button class="wb-img-wrapper__confirm" @click="uploadImage">
           Upload
         </button>
-        <button
-          class="wb-img-wrapper__confirm"
-          @click="
-            () => {
-              if (!this.imgUrl) {
-                return
-              }
-              this.whiteboard.setBackgroundImage(this.imgUrl)
-            }
-          "
-        >
+        <button class="wb-img-wrapper__confirm" @click="setImageBg">
           Add
         </button>
       </div>
@@ -106,41 +85,15 @@
 
         <div class="toolbar-input-group">
           <div class="toolbar-input-group__label">宽度</div>
-          <input
-            type="number"
-            :value="this.lineWidth"
-            @change="
-              (e) => {
-                const lineWidth = Number(e.target.value)
-                if (lineWidth > 0) {
-                  if (this.whiteboard.selectedShape) {
-                    this.whiteboard.setSelectedShapeStyle({ lineWidth })
-                  } else {
-                    this.whiteboard.lineWidth = lineWidth
-                  }
-                  this.lineWidth = lineWidth
-                }
-              }
-            "
-          />
+          <input type="number" v-model="lineWidth" />
         </div>
 
         <div class="toolbar-input-group">
           <div class="toolbar-input-group__label">填充</div>
           <input
             type="checkbox"
-            :checked="this.fillType === 'color'"
-            @change="
-              () => {
-                const fillType = this.fillType === 'color' ? 'none' : 'color'
-                if (this.whiteboard.selectedShape) {
-                  this.whiteboard.setSelectedShapeStyle({ fillType })
-                } else {
-                  this.whiteboard.fillType = fillType
-                }
-                this.fillType = fillType
-              }
-            "
+            :checked="fillType === 'color'"
+            @change="changeFillType"
           />
           <ColorPicker
             show-alpha
@@ -163,44 +116,15 @@
 
         <div class="toolbar-input-group">
           <div class="label">字体</div>
-          <input
-            type="number"
-            :value="this.fontSize"
-            @change="
-              (e) => {
-                const fontSize = Number(e.target.value)
-                if (fontSize > 0) {
-                  if (this.whiteboard.selectedShape) {
-                    this.whiteboard.setSelectedShapeFontStyle({
-                      fontSize
-                    })
-                  } else {
-                    this.whiteboard.fontSize = fontSize
-                  }
-                  this.fontSize = fontSize
-                }
-              }
-            "
-          />
+          <input type="number" v-model="fontSize" />
         </div>
 
         <div class="toolbar-input-group">
           <div
-            @click="
-              () => {
-                if (this.whiteboard.selectedShape) {
-                  this.whiteboard.setSelectedShapeFontStyle({
-                    bold: !this.bold
-                  })
-                } else {
-                  this.whiteboard.bold = !this.bold
-                }
-                this.bold = !this.bold
-              }
-            "
+            @click="toggleBold"
             :class="{
               'toolbar-input-group__svg': true,
-              'toolbar-input-group__svg--selected': this.bold
+              'toolbar-input-group__svg--selected': bold
             }"
           >
             <span class="icon-bold" style="font-size: 15px;"></span>
@@ -209,21 +133,10 @@
 
         <div class="toolbar-input-group">
           <div
-            @click="
-              () => {
-                if (this.whiteboard.selectedShape) {
-                  this.whiteboard.setSelectedShapeFontStyle({
-                    italic: !this.italic
-                  })
-                } else {
-                  this.whiteboard.italic = !this.italic
-                }
-                this.italic = !this.italic
-              }
-            "
+            @click="toggleItalic"
             :class="{
               'toolbar-input-group__svg': true,
-              'toolbar-input-group__svg--selected': this.italic
+              'toolbar-input-group__svg--selected': italic
             }"
           >
             <span class="icon-italic"></span>
@@ -238,19 +151,19 @@
         :class="{
           'pano-wb-pages__btn': true
         }"
-        @click="() => this.updatePageIndex(this.pageIndex - 1)"
+        @click="goPrevPage"
       >
         <span class="icon-left"></span>
       </button>
       <div class="pano-wb-pages__page-count">
-        {{ `${this.pageIndex + 1} / ${this.pageCount}` }}
+        {{ `${pageIndex + 1} / ${pageCount}` }}
       </div>
 
       <button
         :class="{
           'pano-wb-pages__btn': true
         }"
-        @click="() => this.updatePageIndex(this.pageIndex + 1)"
+        @click="goNextPage"
       >
         <span class="icon-right"></span>
       </button>
@@ -259,11 +172,7 @@
         :class="{
           'pano-wb-pages__btn-add': true
         }"
-        @click="
-          () => {
-            this.whiteboard.addPage()
-          }
-        "
+        @click="addPage"
       >
         <span class="icon-add"></span>
       </button>
@@ -272,7 +181,7 @@
         :class="{
           'pano-wb-pages__btn-add': true
         }"
-        @click="() => this.whiteboard.removePage()"
+        @click="removePage"
       >
         <span class="icon-minus"></span>
       </button>
@@ -282,46 +191,31 @@
     <div class="pano-wb-zoom pano-wb-tools">
       <div
         class="pano-wb-zoom__btn"
-        @click="
-          () => this.updateScale(this.scale > 0.15 ? this.scale - 0.05 : 0.1)
-        "
+        @click="updateScale(scale > 0.15 ? scale - 0.05 : 0.1)"
       >
         <span class="icon-minus"></span>
       </div>
 
       <div class="pano-wb-zoom__zoom-rate">
-        {{ Math.round(this.scale * 100) }}%
+        {{ Math.round(scale * 100) }}%
       </div>
 
       <div
         class="pano-wb-zoom__btn"
-        @click="
-          () => {
-            this.updateScale(this.scale < 1.95 ? this.scale + 0.05 : 2)
-          }
-        "
+        @click="updateScale(scale < 1.95 ? scale + 0.05 : 2)"
       >
         <span class="icon-add"></span>
       </div>
 
-      <div
-        class="pano-wb-zoom__btn"
-        @click="
-          () => {
-            this.updateScale(1)
-            this.whiteboard.translate[0] = 0
-            this.whiteboard.translate[1] = 0
-          }
-        "
-      >
+      <div class="pano-wb-zoom__btn" @click="reset">
         <span class="icon-revert"></span>
       </div>
 
-      <div @click="() => this.whiteboard.undo()" class="pano-wb-zoom__btn">
+      <div @click="undo" class="pano-wb-zoom__btn">
         <span class="icon-undo"></span>
       </div>
 
-      <div @click="() => this.whiteboard.redo()" class="pano-wb-zoom__btn">
+      <div @click="redo" class="pano-wb-zoom__btn">
         <span class="icon-redo"></span>
       </div>
 
@@ -331,52 +225,23 @@
 
       <div class="pano-wb-zoom__clear-popup" v-if="clearPopupVisible">
         <button
-          :disabled="!this.isAdmin"
+          :disabled="!isAdmin"
           class="wb-clear-popup-item"
-          @click="
-            () => {
-              this.whiteboard.clearContents(false, Constants.WBClearType.All)
-              this.toggleClearPopup()
-            }
-          "
+          @click="clearAll"
         >
           Clear All
         </button>
         <button
-          :disabled="!this.isAdmin"
+          :disabled="!isAdmin"
           class="wb-clear-popup-item"
-          @click="
-            () => {
-              this.whiteboard.clearContents(true, Constants.WBClearType.All)
-              this.toggleClearPopup()
-            }
-          "
+          @click="clearCurrentPage"
         >
           Clear Current Page
         </button>
-        <button
-          class="wb-clear-popup-item"
-          @click="
-            () => {
-              this.whiteboard.clearContents(false, Constants.WBClearType.DRAWS)
-              this.toggleClearPopup()
-            }
-          "
-        >
+        <button class="wb-clear-popup-item" @click="clearMyContent">
           Clear My Contents
         </button>
-        <button
-          class="wb-clear-popup-item"
-          @click="
-            () => {
-              this.whiteboard.clearContents(
-                false,
-                Constants.WBClearType.BACKGROUND_IMAGE
-              )
-              this.toggleClearPopup()
-            }
-          "
-        >
+        <button class="wb-clear-popup-item" @click="clearMyBackground">
           Clear My Background
         </button>
       </div>
@@ -461,6 +326,19 @@ export default {
     whiteboard: Object
   },
   watch: {
+    fontSize(newValue) {
+      if (newValue > 0) {
+        if (this.whiteboard.selectedShape) {
+          this.whiteboard.setSelectedShapeFontStyle({
+            fontSize: newValue
+          })
+        } else {
+          this.whiteboard.fontSize = newValue
+        }
+      } else {
+        this.fontSize = 1
+      }
+    },
     fillStyle(newValue) {
       const fillStyle = newValue || 'rgba(112, 124, 138, 1)'
       if (this.whiteboard.selectedShape) {
@@ -486,9 +364,109 @@ export default {
     },
     imgScaleMode(newValue) {
       this.whiteboard.setBackgroundImageScalingMode(newValue)
+    },
+    lineWidth(newValue) {
+      const lineWidth = newValue
+      if (lineWidth > 0) {
+        if (this.whiteboard.selectedShape) {
+          this.whiteboard.setSelectedShapeStyle({ lineWidth })
+        } else {
+          this.whiteboard.lineWidth = lineWidth
+        }
+      } else {
+        this.lineWidth = 1
+      }
     }
   },
   methods: {
+    removePage() {
+      this.whiteboard.removePage()
+    },
+    addPage() {
+      this.whiteboard.addPage()
+    },
+    undo() {
+      this.whiteboard.undo()
+    },
+    redo() {
+      this.whiteboard.redo()
+    },
+    clearMyBackground() {
+      console.log('clearMyBackground')
+      this.whiteboard.clearContents(
+        false,
+        Constants.WBClearType.BACKGROUND_IMAGE
+      )
+      this.toggleClearPopup()
+    },
+    clearMyContent() {
+      console.log('clearMyContent')
+      this.whiteboard.clearContents(false, Constants.WBClearType.DRAWS)
+      this.toggleClearPopup()
+    },
+    clearCurrentPage() {
+      console.log('clearCurrentPage')
+      this.whiteboard.clearContents(true, Constants.WBClearType.All)
+      this.toggleClearPopup()
+    },
+    clearAll() {
+      console.log('clearAll')
+      this.whiteboard.clearContents(false, Constants.WBClearType.All)
+      this.toggleClearPopup()
+    },
+    reset() {
+      this.updateScale(1)
+      this.whiteboard.translate[0] = 0
+      this.whiteboard.translate[1] = 0
+    },
+    goNextPage() {
+      this.updatePageIndex(this.pageIndex + 1)
+    },
+    goPrevPage() {
+      this.updatePageIndex(this.pageIndex - 1)
+    },
+    toggleItalic() {
+      if (this.whiteboard.selectedShape) {
+        this.whiteboard.setSelectedShapeFontStyle({
+          italic: !this.italic
+        })
+      } else {
+        this.whiteboard.italic = !this.italic
+      }
+      this.italic = !this.italic
+    },
+    toggleBold() {
+      if (this.whiteboard.selectedShape) {
+        this.whiteboard.setSelectedShapeFontStyle({
+          bold: !this.bold
+        })
+      } else {
+        this.whiteboard.bold = !this.bold
+      }
+      this.bold = !this.bold
+    },
+    changeFillType() {
+      const fillType = this.fillType === 'color' ? 'none' : 'color'
+      if (this.whiteboard.selectedShape) {
+        this.whiteboard.setSelectedShapeStyle({ fillType })
+      } else {
+        this.whiteboard.fillType = fillType
+      }
+      this.fillType = fillType
+    },
+    setImageBg() {
+      if (!this.imgUrl) {
+        return
+      }
+      this.whiteboard.setBackgroundImage(this.imgUrl)
+    },
+    uploadImage() {
+      this.whiteboard.uploadImage((err) => {
+        if (err) {
+          alert('上传失败:' + err.message)
+        }
+      })
+    },
     setAdmin() {
       this.isAdmin = !this.isAdmin
       this.whiteboard.setRoleType(
