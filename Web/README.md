@@ -1,4 +1,4 @@
-# 拍乐云实时互动白板 Demo 使用指导
+# 拍乐云实时互动白板/视频 Demo 使用指导
 
 ## 1. 注册拍乐云账号
 进入拍乐云 [控制台](https://console.pano.video/) 页面，根据指导创建拍乐云账号。
@@ -13,7 +13,7 @@
 用户在创建应用获取到 APPID 后，还需要 token 才可以使用拍乐云实时音视频服务。对于 Demo 用户可在拍乐云控制台为应用生成临时token。
 
 ## 5. 安装依赖
-在 web demo 目录下，运行 `npm i`
+在 BasicVideoCall 或 Whiteboard 目录下，运行 `npm i`
 
 ## 6. 编译运行
-在 BasicVideoCall 目录下，运行 `npm run dev`, 打开 http://localhost:8083/ 即可使用。
+在 BasicVideoCall 或 Whiteboard 目录下，运行 `npm run dev`, 打开 http://localhost:8083/ (Whiteboard) 或 https://localhost:8082/ (BasicVideoCall) 即可使用。
