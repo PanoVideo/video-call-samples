@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <title>PANO RTC DEMO</title>
+    <link rel="stylesheet" href="./css/styles.css">
+  </head>
+  <body>
+    <div id="div_root">
+      <div id="div_join">
+        <h1>PanoRtc Electron SDK Demo</h1>
+        <div>
+          Node.js <span id="node-version"></span>,&nbsp;
+          Chromium <span id="chrome-version"></span>,&nbsp;
+          Electron <span id="electron-version"></span>.
+        </div>
+        <br>
+        <form>
+          <fieldset>
+            <legend>APP Settings</legend>
+            Open DevTools:
+            <input type="checkbox" class="switch" id="cb-dev-tools">
+          </fieldset>
+          <br>
+          <fieldset>
+            <legend>Channel Settings</legend>
+            Channel ID: <input type="text" id="text_channel_id" value="rntest-hzdaily" />
+            User ID: <input type="text" id="text_user_id" />
+            User Name: <input type="text" id="text_user_name" value="electron-user" />
+          </fieldset>
+          <br>
+          <fieldset>
+            <legend>Audio Settings</legend>
+            Micphone: 
+            <select id="select_audio_micphone">
+              <option value="Defaule">System Default</option>
+            </select>
+            Speaker: 
+            <select id="select_audio_speaker">
+              <option value="Defaule">System Default</option>
+            </select>
+          </fieldset>
+          <br>
+          <fieldset>
+            <legend>Video Settings</legend>
+            Camera: 
+            <select id="select_video_camera">
+            </select>
+          </fieldset>
+          <br><br>
+          <button type="button" id="btn_join_channel">Join Channel</button>
+        </form>
+      </div>
+      <div id="div_media">
+        <div class="pano-video-left">
+          <div class="pano-video-streams" id="div_video_streams">
+            <div class="pano-video-sub-streams-top">
+              <div class="pano-video-sub-user" id="div_local_video_user">
+                <div class="pano-video-local-sub-stream" id="div_local_video_stream"></div>
+              </div>
+            </div>
+            <div class="pano-video-sub-streams-bottom">
+              <div class="pano-video-sub-user" id="div_remote_video_user_1">
+                <div class="pano-video-sub-stream" id="div_remote_video_stream_1"></div>
+              </div>
+              <div class="pano-video-sub-user" id="div_remote_video_user_2">
+                <div class="pano-video-sub-stream" id="div_remote_video_stream_2"></div>
+              </div>
+              <div class="pano-video-sub-user" id="div_remote_video_user_3">
+                <div class="pano-video-sub-stream" id="div_remote_video_stream_3"></div>
+              </div>
+              <div class="pano-video-sub-user" id="div_remote_video_user_4">
+                <div class="pano-video-sub-stream" id="div_remote_video_stream_4"></div>
+              </div>
+              <div class="pano-video-sub-user" id="div_remote_video_user_5">
+                <div class="pano-video-sub-stream" id="div_remote_video_stream_5"></div>
+              </div>
+            </div>
+          </div>
+          <br>
+          <button type="button" id="btn_start_audio" class="btn-video-stream">Start Audio</button>
+          <button type="button" id="btn_mute_audio" class="btn-video-stream">Mute Audio</button>
+          <button type="button" id="btn_start_video" class="btn-video-stream">Start Video</button>
+          <button type="button" id="btn_mute_video" class="btn-video-stream">Mute Video</button>
+          <button type="button" id="btn_start_screen" class="btn-video-stream">Start Screen</button>
+          <button type="button" id="btn_mute_screen" class="btn-video-stream">Mute Screen</button>
+          <button type="button" id="btn_whiteboard" class="btn-video-stream">Whiteboard</button>
+          <button type="button" id="btn_leave_channel" class="btn-video-stream">Leave Channel</button>
+        </div>
+        <div class="pano-video-right">
+          <div>
+            <table>
+              <tbody id="tb-user-list">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <br><br>
+
+    
+    <label id="status"></label>
+
+    <!-- You can also require other files to run in this process -->
+    <script type="text/javascript" src="./renderer.js"></script>
+    <script type="text/javascript" src="./media_renderer.js"></script>
+  </body>
+</html>

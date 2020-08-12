@@ -192,6 +192,7 @@ public class CallActivity extends CallBaseActivity implements PanoEventHandler,
         RtcChannelConfig config = new RtcChannelConfig();
         config.userName = mUserName;
         config.mode_1v1 = mMode1v1;
+        // NOTE: remove kChannelServiceWhiteboard if whiteboard is not used
         config.serviceFlags = Constants.kChannelServiceMedia | Constants.kChannelServiceWhiteboard;
         // 设置自动订阅所有音频
         config.subscribeAudioAll = true;
