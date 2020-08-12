@@ -349,7 +349,7 @@
     }
   }
 
-  function on(event, args) {
+  function onEvent(event, args) {
     emitter.on(event, args);
   }
 
@@ -379,7 +379,7 @@
     stopScreen: stopScreen,
     muteScreen: muteScreen,
     unmuteScreen: unmuteScreen,
-    on: on,
+    onEvent: onEvent,
   };
 
 })(window);
