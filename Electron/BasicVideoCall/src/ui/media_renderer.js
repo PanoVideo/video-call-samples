@@ -97,28 +97,23 @@
       btnMuteScreen.innerText = screenMuted ? 'Unmute Screen' : 'Mute Screen';
     }
   });
-  let btnWhiteboard = document.getElementById("btn_whiteboard");
-  btnWhiteboard.disabled = true;
-  btnWhiteboard.addEventListener("click", () => {
-    
-  });
 
   window.addEventListener('load', (event) => {
     enableButtons(false);
   });
 
-  enginejs.on('channel-join-confirm', (result) => {
+  enginejs.onEvent('channel-join-confirm', (result) => {
     if (result == QResult.OK) {
       enableButtons(true);
     }
   });
-  enginejs.on('channel-leave-indication', (result) => {
+  enginejs.onEvent('channel-leave-indication', (result) => {
     enableButtons(false);
   });
-  enginejs.on('user-join-indication', (user) => {
+  enginejs.onEvent('user-join-indication', (user) => {
     
   });
-  enginejs.on('user-leave-indication', (userId) => {
+  enginejs.onEvent('user-leave-indication', (userId) => {
     
   });
 
