@@ -12,16 +12,16 @@
   } = require('@pano.video/panortc-electron-sdk/js/panodefs');
   const {rtcEngine} = require('@pano.video/panortc-electron-sdk');
   const {viewMgr} = require('./ui/media_views');
+  const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
   const {EventEmitter} = require("events");
   var channelSettings = {};
   var userMgr;
   var emitter = new EventEmitter();
 
-
   rtcEngine.on('channelJoinConfirm', (result) => {
     console.log('+++++ JS onChannelJoinConfirm, result: ' + result);
     if (result != QResult.OK) {
-      //alert('Join channel failed, reason: ' + result);
+      alert('Join channel failed, reason: ' + result);
     }
     emitter.emit('channel-join-confirm', result);
   })
@@ -41,7 +41,8 @@
   })
   rtcEngine.on('userLeaveIndication', (userId, reason) => {
     console.log('+++++ JS onUserLeaveIndication, userId: ' + userId + ', reason: ' + reason);
-    viewMgr.stopRemoteUserView(userId);
+    viewMgr.stopRemoteUserVideoView(userId);
+    viewMgr.stopRemoteUserScreenView(userId);
     userMgr.removeUser(userId);
     onUserLeave(userId);
     emitter.emit('user-leave-indication', userId);
@@ -63,7 +64,7 @@
   })
   rtcEngine.on('userVideoStop', (userId) => {
     console.log('+++++ JS onUserVideoStop, userId: ' + userId);
-    viewMgr.stopRemoteUserView(userId);
+    viewMgr.stopRemoteUserVideoView(userId);
     userMgr.removeVideoUser(userId);
   })
   rtcEngine.on('userVideoSubscribe', (userId, result) => {
@@ -83,9 +84,14 @@
   })
   rtcEngine.on('userScreenStart', (userId) => {
     console.log('+++++ JS onUserScreenStart, userId: ' + userId)
+    userMgr.addScreenUser(userId);
+    let user = userMgr.getScreenUser(userId);
+    subscribeUserScreen(user);
   })
   rtcEngine.on('userScreenStop', (userId) => {
     console.log('+++++ JS onUserScreenStop, userId: ' + userId)
+    viewMgr.stopRemoteUserScreenView(userId);
+    userMgr.removeScreenUser(userId);
   })
   rtcEngine.on('userScreenSubscribe', (userId, result) => {
     console.log('+++++ JS onUserScreenSubscribe, userId: ' + userId + ', result: ' + result)
@@ -148,7 +154,7 @@
     for (let user of users) {
       if (user.subscribed) {
         rtcEngine.unsubscribeVideo(user.userId);
-        viewMgr.stopRemoteUserView(user.userId);
+        viewMgr.stopRemoteUserVideoView(user.userId);
         user.subscribed = false;
       }
     }
@@ -164,13 +170,39 @@
     }
   }
   function subscribeUserVideo(user) {
-    let vi = viewMgr.allocRemoteUserView(user.userId);
+    let vi = viewMgr.allocRemoteUserVideoView(user.userId);
     if (vi != null) {
       let profile = vi.isMain ? user.profile : VideoProfileType.Low;
       let ret = rtcEngine.subscribeVideo(user.userId, vi.view, 
         {profile: profile, scaling: VideoScalingMode.Fit, mirror: false});
       if (ret == QResult.OK) {
-        viewMgr.showRemoteUserView(user.userId);
+        viewMgr.showRemoteUserVideoView(user.userId);
+        user.subscribed = true;
+      }
+      return true;
+    }
+    return false;
+  }
+  function unsubscribeUserVideo(userId) {
+    rtcEngine.unsubscribeVideo(userId);
+    viewMgr.stopRemoteUserVideoView(userId);
+  }
+  function subscribeUserScreen(user) {
+    let mvi = viewMgr.getMainViewInfo();
+    if (mvi != null) {
+      if (!mvi.isFree) {
+        if (mvi.isScreen) {
+          rtcEngine.unsubscribeScreen(mvi.userId);
+        } else {
+          rtcEngine.unsubscribeVideo(mvi.userId);
+        }
+      }
+      mvi.isFree = false;
+      mvi.isScreen = true;
+      mvi.userId = user.userId;
+      let ret = rtcEngine.subscribeScreen(user.userId, mvi.view);
+      if (ret == QResult.OK) {
+        viewMgr.showRemoteUserVideoView(user.userId);
         user.subscribed = true;
       }
       return true;
@@ -195,14 +227,31 @@
       audioScenario: 0
     });
 
-    let serviceFlags = kChannelServiceMedia;
-    rtcEngine.joinChannel(token, channelId, userId, {
-      channelMode: ChannelMode.Mode_Meeting,
-      serviceFlags: serviceFlags,
-      subscribeAudioAll: true, // subscribe user audio automatically
-      userName: userName
-    });
-
+    // fetch PANO token from AppServer
+    /*let url = 'http://10.0.0.8:8080/app/login';
+    var xreq = new XMLHttpRequest();
+    xreq.open('POST', url, true);
+    xreq.setRequestHeader('Content-Type', 'application/json');
+    xreq.setRequestHeader('Cache-Control', 'no-cache');
+    xreq.setRequestHeader('Tracking-Id', uuidv4());
+    var o = {};
+    o['appId'] = appId;
+    o['channelId'] = channelId;
+    o['userId'] = userId;
+    //o['duration'] = 20;
+    //o['privileges'] = 49152;
+    xreq.send(JSON.stringify(o));
+    xreq.onreadystatechange = function () {
+      if (xreq.readyState == 4) {
+        if (xreq.status == 200) {
+          let token = xreq.responseText;
+          doJoinChannel(token, channelId, userId, userName);
+        } else {
+          console.log('+++++ JS failed to fetch token, status: ' + xreq.status + ', body: ' + xreq.responseText);
+        }
+      }
+    };*/
+    doJoinChannel(token, channelId, userId, userName);
     addLocalUser(userId);
   }
 
@@ -210,6 +259,19 @@
     rtcEngine.leaveChannel();
     viewMgr.freeViews();
     clearUserList();
+  }
+
+  function doJoinChannel(token, channelId, userId, userName) {
+    let serviceFlags = kChannelServiceMedia;
+    let ret = rtcEngine.joinChannel(token, channelId, userId, {
+      channelMode: ChannelMode.Mode_Meeting,
+      serviceFlags: serviceFlags,
+      subscribeAudioAll: true, // subscribe user audio automatically
+      userName: userName
+    });
+    if (ret != QResult.OK) {
+      console.warn(`+++++ JS doJoinChannel, failed to join channel, result: ${ret}`);
+    }
   }
 
   function startAudio() {
@@ -316,6 +378,7 @@
     constructor() {
       this.userList = new Map();
       this.videoUserList = new Map();
+      this.screenUserList = new Map();
     }
 
     addUser(userId, userName) {
@@ -323,6 +386,8 @@
     }
     removeUser(userId) {
       this.userList.delete(userId);
+      this.videoUserList.delete(userId);
+      this.screenUserList.delete(userId);
     }
     addVideoUser(userId, profile) {
       this.videoUserList.set(userId, {userId: userId, profile: profile, subscribed: false});
@@ -332,6 +397,15 @@
     }
     getVideoUser(userId) {
       return this.videoUserList.get(userId);
+    }
+    addScreenUser(userId) {
+      this.screenUserList.set(userId, {userId: userId, subscribed: false});
+    }
+    removeScreenUser(userId) {
+      this.screenUserList.delete(userId);
+    }
+    getScreenUser(userId) {
+      return this.screenUserList.get(userId);
     }
     getUserList() {
       let users = [];
@@ -343,6 +417,13 @@
     getVideoUserList() {
       let users = [];
       for (let user of this.videoUserList.values()) {
+        users[users.length] = user;
+      }
+      return users;
+    }
+    getScreenUserList() {
+      let users = [];
+      for (let user of this.screenUserList.values()) {
         users[users.length] = user;
       }
       return users;

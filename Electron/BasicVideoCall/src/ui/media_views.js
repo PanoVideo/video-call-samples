@@ -9,6 +9,7 @@
       this.view = null;
       this.isFree = true;
       this.isMain = isMain;
+      this.isScreen = false;
     }
   
     getUserId() {
@@ -56,6 +57,7 @@
       if (this.mainViewInfo.view) {
         this.mainViewInfo.isFree = true;
         this.mainViewInfo.view = null;
+        this.mainViewInfo.isScreen = false;
       }
       for (let vi of this.remoteViewInfoList) {
         if (vi.view) {
@@ -66,8 +68,8 @@
       this.remoteViewInfoList = [];
     }
   
-    getMainView() {
-      return this.mainViewInfo.view;
+    getMainViewInfo() {
+      return this.mainViewInfo;
     }
   
     getLocalView() {
@@ -86,7 +88,7 @@
       }
     }
   
-    getRemoteUserView(userId) {
+    getRemoteUserVideoView(userId) {
       let vi = this.getRemoteUserViewInfo(userId);
       if (vi) {
         return vi.view;
@@ -95,8 +97,10 @@
       return null;
     }
   
-    getRemoteUserViewInfo(userId) {
-      if (!this.mainViewInfo.isFree && this.mainViewInfo.userId === userId) {
+    getRemoteUserVideoViewInfo(userId) {
+      if (!this.mainViewInfo.isFree && 
+          this.mainViewInfo.userId === userId &&
+          !this.mainViewInfo.isScreen) {
         return this.mainViewInfo;
       }
       for (let vi of this.remoteViewInfoList) {
@@ -108,14 +112,15 @@
       return null;
     }
   
-    allocRemoteUserView(userId) {
-      let vi = this.getRemoteUserViewInfo(userId);
+    allocRemoteUserVideoView(userId) {
+      let vi = this.getRemoteUserVideoViewInfo(userId);
       if (vi != null) {
         return {view: vi.view, isMain: vi.isMain};
       }
       if (this.mainViewInfo.isFree && this.mainViewInfo.view != null) {
         this.mainViewInfo.userId = userId;
         this.mainViewInfo.isFree = false;
+        this.mainViewInfo.isScreen = false;
         return {view: this.mainViewInfo.view, isMain: true};
       }
       for (let vi of this.remoteViewInfoList) {
@@ -128,20 +133,25 @@
       return null;
     }
   
-    showRemoteUserView(userId) {
-      if (!this.mainViewInfo.isFree && this.mainViewInfo.userId === userId) {
+    showRemoteUserVideoView(userId) {
+      if (!this.mainViewInfo.isFree && 
+          this.mainViewInfo.userId === userId &&
+          !this.mainViewInfo.isScreen) {
         return ;
       }
-      let vi = this.getRemoteUserViewInfo(userId);
+      let vi = this.getRemoteUserVideoViewInfo(userId);
       if (vi && vi.view) {
         vi.view.style.display = 'inline-block';
       }
     }
   
-    stopRemoteUserView(userId) {
-      if (!this.mainViewInfo.isFree && this.mainViewInfo.userId === userId) {
+    stopRemoteUserVideoView(userId) {
+      if (!this.mainViewInfo.isFree && 
+          this.mainViewInfo.userId === userId &&
+          !this.mainViewInfo.isScreen) {
         this.mainViewInfo.userId = null;
         this.mainViewInfo.isFree = true;
+        this.mainViewInfo.isScreen = false;
         return;
       }
       for (let vi of this.remoteViewInfoList) {
@@ -151,6 +161,16 @@
           vi.view.style.display = 'none';
           break;
         }
+      }
+    }
+
+    stopRemoteUserScreenView(userId) {
+      if (!this.mainViewInfo.isFree && 
+          this.mainViewInfo.userId === userId &&
+          this.mainViewInfo.isScreen) {
+        this.mainViewInfo.userId = null;
+        this.mainViewInfo.isFree = true;
+        this.mainViewInfo.isScreen = false;
       }
     }
   }
