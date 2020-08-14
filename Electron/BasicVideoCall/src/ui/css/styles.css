@@ -17,6 +17,8 @@
   background-color: #111111;
 }
 
+#div_media{display:none;}
+
 .pano-video-sub-streams-top {
   max-height: 100px;
   position: absolute;
