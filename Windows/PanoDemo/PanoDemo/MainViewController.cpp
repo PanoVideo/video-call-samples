@@ -8,8 +8,8 @@
 const int kDefaultVideoViewWidth = 960;
 const int kDefaultVideoViewHeight = 540;
 
-const std::string kAppId = %%enter APPID of your APP%%;
-const std::string kPanoToken = %%enter APP Token which is got from PANO%%;
+const std::string kAppId = "243540d6698e4463a52cebc72ba977de";
+const std::string kPanoToken = "01000003RDcwU3RrU1f4KzcdJwaULrGcbGo24+SLM4hu7zgK4qge8SHEx+93shRLEMs3lcNDxUXVtKOdhVTj2ReRwdFK/k3NbgDVag8TksCXKVQ0thcMZtWQXBOvwnHg5Vu7Z62NFij+TvH+7zRz4so9La+jqYc9CgETfoJf6wCRZ7pHchM1dYYreUAbQ7QqqtppD7OtS0sfkdGLR9qD/gtLVjzul/2GWLGaHFiD2HT3OUyx7FEzmptwD9JfEp2vyh8j3YaO1Tx2mtwLTuw=";
 
 using namespace pano::utils;
 using namespace panortc;
@@ -108,8 +108,9 @@ void MainViewController::stopPreviewVideo()
 
 void MainViewController::startLocalVideo()
 {
+    auto yuvFile = mainView_->GetYuvFile();
     auto deviceId = mainView_->GetCurrentVideoDevice();
-    if (deviceId.empty()) {
+    if (yuvFile.empty() && deviceId.empty()) {
         return;
     }
 
@@ -126,7 +127,13 @@ void MainViewController::startLocalVideo()
     renderConfig.profileType = profile;
     renderConfig.scalingMode = mainView_->GetCurrentVideoScalingMode();
     renderConfig.enableMirror = mainView_->IsMirror();
-    RtcTester::instance().startVideo(localVideoDeviceId_, hWnd, renderConfig);
+    if (!yuvFile.empty()) {
+        renderConfig.enableMirror = false;
+        RtcTester::instance().startExternalVideo(yuvFile, hWnd, renderConfig);
+    }
+    else {
+        RtcTester::instance().startVideo(localVideoDeviceId_, hWnd, renderConfig);
+    }
     videoStarted_ = true;
 }
 

@@ -4,6 +4,7 @@
 #include "utils.h"
 #include "RtcViewController.h"
 #include "UserManager.h"
+#include "ExternalVideoCapturer.h"
 
 #include <memory>
 #include <string>
@@ -33,6 +34,7 @@ public:
     bool startPreview(const std::string &deviceId, void *view, panortc::RenderConfig &config);
     void stopPreview(const std::string &deviceId);
     void startVideo(const std::string &deviceId, void *view, panortc::RenderConfig &config);
+    void startExternalVideo(const std::wstring &yuvFile, void *view, panortc::RenderConfig &config);
     void stopVideo();
     void startAudio(const std::string &recordDeviceId, const std::string &playoutDeviceId);
     void stopAudio();
@@ -79,7 +81,7 @@ public:
             audioDeviceMgr->enumerateRecordDevices([](
                 void *context,
                 const char deviceName[kMaxDeviceNameLength],
-                const char deviceId[kMaxDeviceNameLength]) {
+                const char deviceId[kMaxDeviceIDLength]) {
                 auto &cb = *static_cast<DeviceCallback*>(context);
                 cb(deviceName, deviceId);
                 return true;
@@ -95,7 +97,7 @@ public:
             audioDeviceMgr->enumeratePlayoutDevices([](
                 void *context,
                 const char deviceName[kMaxDeviceNameLength],
-                const char deviceId[kMaxDeviceNameLength]) {
+                const char deviceId[kMaxDeviceIDLength]) {
                 auto &cb = *static_cast<DeviceCallback*>(context);
                 cb(deviceName, deviceId);
                 return true;
@@ -111,7 +113,7 @@ public:
             videoDeviceMgr->enumerateCaptureDevices([] (
                 void *context, 
                 const char deviceName[kMaxDeviceNameLength], 
-                const char deviceId[kMaxDeviceNameLength]) {
+                const char deviceId[kMaxDeviceIDLength]) {
                 auto &cb = *static_cast<DeviceCallback*>(context);
                 cb(deviceName, deviceId);
                 return true;
@@ -286,5 +288,6 @@ protected:
     std::string userName_;
     panortc::ChannelMode chMode_ = panortc::ChannelMode::Mode_1v1;
     bool enableWhiteBoard_ = false;
+    std::unique_ptr<ExternalVideoCapturer> exCapturer_;
 };
 

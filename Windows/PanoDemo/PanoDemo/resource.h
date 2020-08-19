@@ -14,6 +14,7 @@
 #define IDC_EDIT_APPID                  1004
 #define IDC_EDIT_USER_NAME              1005
 #define IDC_BTN_CHANNEL_INFO            1006
+#define IDC_EDIT_YUV_FILE               1006
 #define IDC_COMBO_CAMERA                1007
 #define IDC_COMBO_RESOLUTION            1008
 #define IDC_COMBO_MICROPHONE            1009
@@ -44,6 +45,8 @@
 #define IDC_CHECK_ENABLE_WHITEBOARD     1025
 #define IDC_CHECK_RECORD_AUDIO          1026
 #define IDC_COMBO_EQUALIZATION          1026
+#define IDC_BTN_VIDEO_MUTE2             1026
+#define IDC_BTN_YUV_BROWSE              1026
 #define IDC_CHECK_RECORD_VIDEO          1027
 #define IDC_COMBO_REVERB                1027
 #define IDC_CHECK_RECORD_SHARING        1028
