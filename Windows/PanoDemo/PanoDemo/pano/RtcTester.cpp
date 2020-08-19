@@ -84,6 +84,10 @@ void RtcTester::stopPreview(const std::string &strDeviceId)
 void RtcTester::startVideo(const std::string &strDeviceId, void *view, RenderConfig &config)
 {
     if (rtcEngine_) {
+        if (exCapturer_) {
+            exCapturer_->stop();
+            exCapturer_.reset();
+        }
         auto *videoDeviceMgr = rtcEngine_->getVideoDeviceManager();
         char deviceId[kMaxDeviceIDLength];
         strncpy_s(deviceId, strDeviceId.c_str(), strDeviceId.size());
@@ -92,10 +96,28 @@ void RtcTester::startVideo(const std::string &strDeviceId, void *view, RenderCon
     }
 }
 
+void RtcTester::startExternalVideo(const std::wstring &yuvFile, void *view, panortc::RenderConfig &config)
+{
+    if (rtcEngine_) {
+        auto *videoDeviceMgr = rtcEngine_->getVideoDeviceManager();
+        auto *ptr = videoDeviceMgr->createExternalCapturer();
+        char deviceId[kMaxDeviceIDLength];
+        ptr->getDeviceID(deviceId);
+        videoDeviceMgr->setDevice(deviceId);
+        rtcEngine_->startVideo(view, config);
+        exCapturer_ = std::make_unique<ExternalVideoCapturer>(ptr);
+        exCapturer_->start(yuvFile, 1280, 720, 30);
+    }
+}
+
 void RtcTester::stopVideo()
 {
     if (rtcEngine_) {
         rtcEngine_->stopVideo();
+    }
+    if (exCapturer_) {
+        exCapturer_->stop();
+        exCapturer_.reset();
     }
 }
 
@@ -632,6 +654,10 @@ void RtcTester::leaveChannel()
     if (rtcEngine_) {
         rtcEngine_->leaveChannel();
         rtcEngine_->setMediaStatsObserver(nullptr);
+    }
+    if (exCapturer_) {
+        exCapturer_->stop();
+        exCapturer_.reset();
     }
 }
 

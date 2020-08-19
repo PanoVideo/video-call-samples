@@ -6,7 +6,8 @@
 #include "MainViewController.h"
 #include "RtcTester.h"
 
-#include "atlctrls.h"
+#include <atlctrls.h>
+#include <atldlgs.h>
 #include <windows.h>
 #include <Shlobj.h>
 #include <Commctrl.h>
@@ -163,29 +164,30 @@ void CMainDlg::RefreshScreenSources()
 
 std::string CMainDlg::_GetDlgItemText(int nID) const
 {
+    auto wstr = _GetDlgItemTextW(nID);
+    return utf8_encode(wstr);
+}
+
+std::wstring CMainDlg::_GetDlgItemTextW(int nID) const
+{
     ATLASSERT(::IsWindow(m_hWnd));
 
     auto hItem = GetDlgItem(nID);
     if (hItem != NULL)
     {
         int nLength;
-        TCHAR szText[256];
-        TCHAR *pszText = szText;
+        std::wstring wstr;
 
         nLength = ::GetWindowTextLength(hItem);
-        if (nLength > sizeof(szText) - 1) {
-            pszText = new TCHAR[nLength + 1];
-        }
-        nLength = ::GetWindowText(hItem, pszText, nLength + 1);
-        auto str = utf8_encode(pszText, nLength);
-        if (pszText != szText) {
-            delete[] pszText;
-        }
-        return str;
+        wstr.resize(nLength + 1);
+        TCHAR *pszText = const_cast<wchar_t*>(wstr.data());
+        nLength = ::GetWindowText(hItem, pszText, wstr.size());
+        wstr.resize(nLength);
+        return wstr;
     }
     else
     {
-        return "";
+        return _T("");
     }
 }
 
@@ -319,6 +321,11 @@ VideoScalingMode CMainDlg::GetCurrentVideoScalingMode() const
 bool CMainDlg::IsMirror() const
 {
     return IsDlgButtonChecked(IDC_CHECK_MIRROR);
+}
+
+std::wstring CMainDlg::GetYuvFile() const
+{
+    return _GetDlgItemTextW(IDC_EDIT_YUV_FILE);
 }
 
 ScreenSource CMainDlg::GetCurrentScreenSource() const
@@ -498,5 +505,17 @@ LRESULT CMainDlg::OnCbnSelchangeComboCamera(WORD /*wNotifyCode*/, WORD /*wID*/, 
 {
     // TODO: Add your control notification handler code here
     _MainController.updateVideoCaptureDevice();
+    return 0;
+}
+
+
+LRESULT CMainDlg::OnBnClickedBtnYuvBrowse(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+    // TODO: Add your control notification handler code here
+    auto *filter = _T("YUV files (*.yuv)\0*.yuv;\0All Files (*.*)\0*.*\0\0");
+    CFileDialog dlg(TRUE, NULL, NULL, OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_PATHMUSTEXIST, filter, m_hWnd);
+    if (dlg.DoModal() == IDOK) {
+        SetDlgItemText(IDC_EDIT_YUV_FILE, dlg.m_szFileName);
+    }
     return 0;
 }

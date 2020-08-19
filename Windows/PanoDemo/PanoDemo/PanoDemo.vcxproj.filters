@@ -63,6 +63,9 @@
     <ClCompile Include="pano\utils.cpp">
       <Filter>Source Files\pano</Filter>
     </ClCompile>
+    <ClCompile Include="pano\ExternalVideoCapturer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -123,6 +126,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WhiteboardView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pano\ExternalVideoCapturer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

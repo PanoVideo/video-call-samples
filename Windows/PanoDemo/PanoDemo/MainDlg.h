@@ -73,6 +73,7 @@ public:
         COMMAND_HANDLER(IDC_COMBO_MICROPHONE, CBN_SELCHANGE, OnCbnSelchangeComboMicrophone)
         COMMAND_HANDLER(IDC_COMBO_SPEAKER, CBN_SELCHANGE, OnCbnSelchangeComboSpeaker)
         COMMAND_HANDLER(IDC_COMBO_CAMERA, CBN_SELCHANGE, OnCbnSelchangeComboCamera)
+        COMMAND_HANDLER(IDC_BTN_YUV_BROWSE, BN_CLICKED, OnBnClickedBtnYuvBrowse)
     END_MSG_MAP()
 
 // Handler prototypes (uncomment arguments if needed):
@@ -124,6 +125,7 @@ public:
 	}
 
     std::string _GetDlgItemText(int nID) const;
+    std::wstring _GetDlgItemTextW(int nID) const;
 
 	LRESULT OnAppAbout(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 	{
@@ -168,6 +170,7 @@ public:
     panortc::VideoProfileType GetCurrentVideoProfile() const;
     panortc::VideoScalingMode GetCurrentVideoScalingMode() const;
     bool IsMirror() const;
+    std::wstring GetYuvFile() const;
 
 
     ScreenSource GetCurrentScreenSource() const;
@@ -203,4 +206,5 @@ public:
     LRESULT OnCbnSelchangeComboSpeaker(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnCbnSelchangeComboCamera(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
     LRESULT OnEnChangeEditChannelId(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+    LRESULT OnBnClickedBtnYuvBrowse(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 };
