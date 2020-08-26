@@ -484,9 +484,6 @@ rtcEngine.on(PanoRtc.RtcEngine.Events.audioDeviceChange, (data) =>
 rtcEngine.on(PanoRtc.RtcEngine.Events.videoDeviceChange, (data) =>
   console.log('demo app: videoDeviceChange', data)
 );
-rtcEngine.on(PanoRtc.RtcEngine.Events.userExpelled, (data) =>
-  console.log('demo app: userExpelled', data)
-);
 rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioStart, (data) =>
   console.log('demo app: userAudioStart', data)
 );

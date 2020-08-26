@@ -16,6 +16,11 @@
             :style="{ fontSize: input.size }"
           ></span>
         </div>
+
+        <!-- <div @click="uploadDoc" class="input-type">
+          <span class="icon-upload" style="font-size: 20px"></span>
+        </div> -->
+
         <div class="input-type input-type--with-input">
           <label>
             Admin
@@ -66,6 +71,22 @@
           Upload
         </button>
         <button class="wb-img-wrapper__confirm" @click="setImageBg">
+          Add
+        </button>
+      </div>
+
+      <div class="wb-img-wrapper">
+        <div class="wb-img-wrapper__label">Img Url List</div>
+        <input
+          class="wb-img-wrapper__urls-input"
+          type="text"
+          v-model="imgUrlList"
+          placeholder="url以空格隔开"
+        />
+
+        <div class="wb-img-wrapper__label">Add to current page</div>
+        <input type="checkbox" v-model="bAddToCurrentDoc" />
+        <button class="wb-img-wrapper__confirm" @click="addImagBgList">
           Add
         </button>
       </div>
@@ -147,6 +168,19 @@
 
     <!-- pagination -->
     <div class="pano-wb-pages pano-wb-tools">
+      <div class="pano-wb-pages__delete-doc-wrapper">
+        <span @click="deleteDoc" class="pano-wb-pages__delete-doc">
+          <span class="icon-delete" style="font-size: 26px"></span>
+        </span>
+        <select name="doc" :value="whiteboard.activeDocId" @change="switchDoc">
+          <option
+            v-for="(doc, index) in docs"
+            :key="index"
+            :value="doc.docId"
+            >{{ doc.name || doc.docId }}</option
+          >
+        </select>
+      </div>
       <button
         :class="{
           'pano-wb-pages__btn': true
@@ -196,9 +230,7 @@
         <span class="icon-minus"></span>
       </div>
 
-      <div class="pano-wb-zoom__zoom-rate">
-        {{ Math.round(scale * 100) }}%
-      </div>
+      <div class="pano-wb-zoom__zoom-rate">{{ Math.round(scale * 100) }}%</div>
 
       <div
         class="pano-wb-zoom__btn"
@@ -254,6 +286,7 @@ import { get } from 'lodash-es'
 import PanoRtc from '@pano.video/panortc'
 import { ColorPicker } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import '../icons/style.css'
 
 const { Constants, RtcWhiteboard } = PanoRtc
 export default {
@@ -304,7 +337,11 @@ export default {
         'hsl(181, 100%, 37%)',
         'hsla(209, 100%, 56%, 0.73)',
         '#c7158577'
-      ]
+      ],
+      docs: this.whiteboard.enumerateDocs(),
+      imgUrlList:
+        'http://t7.baidu.com/it/u=378254553,3884800361&fm=79&app=86&f=JPEG?w=1280&h=2030 http://t8.baidu.com/it/u=3571592872,3353494284&fm=79&app=86&f=JPEG?w=1200&h=1290 http://t7.baidu.com/it/u=3616242789,1098670747&fm=79&app=86&f=JPEG?w=900&h=1350',
+      bAddToCurrentDoc: false
     }
   },
   components: {
@@ -367,6 +404,24 @@ export default {
     }
   },
   methods: {
+    uploadDoc() {
+      this.whiteboard.uploadDoc(console.log)
+    },
+    onDocChanged() {
+      this.docs = this.whiteboard.enumerateDocs()
+    },
+    switchDoc(e) {
+      this.whiteboard.switchToDoc(e.target.value)
+    },
+    deleteDoc() {
+      this.whiteboard.deleteDoc(this.whiteboard.activeDocId)
+    },
+    addImagBgList() {
+      this.whiteboard.addBackgroundImages(
+        this.imgUrlList.split(' '),
+        this.bAddToCurrentDoc
+      )
+    },
     removePage() {
       this.whiteboard.removePage()
     },
@@ -531,6 +586,9 @@ export default {
       RtcWhiteboard.Events.userRoleTypeChanged,
       this.getStateFromProps
     )
+    this.whiteboard.on(RtcWhiteboard.Events.docCreated, this.onDocChanged)
+    this.whiteboard.on(RtcWhiteboard.Events.docSwitched, this.onDocChanged)
+    this.whiteboard.on(RtcWhiteboard.Events.docDeleted, this.onDocChanged)
   },
   beforeDestroy() {
     this.whiteboard.off(
@@ -541,6 +599,9 @@ export default {
       RtcWhiteboard.Events.userRoleTypeChanged,
       this.getStateFromProps
     )
+    this.whiteboard.off(RtcWhiteboard.Events.docCreated, this.onDocChanged)
+    this.whiteboard.off(RtcWhiteboard.Events.docSwitched, this.onDocChanged)
+    this.whiteboard.off(RtcWhiteboard.Events.docDeleted, this.onDocChanged)
   }
 }
 </script>
