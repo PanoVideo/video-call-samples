@@ -4,7 +4,7 @@
   "description": "Basic video call demo with panortc.",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.config.js --progress --colors"
+    "dev": "webpack-dev-server --config webpack.config.js --progress --colors --open"
   },
   "author": "",
   "license": "MIT",

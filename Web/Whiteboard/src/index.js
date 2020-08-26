@@ -133,4 +133,7 @@ rtcEngine.on(PanoRtc.RtcEngine.Events.whiteboardUnavailable, (data) => {
   closeBtn.style.display = 'none'
 })
 
-window.Panobridge = Panortc.PanoBridge
+console.log(
+  '%c @pano.video/panortc 您正在使用panortc完整版sdk.',
+  'color: blue; font-weight: bold'
+)
