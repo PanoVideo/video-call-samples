@@ -96,6 +96,14 @@
         <td colspan="2" width="400"><select style="width: 400px" id="speaker_sel"></select></button></td>
         <td colspan="2" width="400"><select style="width: 400px" id="cam_sel"></select></button></td>
       </tr>
+      <tr>
+        <td><button id="snapshotVideo" style="height:30px;width:150px;color: green;font-size:13px;">Snapshot My Video</button></td>
+        <td><select id='snapshotImgObjType'  style="height:30px;width:80px;">
+          <option value='base64String'>base64String</option>
+          <option value='blobFile'>blobFile</option>
+        </select></td>
+        <td><input id="snapshotTarget" style="height:30px;width:150px" placeholder="userId to snapshot"></input></td>
+      </tr>
     </table>
   </div>
   <div id="inMeetingArea" align="center" style="background-color: lightgrey; width:100%; margin: 10px auto; padding: 5px; display: block; height: 800px;">
@@ -113,6 +121,7 @@
           <td style="width:150px;height:150px"><div id="thumbnail6"></div></td>
           <td style="width:150px;height:150px"><div id="selfVideoArea"></div></td>
           <td style="width:150px;height:150px"><div id="previewVideoArea" style=" position: relative;"></div></td>
+          <td style="width:150px;height:150px"><div id="snapshotImg"></div></td>
         </tr>
       </table>
     </div>

@@ -39,6 +39,7 @@ const select_mic = document.getElementById('mic_sel');
 const select_speaker = document.getElementById('speaker_sel');
 const select_cam = document.getElementById('cam_sel');
 const button_get_preview = document.getElementById('getPreview');
+const button_snapshot_video = document.getElementById('snapshotVideo');
 
 button_mute_mic.onclick = pano_muteMic;
 button_get_mic.onclick = pano_getMics;
@@ -46,6 +47,7 @@ button_get_speaker.onclick = pano_getSpeakers;
 button_get_cam.onclick = pano_getCams;
 button_set_cam.onclick = pano_setCam;
 button_get_preview.onclick = pano_getPreview;
+button_snapshot_video.onclick = pano_snapshotMyself;
 
 // For easily debug
 window.rtcEngine = rtcEngine;
@@ -345,6 +347,29 @@ function unSubscribeVideo (e, userId) {
       activeVideoContainer.removeChild(v);
     }
   }
+}
+function pano_snapshotMyself() {
+  let show = file => {
+    console.log(`got file ${file}`);
+    let img = document.createElement('img');
+    img.setAttribute('style', 'width:110px; height:70px;');
+    if (typeof file === 'string') {
+      img.src = `data:image/png;base64,${file}`;
+    } else {
+      let url = URL.createObjectURL(file);
+      img.src = url;
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+      };
+    }
+    document.getElementById('snapshotImg').innerHTML = '';
+    document.getElementById('snapshotImg').appendChild(img);
+  };
+  rtcEngine.snapshotVideo(
+    {
+      userId: document.getElementById('snapshotTarget').value,
+      imgObjType: document.getElementById('snapshotImgObjType').value
+    }, show, console.log);
 }
 
 function pano_getPreview () {
