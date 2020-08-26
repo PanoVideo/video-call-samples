@@ -108,8 +108,9 @@ void MainViewController::stopPreviewVideo()
 
 void MainViewController::startLocalVideo()
 {
+    auto yuvFile = mainView_->GetYuvFile();
     auto deviceId = mainView_->GetCurrentVideoDevice();
-    if (deviceId.empty()) {
+    if (yuvFile.empty() && deviceId.empty()) {
         return;
     }
 
@@ -126,7 +127,13 @@ void MainViewController::startLocalVideo()
     renderConfig.profileType = profile;
     renderConfig.scalingMode = mainView_->GetCurrentVideoScalingMode();
     renderConfig.enableMirror = mainView_->IsMirror();
-    RtcTester::instance().startVideo(localVideoDeviceId_, hWnd, renderConfig);
+    if (!yuvFile.empty()) {
+        renderConfig.enableMirror = false;
+        RtcTester::instance().startExternalVideo(yuvFile, hWnd, renderConfig);
+    }
+    else {
+        RtcTester::instance().startVideo(localVideoDeviceId_, hWnd, renderConfig);
+    }
     videoStarted_ = true;
 }
 

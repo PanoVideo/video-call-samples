@@ -237,6 +237,12 @@
     <ClCompile Include="MainDlg.cpp" />
     <ClCompile Include="MainViewController.cpp" />
     <ClCompile Include="PanoDemo.cpp" />
+    <ClCompile Include="pano\ExternalVideoCapturer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="pano\RtcTester.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -278,6 +284,7 @@
     <ClInclude Include="LocalVideoWindow.h" />
     <ClInclude Include="MainDlg.h" />
     <ClInclude Include="MainViewController.h" />
+    <ClInclude Include="pano\ExternalVideoCapturer.h" />
     <ClInclude Include="pano\RtcTester.h" />
     <ClInclude Include="pano\RtcViewController.h" />
     <ClInclude Include="pano\TestDefs.h" />
