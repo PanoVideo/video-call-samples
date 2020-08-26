@@ -175,13 +175,11 @@ std::wstring CMainDlg::_GetDlgItemTextW(int nID) const
     auto hItem = GetDlgItem(nID);
     if (hItem != NULL)
     {
-        int nLength;
         std::wstring wstr;
-
-        nLength = ::GetWindowTextLength(hItem);
+        auto nLength = ::GetWindowTextLength(hItem);
         wstr.resize(nLength + 1);
         TCHAR *pszText = const_cast<wchar_t*>(wstr.data());
-        nLength = ::GetWindowText(hItem, pszText, wstr.size());
+        nLength = ::GetWindowText(hItem, pszText, static_cast<int>(wstr.size()));
         wstr.resize(nLength);
         return wstr;
     }

@@ -4,6 +4,7 @@
 #include "PanoConf.h"
 
 #include <string>
+#include <memory>
 
 
 #define PANO_UTILS_NS_BEGIN namespace pano{ namespace utils {
