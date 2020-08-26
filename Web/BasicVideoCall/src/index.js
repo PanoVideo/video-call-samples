@@ -339,7 +339,7 @@ function unSubscribeVideo (e, userId) {
     }
   }
   if (user) {
-    rtcEngine.unSubscribeVideo(user);
+    rtcEngine.unsubscribeVideo(user);
     let v = document.getElementById('video-user-' + user.userId);
     if (v) {
       activeVideoContainer.removeChild(v);
@@ -410,7 +410,7 @@ rtcEngine.on(PanoRtc.RtcEngine.Events.joinChannelConfirm, data => {
   button_unsubscribe_video.disabled = false;
 });
 
-rtcEngine.on(PanoRtc.RtcEngine.Events.usersListChange, result => {
+rtcEngine.on(PanoRtc.RtcEngine.Events.userListChange, result => {
   console.log('demo app: rosterChange', result);
   PanoDemo.users = result.users.map(user => {
     const oldUser = find(PanoDemo.users, { userId: user.userId }) || {};
@@ -432,8 +432,8 @@ rtcEngine.on(PanoRtc.RtcEngine.Events.failedToSubscribeVideo, (data) =>
 rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioMute, (data) =>
   console.log('demo app: userAudioMute,', data)
 );
-rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioUnMute, (data) =>
-  console.log('demo app: userAudioUnMute,', data)
+rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioUnmute, (data) =>
+  console.log('demo app: userAudioUnmute,', data)
 );
 rtcEngine.on(PanoRtc.RtcEngine.Events.whiteboardAvailable, (data) =>
   console.log('demo app: whiteboardAvailable', data)
@@ -546,7 +546,7 @@ rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioMuted, (data) => {
   userMediaStatusUpdate(data, 'audio', 'mute');
 });
 
-rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioUnmuted, (data) => {
+rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioUnmute, (data) => {
   userMediaStatusUpdate(data, 'audio', 'unmute');
 });
 
