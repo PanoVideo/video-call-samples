@@ -5,6 +5,7 @@ import 'rc-color-picker/assets/index.css'
 import '../toolbar.scss'
 import { get } from 'lodash-es'
 import PanoRtc from '@pano.video/panortc'
+import '../icons/style.css'
 
 const { Constants, RtcWhiteboard } = PanoRtc
 
@@ -50,7 +51,11 @@ export default class Toolbar extends React.PureComponent {
       { type: Constants.ShapeType.Eraser, icon: 'eraser', size: '16px' },
       { type: Constants.ShapeType.Image, icon: 'image', size: '20px' },
       { type: Constants.ShapeType.Delete, icon: 'delete', size: '26px' }
-    ]
+    ],
+    docs: this.props.whiteboard.enumerateDocs(),
+    imgUrlList:
+      'http://t7.baidu.com/it/u=378254553,3884800361&fm=79&app=86&f=JPEG?w=1280&h=2030 http://t8.baidu.com/it/u=3571592872,3353494284&fm=79&app=86&f=JPEG?w=1200&h=1290 http://t7.baidu.com/it/u=3616242789,1098670747&fm=79&app=86&f=JPEG?w=900&h=1350',
+    bAddToCurrentDoc: false
   }
 
   componentDidMount() {
@@ -62,6 +67,12 @@ export default class Toolbar extends React.PureComponent {
       RtcWhiteboard.Events.userRoleTypeChanged,
       this.getStateFromProps
     )
+    this.props.whiteboard.on(RtcWhiteboard.Events.docCreated, this.onDocChanged)
+    this.props.whiteboard.on(
+      RtcWhiteboard.Events.docSwitched,
+      this.onDocChanged
+    )
+    this.props.whiteboard.on(RtcWhiteboard.Events.docDeleted, this.onDocChanged)
   }
 
   componentWillUnmount() {
@@ -72,6 +83,39 @@ export default class Toolbar extends React.PureComponent {
     this.props.whiteboard.off(
       RtcWhiteboard.Events.userRoleTypeChanged,
       this.getStateFromProps
+    )
+    this.props.whiteboard.off(
+      RtcWhiteboard.Events.docCreated,
+      this.onDocChanged
+    )
+    this.props.whiteboard.off(
+      RtcWhiteboard.Events.docSwitched,
+      this.onDocChanged
+    )
+    this.props.whiteboard.off(
+      RtcWhiteboard.Events.docDeleted,
+      this.onDocChanged
+    )
+  }
+
+  onDocChanged = () => {
+    this.setState({
+      docs: this.props.whiteboard.enumerateDocs()
+    })
+  }
+
+  switchDoc = (e) => {
+    this.props.whiteboard.switchToDoc(e.target.value)
+  }
+
+  deleteDoc = () => {
+    this.props.whiteboard.deleteDoc(this.props.whiteboard.activeDocId)
+  }
+
+  addImagBgList = () => {
+    this.props.whiteboard.addBackgroundImages(
+      this.state.imgUrlList.split(' '),
+      this.state.bAddToCurrentDoc
     )
   }
 
@@ -141,9 +185,10 @@ export default class Toolbar extends React.PureComponent {
     const r = color.slice(1, 3)
     const g = color.slice(3, 5)
     const b = color.slice(5, 7)
-    return `rgba(${parseInt(r, 16)},${parseInt(g, 16)},${parseInt(b, 16)},${
-      alpha / 100
-    })`
+    return `rgba(${parseInt(r, 16)},${parseInt(g, 16)},${parseInt(
+      b,
+      16
+    )},${alpha / 100})`
   }
 
   updatePageIndex(pageIndex) {
@@ -185,6 +230,13 @@ export default class Toolbar extends React.PureComponent {
               ></span>
             </div>
           ))}
+
+          {/* <div
+            onClick={() => this.props.whiteboard.uploadDoc(console.log)}
+            className="input-type"
+          >
+            <span class="icon-upload" style={{ fontSize: '20px' }}></span>
+          </div> */}
 
           <div className="input-type input-type--with-input">
             <label>
@@ -384,17 +436,18 @@ export default class Toolbar extends React.PureComponent {
     return (
       <>
         {this.state.insertType === Constants.ShapeType.Image && (
-          <div className="wb-img-wrapper">
-            <div className="wb-img-wrapper__label">Img Url</div>
-            <input
-              type="text"
-              value={this.state.imgUrl}
-              onChange={(e) => {
-                this.setState({ imgUrl: e.target.value })
-              }}
-            />
+          <>
+            <div className="wb-img-wrapper">
+              <div className="wb-img-wrapper__label">Img Url</div>
+              <input
+                type="text"
+                value={this.state.imgUrl}
+                onChange={(e) => {
+                  this.setState({ imgUrl: e.target.value })
+                }}
+              />
 
-            {/* <div className="wb-img-wrapper__label">Background</div>
+              {/* <div className="wb-img-wrapper__label">Background</div>
             <input
               type="checkbox"
               checked={this.state.isBackground}
@@ -403,90 +456,119 @@ export default class Toolbar extends React.PureComponent {
               }
             /> */}
 
-            <div className="wb-img-wrapper__label">Scale Mode</div>
-            <label>
-              <input
-                type="radio"
-                name="fillMode"
-                value={Constants.WBImageScalingMode.Fit}
-                checked={
-                  this.state.imgScaleMode === Constants.WBImageScalingMode.Fit
-                }
-                onChange={() => {
-                  this.setState({
-                    imgScaleMode: Constants.WBImageScalingMode.Fit
-                  })
-                  this.props.whiteboard.setBackgroundImageScalingMode(
-                    Constants.WBImageScalingMode.Fit
-                  )
-                }}
-              />
-              Fit
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="fillMode"
-                value={Constants.WBImageScalingMode.FillWidth}
-                checked={
-                  this.state.imgScaleMode ===
-                  Constants.WBImageScalingMode.FillWidth
-                }
-                onChange={() => {
-                  this.setState({
-                    imgScaleMode: Constants.WBImageScalingMode.FillWidth
-                  })
-                  this.props.whiteboard.setBackgroundImageScalingMode(
-                    Constants.WBImageScalingMode.FillWidth
-                  )
-                }}
-              />
-              Fill width
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="fillMode"
-                value={Constants.WBImageScalingMode.FillHeight}
-                checked={
-                  this.state.imgScaleMode ===
-                  Constants.WBImageScalingMode.FillHeight
-                }
-                onChange={() => {
-                  this.setState({
-                    imgScaleMode: Constants.WBImageScalingMode.FillHeight
-                  })
-                  this.props.whiteboard.setBackgroundImageScalingMode(
-                    Constants.WBImageScalingMode.FillHeight
-                  )
-                }}
-              />
-              Fill height
-            </label>
-            <button
-              className="wb-img-wrapper__confirm"
-              onClick={() => {
-                this.props.whiteboard.uploadImage((err) => {
-                  if (err) {
-                    alert('上传失败:' + err.message)
+              <div className="wb-img-wrapper__label">Scale Mode</div>
+              <label>
+                <input
+                  type="radio"
+                  name="fillMode"
+                  value={Constants.WBImageScalingMode.Fit}
+                  checked={
+                    this.state.imgScaleMode === Constants.WBImageScalingMode.Fit
                   }
-                })
-              }}
-            >
-              Upload
-            </button>
-            <button
-              className="wb-img-wrapper__confirm"
-              onClick={() => {
-                if (!this.state.imgUrl) {
-                  return
+                  onChange={() => {
+                    this.setState({
+                      imgScaleMode: Constants.WBImageScalingMode.Fit
+                    })
+                    this.props.whiteboard.setBackgroundImageScalingMode(
+                      Constants.WBImageScalingMode.Fit
+                    )
+                  }}
+                />
+                Fit
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="fillMode"
+                  value={Constants.WBImageScalingMode.FillWidth}
+                  checked={
+                    this.state.imgScaleMode ===
+                    Constants.WBImageScalingMode.FillWidth
+                  }
+                  onChange={() => {
+                    this.setState({
+                      imgScaleMode: Constants.WBImageScalingMode.FillWidth
+                    })
+                    this.props.whiteboard.setBackgroundImageScalingMode(
+                      Constants.WBImageScalingMode.FillWidth
+                    )
+                  }}
+                />
+                Fill width
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="fillMode"
+                  value={Constants.WBImageScalingMode.FillHeight}
+                  checked={
+                    this.state.imgScaleMode ===
+                    Constants.WBImageScalingMode.FillHeight
+                  }
+                  onChange={() => {
+                    this.setState({
+                      imgScaleMode: Constants.WBImageScalingMode.FillHeight
+                    })
+                    this.props.whiteboard.setBackgroundImageScalingMode(
+                      Constants.WBImageScalingMode.FillHeight
+                    )
+                  }}
+                />
+                Fill height
+              </label>
+              <button
+                className="wb-img-wrapper__confirm"
+                onClick={() => {
+                  if (!this.state.imgUrl) {
+                    return
+                  }
+                  this.props.whiteboard.setBackgroundImage(this.state.imgUrl)
+                }}
+              >
+                Add
+              </button>
+              <button
+                className="wb-img-wrapper__confirm"
+                onClick={() => {
+                  this.props.whiteboard.uploadImage((err) => {
+                    if (err) {
+                      alert('上传失败:' + err.message)
+                    }
+                  })
+                }}
+              >
+                Upload
+              </button>
+            </div>
+
+            <div className="wb-img-wrapper">
+              <div className="wb-img-wrapper__label">Img Url List</div>
+              <input
+                className="wb-img-wrapper__urls-input"
+                type="text"
+                value={this.state.imgUrlList}
+                placeholder="url以空格隔开"
+                onChange={(e) => {
+                  this.setState({ imgUrlList: e.target.value })
+                }}
+              />
+
+              <div className="wb-img-wrapper__label">Add to current page</div>
+              <input
+                type="checkbox"
+                checked={this.state.bAddToCurrentDoc}
+                onChange={(e) =>
+                  this.setState({ bAddToCurrentDoc: e.target.checked })
                 }
-                this.props.whiteboard.setBackgroundImage(this.state.imgUrl)
-              }}
-            >
-              Add
-            </button>
-          </div>
+              />
+              <button
+                className="wb-img-wrapper__confirm"
+                onClick={this.addImagBgList}
+              >
+                Add
+              </button>
+            </div>
+          </>
         )}
       </>
     )
@@ -495,6 +577,21 @@ export default class Toolbar extends React.PureComponent {
   renderPagination() {
     return (
       <div className="pano-wb-pages pano-wb-tools">
+        <div className="pano-wb-pages__delete-doc-wrapper">
+          <span onClick={this.deleteDoc} className="pano-wb-pages__delete-doc">
+            <span className="icon-delete" style={{ fontSize: '26px' }}></span>
+          </span>
+          <select
+            name="doc"
+            value={this.props.whiteboard.activeDocId}
+            onChange={this.switchDoc}
+          >
+            {this.state.docs.map((doc) => (
+              <option value={doc.docId}>{doc.name || doc.docId}</option>
+            ))}
+          </select>
+        </div>
+
         <button
           className={classnames({
             'pano-wb-pages__btn': true

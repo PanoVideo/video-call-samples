@@ -17,3 +17,7 @@
 
 ## 6. 编译运行
 在 BasicVideoCall 或 Whiteboard 目录下，运行 `npm run dev`, 打开 http://localhost:8083/ (Whiteboard) 或 https://localhost:8082/ (BasicVideoCall) 即可使用。
+
+## 7.关于独立白板 sdk
+
+独立白板 sdk 代码示例请参考 Whiteboard/src/wbsdk.js 文件，您可以手动修改 Whiteboard/webpack.config.js 中 entry 字段，以 Whiteboard/src/wbsdk.js 为入口即可使用单独白板sdk
