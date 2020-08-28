@@ -75,7 +75,10 @@
         </button>
       </div>
 
-      <div class="wb-img-wrapper">
+      <div
+        class="wb-img-wrapper"
+        v-if="insertType === Constants.ShapeType.Image"
+      >
         <div class="wb-img-wrapper__label">Img Url List</div>
         <input
           class="wb-img-wrapper__urls-input"
@@ -283,10 +286,12 @@
 
 <script>
 import { get } from 'lodash-es'
-import PanoRtc from '@pano.video/panortc'
+import * as PanoRtc from '@pano.video/whiteboard'
+// import PanoRtc from '@pano.video/panortc'
 import { ColorPicker } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '../icons/style.css'
+import '../toolbar.scss'
 
 const { Constants, RtcWhiteboard } = PanoRtc
 export default {
@@ -605,8 +610,6 @@ export default {
   }
 }
 </script>
-
-<style src="../toolbar.scss"></style>
 
 <style lang="scss">
 .el-color-picker--mini .el-color-picker__trigger {
