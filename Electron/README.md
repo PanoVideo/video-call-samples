@@ -6,8 +6,6 @@
 
 ## RtcEngine 连接步骤
 
-> 连接步骤可以参考 [sample](https://github.com/PanoVideo/audio-call-samples/tree/master/Web)
-
 [RtcEngine 接口文档](https://developer.pano.video/sdk/websdk/websdk_rtc/)
 
 连接步骤：
@@ -21,21 +19,77 @@
 示例代码：
 
 ```javascript
+
+const {
+  QResult, 
+  ChannelMode,
+  AudioAecType,
+  kChannelServiceMedia,
+} = require('@pano.video/panortc-electron-sdk/js/panodefs')
 const {rtcEngine} = require('@pano.video/panortc-electron-sdk')
 
 rtcEngine.on('channelJoinConfirm', (result) => {
-  console.log(`join channel ${result}`);
+  console.log(`join channel ${result}`)
 })
 rtcEngine.initialize(appId, { // engine options, 可不填
+  panoServer: 'api.pano.video', 
   videoHwAccel: false, 
-  audioAecType: 1, 
+  audioAecType: AudioAecType.Default, 
   audioScenario: 0
 })
+let serviceFlags = kChannelServiceMedia;
 rtcEngine.joinChannel(token, channelId, userId, { // channel options, 可不填
-  channelMode: 1,  // 0 - peer-to-peer, 1 - meeting
-  serviceFlags: 1, // 1 - media, 2 - whiteboard, 3 - media + whiteboard
+  channelMode: ChannelMode.Mode_Meeting,
+  serviceFlags: serviceFlags, // 1 - media, 2 - whiteboard, 3 - media + whiteboard
   subscribeAudioAll: true, // subscribe user audio automatically
   userName: 'xxxx'
 })
 
 ```
+
+## Q/A
+#### clear all engine event listeners
+```
+rtcEngine.removeAllListeners()
+```
+
+#### VUE Webpack load node native addon
+- add dependencies: native-ext-loader
+- set webPreferences: { nodeIntegration: true }
+- add webpack config:
+```
+{
+    module: {
+        rules: [
+        {
+            test: /\.node$/,
+            loader: 'native-ext-loader',
+            options: {
+            emit: true,
+            rewritePath: param.ENV === 'production'
+                ? param.PLATFORM === 'win32' ? './resources' : '../Resources'
+                : './node_modules/@pano.video/panortc-electron-sdk/native'
+            }
+        }
+        ],
+    }
+}
+```
+- add following build config to package.json:
+```
+"extraResources": [
+    {
+        "from": "node_modules/@pano.video/panortc-electron-sdk/native/",
+        "to": "./",
+        "filter": [
+            "**/*"
+        ]
+    }
+]
+```
+
+#### integration PANO ScreenSource with Electron DesktopCapturerSource
+Electron source ID 'window:10618822:1', the ID '10618822' can set to PANO as SSID
+
+#### change dom view for video
+call startVideo/subscribeVideo with new dom view

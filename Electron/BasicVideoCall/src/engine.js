@@ -5,6 +5,7 @@
   const {
     QResult, 
     ChannelMode,
+    AudioAecType,
     kChannelServiceMedia,
     VideoProfileType,
     VideoScalingMode,
@@ -223,7 +224,7 @@
 
     rtcEngine.initialize(appId, {
       videoHwAccel: false, 
-      audioAecType: 1, 
+      audioAecType: AudioAecType.Default, 
       audioScenario: 0
     });
 
