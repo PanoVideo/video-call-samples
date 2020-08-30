@@ -26,6 +26,7 @@
 }
 
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(nullable id)sender {
+    [self.view endEditing:YES];
     return _channelName.text.length > 0 ? YES : NO;
 }
 
