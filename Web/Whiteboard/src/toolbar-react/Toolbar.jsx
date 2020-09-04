@@ -231,12 +231,19 @@ export default class Toolbar extends React.PureComponent {
             </div>
           ))}
 
-          {/* <div
+          <div
             onClick={() => this.props.whiteboard.uploadDoc(console.log)}
             className="input-type"
           >
             <span class="icon-upload" style={{ fontSize: '20px' }}></span>
-          </div> */}
+          </div>
+
+          <div
+            onClick={() => this.props.whiteboard.snapshot().then(console.log)}
+            className="input-type"
+          >
+            <span>截图</span>
+          </div>
 
           <div className="input-type input-type--with-input">
             <label>

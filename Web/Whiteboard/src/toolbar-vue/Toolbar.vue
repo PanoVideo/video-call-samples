@@ -17,9 +17,13 @@
           ></span>
         </div>
 
-        <!-- <div @click="uploadDoc" class="input-type">
+        <div @click="uploadDoc" class="input-type">
           <span class="icon-upload" style="font-size: 20px"></span>
-        </div> -->
+        </div>
+
+        <div @click="snapshot" class="input-type">
+          <span>截图</span>
+        </div>
 
         <div class="input-type input-type--with-input">
           <label>
@@ -409,6 +413,9 @@ export default {
     }
   },
   methods: {
+    snapshot() {
+      this.whiteboard.snapshot().then(console.log)
+    },
     uploadDoc() {
       this.whiteboard.uploadDoc(console.log)
     },
