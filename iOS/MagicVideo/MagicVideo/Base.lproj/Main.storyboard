@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view alpha="0.90000000000000002" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jtc-A8-e9y" userLabel="Tool View">
+                                <rect key="frame" x="0.0" y="796" width="414" height="100"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S0r-wK-gkd">
+                                        <rect key="frame" x="48" y="20" width="111" height="30"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="Switch Camera"/>
+                                        <connections>
+                                            <action selector="switchCamera:" destination="BYZ-38-t0r" eventType="touchUpInside" id="r1F-uJ-2qd"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EcL-Eg-VNy">
+                                        <rect key="frame" x="265.5" y="20" width="90" height="30"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                        <state key="normal" title="Magic Video"/>
+                                        <connections>
+                                            <action selector="enableMagicVideo:" destination="BYZ-38-t0r" eventType="touchUpInside" id="k3D-2B-ppe"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="S0r-wK-gkd" firstAttribute="centerX" secondItem="jtc-A8-e9y" secondAttribute="centerX" multiplier="0.5" id="1Au-bf-kiw"/>
+                                    <constraint firstItem="EcL-Eg-VNy" firstAttribute="centerX" secondItem="jtc-A8-e9y" secondAttribute="centerX" multiplier="1.5" id="9xh-FW-kTh"/>
+                                    <constraint firstItem="S0r-wK-gkd" firstAttribute="top" secondItem="jtc-A8-e9y" secondAttribute="top" constant="20" id="j8D-pG-b0C"/>
+                                    <constraint firstItem="EcL-Eg-VNy" firstAttribute="centerY" secondItem="S0r-wK-gkd" secondAttribute="centerY" id="kOd-m7-jcG"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="jtc-A8-e9y" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="34" id="6Bg-Nu-pCF"/>
+                            <constraint firstItem="jtc-A8-e9y" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="6Nz-1L-wBL"/>
+                            <constraint firstItem="jtc-A8-e9y" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="-66" id="flB-p7-hfN"/>
+                            <constraint firstItem="jtc-A8-e9y" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="w1B-js-ang"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="137.68115942028987" y="114.50892857142857"/>
+        </scene>
+    </scenes>
+</document>
