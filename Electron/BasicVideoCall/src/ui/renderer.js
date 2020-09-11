@@ -62,7 +62,7 @@
     let selectMicphone = document.getElementById('select_audio_micphone')
     selectMicphone.options.length=0
     selectMicphone.options.add(new Option('System Default', 'Default'))
-    let mics = enginejs.rtcEngine.audio.getRecordDeviceList();
+    let mics = enginejs.rtcEngine.audioDeviceMgr().getRecordDeviceList();
     for (var v of mics) {
       selectMicphone.options.add(new Option(v.deviceName, v.deviceId))
     }
@@ -70,14 +70,14 @@
     let selectSpeaker = document.getElementById('select_audio_speaker')
     selectSpeaker.options.length=0
     selectSpeaker.options.add(new Option('System Default', 'Default'))
-    let speakers = enginejs.rtcEngine.audio.getPlayoutDeviceList();
+    let speakers = enginejs.rtcEngine.audioDeviceMgr().getPlayoutDeviceList();
     for (var v of speakers) {
       selectSpeaker.options.add(new Option(v.deviceName, v.deviceId))
     }
 
     let selectCamera = document.getElementById('select_video_camera')
     selectCamera.options.length=0;
-    let cams = enginejs.rtcEngine.video.getCaptureDeviceList();
+    let cams = enginejs.rtcEngine.videoDeviceMgr().getCaptureDeviceList();
     for (var v of cams) {
       selectCamera.options.add(new Option(v.deviceName, v.deviceId))
     }
