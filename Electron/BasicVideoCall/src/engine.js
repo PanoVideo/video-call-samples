@@ -279,14 +279,14 @@
     let micphone = channelSettings.micphone;
     let speaker = channelSettings.speaker;
     if (micphone != 'Default') {
-      rtcEngine.audio.setRecordDevice(micphone)
+      rtcEngine.audioDeviceMgr().setRecordDevice(micphone)
     } else {
-      rtcEngine.audio.setDefaultRecordDevice();
+      rtcEngine.audioDeviceMgr().setDefaultRecordDevice();
     }
     if (speaker != 'Default') {
-      rtcEngine.audio.setPlayoutDevice(speaker)
+      rtcEngine.audioDeviceMgr().setPlayoutDevice(speaker)
     } else {
-      rtcEngine.audio.setDefaultPlayoutDevice();
+      rtcEngine.audioDeviceMgr().setDefaultPlayoutDevice();
     }
     return rtcEngine.startAudio();
   }
@@ -304,7 +304,7 @@
     if (!camera) {
       return;
     }
-    rtcEngine.video.setDevice(camera);
+    rtcEngine.videoDeviceMgr().setDevice(camera);
     let view = viewMgr.getLocalView();
     if (view != null) {
       var ret = rtcEngine.startVideo(view, {
@@ -328,8 +328,8 @@
     return rtcEngine.unmuteVideo();
   }
   function startScreen() {
-    let displayList = rtcEngine.screen.getDisplayList();
-    rtcEngine.screen.setScreenSource(ScreenSourceType.Display, displayList[0].ssid);
+    let displayList = rtcEngine.screenSourceMgr().getDisplayList();
+    rtcEngine.screenSourceMgr().setScreenSource(ScreenSourceType.Display, displayList[0].ssid);
     rtcEngine.startScreen();
   }
   function stopScreen() {
