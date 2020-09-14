@@ -50,8 +50,6 @@
   btnStartVideo.addEventListener("click", () => {
     videoStarted = !videoStarted;
     if (videoStarted) {
-      //let view = document.getElementById('div_video_streams');
-      //enginejs.startVideo(view, {profile: VideoProfileType.HD720P});
       enginejs.startVideo();
     } else {
       enginejs.stopVideo();
