@@ -3,6 +3,7 @@
 
 ; (function (window, undefined) {
   const {
+    RtcEngine,
     QResult, 
     ChannelMode,
     AudioAecType,
@@ -10,14 +11,14 @@
     VideoProfileType,
     VideoScalingMode,
     ScreenSourceType
-  } = require('@pano.video/panortc-electron-sdk/js/panodefs');
-  const {rtcEngine} = require('@pano.video/panortc-electron-sdk');
+  } = require('@pano.video/panortc-electron-sdk');
   const {viewMgr} = require('./ui/media_views');
   const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
   const {EventEmitter} = require("events");
   var channelSettings = {};
   var userMgr;
   var emitter = new EventEmitter();
+  var rtcEngine = new RtcEngine();
 
   rtcEngine.on('channelJoinConfirm', (result) => {
     console.log('+++++ JS onChannelJoinConfirm, result: ' + result);
@@ -136,7 +137,7 @@
   rtcEngine.on('channelFailover', (state) => {
     console.log('+++++ JS onChannelFailover, state: ' + state)
   })
-  rtcEngine.on('activeSpeakerListUpdate', (userList) => {
+  rtcEngine.on('activeSpeakerListUpdated', (userList) => {
     console.log('+++++ JS onActiveSpeakerListUpdated, userList: ' + userList)
   })
   rtcEngine.on('audioMixingStateChanged', (taskId, state) => {

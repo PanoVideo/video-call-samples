@@ -10,23 +10,26 @@
 
 连接步骤：
 
-1. 获取`PanoRtc`实例: `const {rtcEngine} = require('@pano.video/panortc-electron-sdk')`
-2. [获取 PanoToken](https://developer.pano.video/restful/generatetoken/)
-3. 调用 `rtcEngine.initialize` , 初始化 PanoRtcEngine
-4. 调用 `rtcEngine.joinChannel` , 使用第二步获取的 `panoToken` 和会议 `channelId` 等参数加入会议，可以设置 serviceFlags 类型控制只加入音视频频道、白板频道或者二者都加入
-5. 监听到 `channelJoinConfirm` 事件后即可开始通信
+1. 获取`PanoRtc`接口类: `const {RtcEngine} = require('@pano.video/panortc-electron-sdk')`
+2. 创建`PanoRtc`接口对象: `var rtcEngine = new RtcEngine();`
+3. [获取 PanoToken](https://developer.pano.video/restful/generatetoken/)
+4. 调用 `rtcEngine.initialize` , 初始化 PanoRtcEngine
+5. 调用 `rtcEngine.joinChannel` , 使用第二步获取的 `panoToken` 和会议 `channelId` 等参数加入会议，可以设置 serviceFlags 类型控制只加入音视频频道、白板频道或者二者都加入
+6. 监听到 `channelJoinConfirm` 事件后即可开始通信
 
 示例代码：
 
 ```javascript
 
 const {
+  RtcEngine,
   QResult, 
   ChannelMode,
   AudioAecType,
-  kChannelServiceMedia,
-} = require('@pano.video/panortc-electron-sdk/js/panodefs')
-const {rtcEngine} = require('@pano.video/panortc-electron-sdk')
+  kChannelServiceMedia
+} = require('@pano.video/panortc-electron-sdk')
+
+var rtcEngine = new RtcEngine();
 
 rtcEngine.on('channelJoinConfirm', (result) => {
   console.log(`join channel ${result}`)
