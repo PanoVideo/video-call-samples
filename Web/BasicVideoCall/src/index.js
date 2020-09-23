@@ -313,9 +313,11 @@ function subscribeVideo (e, userId) {
     }
   }
   if (user) {
+    const videoQualityName = sub_video_quality.options[sub_video_quality.selectedIndex].value
+    const quality = PanoRtc.Constants.VideoProfileType[videoQualityName]
     let params = {
       userId: user.userId,
-      quality: sub_video_quality.options[sub_video_quality.selectedIndex].value,
+      quality,
       userName: user.userName
     };
 
