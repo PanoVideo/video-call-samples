@@ -31,7 +31,7 @@
       this.mainViewInfo.view = document.getElementById('div_video_streams');
       this.localViewInfo.view = document.getElementById('div_local_video_stream');
 
-      for (var i=0; i<5; ++i) {
+      for (let i=0; i<5; ++i) {
         let view = document.getElementById('div_remote_video_stream_' + (i+1));
         if (view) {
           this.remoteViewInfoList[i] = new ViewInfo();
