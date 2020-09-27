@@ -365,6 +365,9 @@ function pano_snapshotMyself() {
       };
     }
     document.getElementById('snapshotImg').innerHTML = '';
+    let label = document.createElement('p')
+    label.innerHTML = 'snapshot'
+    document.getElementById('snapshotImg').appendChild(label);
     document.getElementById('snapshotImg').appendChild(img);
   };
   rtcEngine.snapshotVideo(
@@ -380,13 +383,12 @@ function pano_getPreview () {
     return;
   }
   rtcEngine.startPreview(select_cam.value, vtag => {
-    vtag.setAttribute('style', 'width:150px;height:150px');
-    previewVideoContainer.appendChild(vtag);
-
     let label = document.createElement('p');
-    label.setAttribute('style', 'position:absolute; top:0px;');
     label.innerHTML = 'preview';
     previewVideoContainer.appendChild(label);
+
+    vtag.setAttribute('style', 'width:150px;height:150px; background: black');
+    previewVideoContainer.appendChild(vtag);
   });
   button_get_preview.innerHTML = 'Stop View';
   button_get_preview.onclick = pano_stopPreview;
@@ -493,10 +495,10 @@ rtcEngine.on(PanoRtc.RtcEngine.Events.channelCountDown, (data) => {
   console.log('demo app: channelCountDown', data);
   PanoDemo.remainsec = data.remainsec;
   countdownDic.style.display = 'block';
-  countdownDic.innerHTML = `remainsec: ${PanoDemo.remainsec}`;
+  countdownDic.innerHTML = `剩余时间: ${PanoDemo.remainsec}s`;
   const interval = setInterval(() => {
     if (PanoDemo.remainsec > 0) {
-      countdownDic.innerHTML = `remainsec: ${--PanoDemo.remainsec}`;
+      countdownDic.innerHTML = `剩余时间: ${--PanoDemo.remainsec}s`;
     } else {
       clearInterval(interval);
     }
@@ -576,7 +578,10 @@ rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioUnmute, (data) => {
 
 rtcEngine.on(PanoRtc.RtcEngine.Events.getLocalVideo, (data) => {
   if (data.data.videoTag) {
-    data.data.videoTag.setAttribute('style', 'width:150px;height:150px');
+    let label = document.createElement('p')
+    label.innerHTML='myself'
+    selfVideoContainer.appendChild(label);
+    data.data.videoTag.setAttribute('style', 'width:150px;height:150px; background: black');
     selfVideoContainer.appendChild(data.data.videoTag);
   }
 });
