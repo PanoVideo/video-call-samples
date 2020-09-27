@@ -14,7 +14,7 @@ module.exports = {
   },
   devServer: {
     contentBase: path.join(__dirname, './static'),
-    hot: false,
+    hot: true,
     inline: false,
     compress: true,
     port: 8082,
