@@ -55,13 +55,15 @@
     </tr>
     </table>
   </div>
-  <div id="meeting_control" align="center" style="background-color: lightgrey; width:100%; margin: 10px auto; padding: 5px; display: flex; align-items: flex-start; flex-direction: column;">
+  <div id="meeting_control" align="center" style="background-color: lightgrey; width:100%; margin: 10px auto; padding: 5px; display: flex; align-items: center; flex-direction: column;">
     <div>
       <button id="joinChannel" style="height:30px;width:100px;color: green;font-size:13px;">Join Channel</button>
-      <button id="leaveChannel" style="height:30px;width:110px;font-size:13px;" disabled>Leave Channel</button></td>
-      <button id="muteMic" style="height:30px;width:90px;color: green;font-size:13px;">Mute Mic</button></td>
-      <button id="audioButton" style="height:30px;width:110px;color: green;font-size:13px;">Start Audio</button></td>
-      <button id="videoButton" style="height:30px;width:110px;color: green;font-size:13px;">Start Video</button></td>
+      <button id="leaveChannel" style="height:30px;width:110px;font-size:13px;" disabled>Leave Channel</button>
+      <button id="muteMic" style="height:30px;width:90px;color: green;font-size:13px;">Mute Mic</button>
+      <button id="audioButton" style="height:30px;width:110px;color: green;font-size:13px;">Start Audio</button>
+      <button id="videoButton" style="height:30px;width:110px;color: green;font-size:13px;">Start Video</button>
+      <button id="shareButton" style="height:30px;width:110px;color: green;font-size:13px;">Start Screen</button>
+      <button id="muteScreen" style="height:30px;width:90px;color: green;font-size:13px;">Mute Screen</button>
     </div>
 
     <div>
@@ -76,18 +78,32 @@
       </select>
       <button id="unSubscribeVideo" style="height:30px;width:150px;color: green;font-size:13px;">Unsubscribe Video</button>
     </div>
+    <div>
+      <button id="subscribeScreen" style="height:30px;width:150px;color: green;font-size:13px;">Subscribe Screen</button>
+      <select id="screenUsers" style="height:30px;width:150px;"></select>
+      <button id="unsubscribeScreen" style="height:30px;width:150px;color: green;font-size:13px;">Unsubscribe Screen</button>
+    </div>
+
+    <div>
+      <button id="snapshotVideo" style="height:30px;width:150px;color: green;font-size:13px;">Snapshot My Video</button>
+      <select id='snapshotImgObjType'  style="height:30px;width:80px;">
+        <option value='base64String'>base64String</option>
+        <option value='blobFile'>blobFile</option>
+      </select>
+      <input id="snapshotTarget" style="height:30px;width:150px" placeholder="userId to snapshot"></input>
+    </div>
   </div>
 
   <div id="countdown" align="center" style="background-color: lightgrey; width:100%; margin: 10px auto; padding: 5px; display: none;"></div>
 
-  <div id="deviceArea" align="left" style="background-color: lightgrey; width: 100%; margin: 10px auto; padding: 5px; display: flex; flex-direction: column;">
-    <div style="width: 100%;">
+  <div id="deviceArea" align="left" style="background-color: lightgrey; width: 100%; margin: 10px auto; padding: 5px; display: flex; flex-direction: column; align-items: center;">
+    <div >
       <button id="getMics" style="height:30px; width:100px;color: green;font-size:13px; display: inline;">Get Mics</button>
       <select style="width: 300px; display: inline;" id="mic_sel"></select>
       <button id="setMic" style="height:30px;width:100px;color: green;font-size:13px; display: inline;">Set Mic</button>
     </div>
 
-    <div style="width: 100%;">      
+    <div>      
       <button id="getSpeakers" style="height:30px;width:100px;color: green;font-size:13px;">Get Speakers</button>
       <select style="width: 300px" id="speaker_sel"></select></button>
       <button id="setSpeaker" style="height:30px;width:100px;color: green;font-size:13px;">Set Speaker</button>
@@ -102,14 +118,6 @@
     <div>
     </div>
 
-    <div>
-      <button id="snapshotVideo" style="height:30px;width:150px;color: green;font-size:13px;">Snapshot My Video</button>
-      <select id='snapshotImgObjType'  style="height:30px;width:80px;">
-        <option value='base64String'>base64String</option>
-        <option value='blobFile'>blobFile</option>
-      </select>
-      <input id="snapshotTarget" style="height:30px;width:150px" placeholder="userId to snapshot"></input>
-    </div>
   </div>
   <div id="inMeetingArea" align="center" style="background-color: lightgrey; width:100%; margin: 10px auto; padding: 5px; display: flex; flex-direction:row;height: 800px;">
     <div id="videoArea" align="center" style="width:calc(100% - 610px); height:auto; float:left;">
