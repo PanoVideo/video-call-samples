@@ -27,22 +27,22 @@
     </tr>
     <tr align="center" height="50"> 
       <td width="20%">App ID</td>
-      <td><input id="appID" style="width: 500px;height: 48px;font-size:18px;" type="text" value=""></td>
+      <td><input id="appID" style="width: 500px;height: 48px;font-size:18px;" type="text" value="[通过Pano Console创建App获取AppID]"/></td>
     </tr>
     <tr align="center" height="50"> 
       <td width="20%">Token</td>
-      <td><input id="token" style="width: 500px;height: 48px;font-size:18px;" type="text" value="">
+      <td><input id="token" style="width: 500px;height: 48px;font-size:18px;" type="text" value="[在Pano Console对应App下生成临时Token，并记住ChannelID]"/>
       </td>
     </tr>
     <tr align="center" height="50"> 
       <td width="20%">Channel ID</td>
-      <td><input id="channelID" style="width: 500px;height: 48px;font-size:18px;" type="text" value=""></td>
+      <td><input id="channelID" style="width: 500px;height: 48px;font-size:18px;" type="text" value="[生成临时token时指定的channelID]"></td>
     </tr>
     <tr align="center" height="50"> 
       <td width="20%">ChannelMode</td>
       <td style="text-align: left;">
         meeting <input type="radio" value="meeting" name="channelMode" checked>
-        1_on_1 <input type="radio" value="1v1" name="channelMode">
+        <!-- 1_on_1 <input type="radio" value="1v1" name="channelMode"> -->
       </td>
     </tr>
     <tr align="center" height="50"> 
@@ -55,75 +55,76 @@
     </tr>
     </table>
   </div>
-  <div id="meeting_control" align="center" style="background-color: lightgrey; width:880px; margin: 10px auto; padding: 5px">
-    <table>
-      <tr>
-        <td><button id="joinChannel" style="height:30px;width:100px;color: green;font-size:13px;">Join Channel</button></td>
-        <td><button id="leaveChannel" style="height:30px;width:110px;font-size:13px;" disabled>Leave Channel</button></td>
-        <td><button id="muteMic" style="height:30px;width:90px;color: green;font-size:13px;">Mute Mic</button></td>
-        <td><button id="audioButton" style="height:30px;width:110px;color: green;font-size:13px;">Start Audio</button></td>
-        <td><button id="videoButton" style="height:30px;width:110px;color: green;font-size:13px;">Start Video</button></td>
-      </tr>
-    </table>
-    <table>
-      <tr>
-        <td><button id="getPreview" style="height:30px;width:150px;color: green;font-size:13px;">Get Preview</button></td>
-        <td><button id="subscribeVideo" style="height:30px;width:150px;color: green;font-size:13px;">Subscribe Video</button></td>
-        <td><select id="videoUsers" style="height:30px;width:150px;"></select></td>
-        <td><select id="subQuality" style="height:30px;width:80px;">
-          <option value="2">180P</option>
-          <option value="4">360P</option>
-          <option value="8" selected>720P</option>
-          <option value="16">1080P</option>
-        </select></td>
-        <td><button id="unSubscribeVideo" style="height:30px;width:150px;color: green;font-size:13px;">Unsubscribe Video</button></td>
-      </tr>
-    </table>
+  <div id="meeting_control" align="center" style="background-color: lightgrey; width:100%; margin: 10px auto; padding: 5px; display: flex; align-items: center; flex-direction: column;">
+    <div>
+      <button id="joinChannel" style="height:30px;width:100px;color: green;font-size:13px;">Join Channel</button>
+      <button id="leaveChannel" style="height:30px;width:110px;font-size:13px;" disabled>Leave Channel</button>
+      <button id="muteMic" style="height:30px;width:90px;color: green;font-size:13px;">Mute Mic</button>
+      <button id="audioButton" style="height:30px;width:110px;color: green;font-size:13px;">Start Audio</button>
+      <button id="videoButton" style="height:30px;width:110px;color: green;font-size:13px;">Start Video</button>
+      <button id="shareButton" style="height:30px;width:110px;color: green;font-size:13px;">Start Screen</button>
+      <button id="muteScreen" style="height:30px;width:90px;color: green;font-size:13px;">Mute Screen</button>
+    </div>
+
+    <div>
+      <button id="subscribeVideo" style="height:30px;width:150px;color: green;font-size:13px;">Subscribe Video</button>
+      <select id="videoUsers" style="height:30px;width:150px;"></select>
+      <select id="subQuality" style="height:30px;width:80px;">
+        <option value="Lowest">90P</option>
+        <option value="Low">180P</option>
+        <option value="Standard">360P</option>
+        <option value="HD720P" selected>720P</option>
+        <option value="HD1080P">1080P</option>
+      </select>
+      <button id="unSubscribeVideo" style="height:30px;width:150px;color: green;font-size:13px;">Unsubscribe Video</button>
+    </div>
+    <div>
+      <button id="subscribeScreen" style="height:30px;width:150px;color: green;font-size:13px;">Subscribe Screen</button>
+      <select id="screenUsers" style="height:30px;width:150px;"></select>
+      <button id="unsubscribeScreen" style="height:30px;width:150px;color: green;font-size:13px;">Unsubscribe Screen</button>
+    </div>
+
+    <div>
+      <button id="snapshotVideo" style="height:30px;width:150px;color: green;font-size:13px;">Snapshot My Video</button>
+      <select id='snapshotImgObjType'  style="height:30px;width:80px;">
+        <option value='base64String'>base64String</option>
+        <option value='blobFile'>blobFile</option>
+      </select>
+      <input id="snapshotTarget" style="height:30px;width:150px" placeholder="userId to snapshot"></input>
+    </div>
   </div>
-  <div id="countdown" align="center" style="background-color: lightgrey; width:100px;margin: 10px auto; padding: 5px; display: none;"></div>
-  <div id="deviceArea" align="center" style="background-color: lightgrey; width: 100%; margin: 10px auto; padding: 5px">
-    <table>
-      <tr>
-        <td width="250"><button id="getMics" style="height:30px;width:100px;color: green;font-size:13px;">Get Mics</button></td>
-        <td width="250"><button id="setMic" style="height:30px;width:100px;color: green;font-size:13px;">Set Mic</button></td>
-        <td width="250"><button id="getSpeakers" style="height:30px;width:100px;color: green;font-size:13px;">Get Speakers</button></td>
-        <td width="250"><button id="setSpeaker" style="height:30px;width:100px;color: green;font-size:13px;">Set Speaker</button></td>
-        <td width="250"><button id="getCams" style="height:30px;width:100px;color: green;font-size:13px;">Get Cameras</button></td>
-        <td width="250"><button id="setCam" style="height:30px;width:100px;color: green;font-size:13px;">Set Camera</button></td>
-      </tr>
-      <tr>
-        <td colspan="2" width="400"><select style="width: 400px" id="mic_sel"></select></td>
-        <td colspan="2" width="400"><select style="width: 400px" id="speaker_sel"></select></button></td>
-        <td colspan="2" width="400"><select style="width: 400px" id="cam_sel"></select></button></td>
-      </tr>
-      <tr>
-        <td><button id="snapshotVideo" style="height:30px;width:150px;color: green;font-size:13px;">Snapshot My Video</button></td>
-        <td><select id='snapshotImgObjType'  style="height:30px;width:80px;">
-          <option value='base64String'>base64String</option>
-          <option value='blobFile'>blobFile</option>
-        </select></td>
-        <td><input id="snapshotTarget" style="height:30px;width:150px" placeholder="userId to snapshot"></input></td>
-      </tr>
-    </table>
+
+  <div id="countdown" align="center" style="background-color: lightgrey; width:100%; margin: 10px auto; padding: 5px; display: none;"></div>
+
+  <div id="deviceArea" align="left" style="background-color: lightgrey; width: 100%; margin: 10px auto; padding: 5px; display: flex; flex-direction: column; align-items: center;">
+    <div >
+      <button id="getMics" style="height:30px; width:100px;color: green;font-size:13px; display: inline;">Get Mics</button>
+      <select style="width: 300px; display: inline;" id="mic_sel"></select>
+      <button id="setMic" style="height:30px;width:100px;color: green;font-size:13px; display: inline;">Set Mic</button>
+    </div>
+
+    <div>      
+      <button id="getSpeakers" style="height:30px;width:100px;color: green;font-size:13px;">Get Speakers</button>
+      <select style="width: 300px" id="speaker_sel"></select></button>
+      <button id="setSpeaker" style="height:30px;width:100px;color: green;font-size:13px;">Set Speaker</button>
+    </div>
+    <div>
+      <button id="getCams" style="height:30px;width:100px;color: green;font-size:13px;">Get Cameras</button>
+      <select style="width: 300px" id="cam_sel"></select></button>
+      <button id="getPreview" style="height:30px;width:150px;color: green;font-size:13px;">Get Preview</button>
+      <button id="setCam" style="height:30px;width:100px;color: green;font-size:13px;">Set Camera</button>
+
+    </div>
+    <div>
+    </div>
+
   </div>
-  <div id="inMeetingArea" align="center" style="background-color: lightgrey; width:100%; margin: 10px auto; padding: 5px; display: block; height: 800px;">
+  <div id="inMeetingArea" align="center" style="background-color: lightgrey; width:100%; margin: 10px auto; padding: 5px; display: flex; flex-direction:row;height: 800px;">
     <div id="videoArea" align="center" style="width:calc(100% - 610px); height:auto; float:left;">
-      <table>
-        <tr>
-          <td colspan="7" style="width:700px;height:500px"><div id="activeVideoArea" align="left"></div></td>
-        </tr>
-        <tr>
-          <td style="width:150px;height:150px"><div id="thumbnail1"></div></td>
-          <td style="width:150px;height:150px"><div id="thumbnail2"></div></td>
-          <td style="width:150px;height:150px"><div id="thumbnail3"></div></td>
-          <td style="width:150px;height:150px"><div id="thumbnail4"></div></td>
-          <td style="width:150px;height:150px"><div id="thumbnail5"></div></td>
-          <td style="width:150px;height:150px"><div id="thumbnail6"></div></td>
-          <td style="width:150px;height:150px"><div id="selfVideoArea"></div></td>
-          <td style="width:150px;height:150px"><div id="previewVideoArea" style=" position: relative;"></div></td>
-          <td style="width:150px;height:150px"><div id="snapshotImg"></div></td>
-        </tr>
-      </table>
+      <div id="selfVideoArea" ></div>
+      <div id="previewVideoArea" ></div>
+      <div id="snapshotImg"></div>
+      <div id="activeVideoArea"></div>
     </div>
     <div style="width:300px; float: right; margin-left: 10px; height: 500px;">
       <label>Events</label>

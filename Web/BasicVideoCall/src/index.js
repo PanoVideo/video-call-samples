@@ -21,6 +21,7 @@ const textArea_roster = document.getElementById('meeting_roster');
 
 const button_audio = document.getElementById('audioButton');
 const button_video = document.getElementById('videoButton');
+const button_share = document.getElementById('shareButton');
 
 const video_user_list = document.getElementById('videoUsers');
 const button_subscribe_video = document.getElementById('subscribeVideo');
@@ -30,18 +31,27 @@ button_unsubscribe_video.onclick = unSubscribeVideo;
 const sub_video_quality = document.getElementById('subQuality');
 
 const button_mute_mic = document.getElementById('muteMic');
+const button_mute_screen = document.getElementById('muteScreen');
 const button_get_mic = document.getElementById('getMics');
 const button_get_speaker = document.getElementById('getSpeakers');
 const button_get_cam = document.getElementById('getCams');
 const button_set_cam = document.getElementById('setCam');
+
+const share_user_list = document.getElementById('screenUsers');
+const button_subscribe_share = document.getElementById('subscribeScreen');
+button_subscribe_share.onclick = subscribeShare;
+const button_unsubscribe_share = document.getElementById('unsubscribeScreen');
+button_unsubscribe_share.onclick = unSubscribeShare;
 
 const select_mic = document.getElementById('mic_sel');
 const select_speaker = document.getElementById('speaker_sel');
 const select_cam = document.getElementById('cam_sel');
 const button_get_preview = document.getElementById('getPreview');
 const button_snapshot_video = document.getElementById('snapshotVideo');
+button_snapshot_video.onclick = pano_snapshotMyself;
 
 button_mute_mic.onclick = pano_muteMic;
+button_mute_screen.onclick = pano_muteScreen;
 button_get_mic.onclick = pano_getMics;
 button_get_speaker.onclick = pano_getSpeakers;
 button_get_cam.onclick = pano_getCams;
@@ -65,8 +75,10 @@ rtcEngine.on = new Proxy(rtcEngine.on, {
 
 function init_UI () {
   button_mute_mic.disabled = true;
+  button_mute_screen.disabled = true;
   button_audio.disabled = true;
   button_video.disabled = true;
+  button_share.disabled = true;
   button_subscribe_video.disabled = true;
   button_unsubscribe_video.disabled = true;
 
@@ -75,6 +87,8 @@ function init_UI () {
   button_audio.innerHTML = 'Start Audio';
   button_video.onclick = startVideo;
   button_video.innerHTML = 'Start Video';
+  button_share.onclick = startShare;
+  button_share.innerHTML = 'Start Screen';
 };
 
 /*****************************************************************************************************************
@@ -136,6 +150,7 @@ function leaveChannel(passive = false) {
     users: []
   };
   rtcEngine = new PanoRtc.RtcEngine(appId);
+  window.rtcEngine = rtcEngine;
   button_joinChannel.disabled = false;
   button_joinChannel.style.color = 'green';
   textArea_roster.value = '';
@@ -152,14 +167,23 @@ function updateRoster() {
   if (PanoDemo.users instanceof Array) {
     let list = '';
     video_user_list.innerHTML = '';
+    share_user_list.innerHTML = '';
     PanoDemo.users.forEach(function (user) {
       list += 'Name: ' + user.userName + ', ID: ' + user.userId + ' \r\n' +
-        'Audio: ' + (user.audioStatus ? user.audioStatus : 'closed') + ', Video: ' + (user.videoStatus ? user.videoStatus : 'closed') + ' \r\n \r\n';
+        'Audio: ' + (user.audioStatus ? user.audioStatus : 'closed') +
+        ', Video: ' + (user.videoStatus ? user.videoStatus : 'closed') +
+        ', Share:  ' + (user.screenStatus ? user.screenStatus : 'closed') + '\r\n \r\n';
       if (user.videoStatus === 'open' || user.videoStatus === 'unmute') {
         let option = document.createElement('option');
         option.text = user.userName;
         option.value = user.userId;
         video_user_list.add(option);
+      }
+      if (user.screenStatus === 'open' || user.screenStatus === 'unmute') {
+        let option = document.createElement('option');
+        option.text = user.userName;
+        option.value = user.userId;
+        share_user_list.add(option);
       }
     });
     textArea_roster.value = list;
@@ -182,6 +206,8 @@ function userMediaStatusUpdate (data, kind, status) {
             PanoDemo.users[i].subscribedVideo = false;
             unSubscribeVideo(null, PanoDemo.users[i].userId);
           }
+        } else if (kind === 'share') {
+          PanoDemo.users[i].screenStatus = status;
         }
         break;
       }
@@ -270,6 +296,18 @@ function pano_unmuteMic () {
   button_mute_mic.onclick = pano_muteMic;
 }
 
+function pano_muteScreen () {
+  rtcEngine.muteScreen();
+  button_mute_screen.innerHTML = 'Unmute Screen';
+  button_mute_screen.onclick = pano_unmuteScreen;
+}
+
+function pano_unmuteScreen () {
+  rtcEngine.unmuteScreen();
+  button_mute_screen.innerHTML = 'Mute Screen';
+  button_mute_screen.onclick = pano_muteScreen;
+}
+
 function startAudio () {
   rtcEngine.startAudio();
   button_audio.innerHTML = 'Stop Audio';
@@ -295,6 +333,18 @@ function stopVideo () {
   button_video.onclick = startVideo;
 }
 
+function startShare () {
+  rtcEngine.startScreen();
+  button_share.innerHTML = 'Stop Screen';
+  button_share.onclick = stopShare;
+}
+
+function stopShare () {
+  rtcEngine.stopScreen();
+  button_share.innerHTML = 'Start Screen';
+  button_share.onclick = startShare;
+}
+
 function subscribeVideo (e, userId) {
   if (!userId) {
     let index = video_user_list.selectedIndex;
@@ -313,9 +363,11 @@ function subscribeVideo (e, userId) {
     }
   }
   if (user) {
+    const { VideoProfileType } = PanoRtc.Constants
+    const quality = sub_video_quality.options[sub_video_quality.selectedIndex].value
     let params = {
       userId: user.userId,
-      quality: sub_video_quality.options[sub_video_quality.selectedIndex].value,
+      quality: VideoProfileType[quality],
       userName: user.userName
     };
 
@@ -363,6 +415,9 @@ function pano_snapshotMyself() {
       };
     }
     document.getElementById('snapshotImg').innerHTML = '';
+    let label = document.createElement('p')
+    label.innerHTML = 'snapshot'
+    document.getElementById('snapshotImg').appendChild(label);
     document.getElementById('snapshotImg').appendChild(img);
   };
   rtcEngine.snapshotVideo(
@@ -370,6 +425,58 @@ function pano_snapshotMyself() {
       userId: document.getElementById('snapshotTarget').value,
       imgObjType: document.getElementById('snapshotImgObjType').value
     }, show, console.log);
+}
+function subscribeShare (e, userId) {
+  if (!userId) {
+    let index = share_user_list.selectedIndex;
+    if (index >= 0 && index < share_user_list.length) {
+      userId = (share_user_list[index].value);
+    }
+  }
+
+  let user = null;
+  if (userId && PanoDemo.users instanceof Array) {
+    for (let i = 0; i < PanoDemo.users.length; i++) {
+      if (PanoDemo.users[i].userId === userId && (PanoDemo.users[i].screenStatus === 'open' || PanoDemo.users[i].screenStatus === 'unmute')) {
+        user = PanoDemo.users[i];
+        break;
+      }
+    }
+  }
+  if (user) {
+    let params = {
+      userId: user.userId,
+      userName: user.userName
+    };
+
+    rtcEngine.subscribeScreen(params);
+  }
+}
+
+function unSubscribeShare (e, userId) {
+  if (!userId) {
+    let index = share_user_list.selectedIndex;
+    if (index >= 0 && index < share_user_list.length) {
+      userId = (share_user_list[index].value);
+    }
+  }
+
+  let user = null;
+  if (userId && PanoDemo.users instanceof Array) {
+    for (let i = 0; i < PanoDemo.users.length; i++) {
+      if (PanoDemo.users[i].userId === userId) {
+        user = PanoDemo.users[i];
+        break;
+      }
+    }
+  }
+  if (user) {
+    rtcEngine.unsubscribeScreen(user);
+    let v = document.getElementById('video-user-' + user.userId);
+    if (v) {
+      activeVideoContainer.removeChild(v);
+    }
+  }
 }
 
 function pano_getPreview () {
@@ -429,8 +536,10 @@ rtcEngine.on(PanoRtc.RtcEngine.Events.joinChannelConfirm, data => {
   button_leaveChannel.style.color = 'red';
   button_leaveChannel.onclick = () => leaveChannel();
   button_mute_mic.disabled = false;
+  button_mute_screen.disabled = false;
   button_audio.disabled = false;
   button_video.disabled = false;
+  button_share.disabled = false;
   button_subscribe_video.disabled = false;
   button_unsubscribe_video.disabled = false;
 });
@@ -484,6 +593,9 @@ rtcEngine.on(PanoRtc.RtcEngine.Events.audioDeviceChange, (data) =>
 rtcEngine.on(PanoRtc.RtcEngine.Events.videoDeviceChange, (data) =>
   console.log('demo app: videoDeviceChange', data)
 );
+rtcEngine.on(PanoRtc.RtcEngine.Events.userExpelled, (data) =>
+  console.log('demo app: userExpelled', data)
+);
 rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioStart, (data) =>
   console.log('demo app: userAudioStart', data)
 );
@@ -491,10 +603,10 @@ rtcEngine.on(PanoRtc.RtcEngine.Events.channelCountDown, (data) => {
   console.log('demo app: channelCountDown', data);
   PanoDemo.remainsec = data.remainsec;
   countdownDic.style.display = 'block';
-  countdownDic.innerHTML = `remainsec: ${PanoDemo.remainsec}`;
+  countdownDic.innerHTML = `剩余时间: ${PanoDemo.remainsec}s`;
   const interval = setInterval(() => {
     if (PanoDemo.remainsec > 0) {
-      countdownDic.innerHTML = `remainsec: ${--PanoDemo.remainsec}`;
+      countdownDic.innerHTML = `剩余时间: ${--PanoDemo.remainsec}s`;
     } else {
       clearInterval(interval);
     }
@@ -540,6 +652,62 @@ rtcEngine.on(PanoRtc.RtcEngine.Events.userVideoReceived, (data) => {
   }
 });
 
+rtcEngine.on(PanoRtc.RtcEngine.Events.userScreenReceived, (data) => {
+  console.log('demo app: receive remote share,', data);
+  if (data.data.videoTag) {
+    if (data.data.videoTag.id === `video${data.data.userId}`) {
+      console.log(`get remote video again video${data.data.userId}`);
+      return;
+    }
+    data.data.videoTag.id = `video${data.data.userId}`;
+    const box = document.createElement('div');
+    const title = document.createElement('div');
+    title.innerHTML = 'user:' + data.data.userName + '(' + data.data.userId + ')';
+    title.setAttribute('style', 'width:320px;font-size:8px;opacity:0.6;top:-22px;left:0px; background:#00BCD4;position:relative');
+    box.setAttribute('style', 'width:320px;height:180px;display:inline-block');
+    box.setAttribute('id', 'video-user-' + data.data.userId);
+    box.ondblclick = () => {
+      if (!box.fullscreen) {
+        box.fullscreen = true;
+        box.setAttribute('style', 'z-index:100;top:0;left:0;width:320px;height:180px;display:inline-block;width:100%;height: 100%;position: absolute;');
+      } else {
+        box.fullscreen = false;
+        box.setAttribute('style', 'width:320px;height:180px;display:inline-block;');
+      }
+    };
+    data.data.videoTag.setAttribute('style', 'width:100%;height:100%;');
+    data.data.videoTag.onresize = function () { title.innerHTML = 'user:' + data.data.userName + '(' + data.data.userId + ') resolution:' + data.data.videoTag.videoWidth + 'x' + data.data.videoTag.videoHeight; };
+    box.appendChild(data.data.videoTag);
+    box.appendChild(title);
+    activeVideoContainer.appendChild(box);
+  }
+});
+
+rtcEngine.on(PanoRtc.RtcEngine.Events.screenStopped, (data) => {
+  button_share.innerHTML = 'Start Share';
+  button_share.onclick = startShare;
+});
+
+rtcEngine.on(PanoRtc.RtcEngine.Events.getScreenMediaFailed, (data) => {
+  button_share.innerHTML = 'Start Share';
+  button_share.onclick = startShare;
+  console.error(data);
+});
+
+rtcEngine.on(PanoRtc.RtcEngine.Events.userScreenStart, (data) => {
+  userMediaStatusUpdate(data, 'share', 'unmute');
+});
+
+rtcEngine.on(PanoRtc.RtcEngine.Events.userScreenStop, (data) => {
+  userMediaStatusUpdate(data, 'share', 'closed');
+});
+rtcEngine.on(PanoRtc.RtcEngine.Events.userScreenMute, (data) => {
+  userMediaStatusUpdate(data, 'share', 'mute');
+});
+rtcEngine.on(PanoRtc.RtcEngine.Events.userScreenUnmute, (data) => {
+  userMediaStatusUpdate(data, 'share', 'unmute');
+});
+
 rtcEngine.on(PanoRtc.RtcEngine.Events.userVideoMuted, (data) => {
   userMediaStatusUpdate(data, 'video', 'mute');
 });
@@ -574,7 +742,10 @@ rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioUnmute, (data) => {
 
 rtcEngine.on(PanoRtc.RtcEngine.Events.getLocalVideo, (data) => {
   if (data.data.videoTag) {
-    data.data.videoTag.setAttribute('style', 'width:150px;height:150px');
+    let label = document.createElement('p')
+    label.innerHTML='myself'
+    selfVideoContainer.appendChild(label);
+    data.data.videoTag.setAttribute('style', 'width:150px;height:150px; background: black');
     selfVideoContainer.appendChild(data.data.videoTag);
   }
 });

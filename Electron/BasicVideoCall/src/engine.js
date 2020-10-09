@@ -3,6 +3,7 @@
 
 ; (function (window, undefined) {
   const {
+    RtcEngine,
     QResult, 
     ChannelMode,
     AudioAecType,
@@ -10,14 +11,16 @@
     VideoProfileType,
     VideoScalingMode,
     ScreenSourceType
-  } = require('@pano.video/panortc-electron-sdk/js/panodefs');
-  const {rtcEngine} = require('@pano.video/panortc-electron-sdk');
+  } = require('@pano.video/panortc-electron-sdk');
   const {viewMgr} = require('./ui/media_views');
   const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
   const {EventEmitter} = require("events");
-  var channelSettings = {};
-  var userMgr;
-  var emitter = new EventEmitter();
+  let channelSettings = {};
+  let userMgr;
+  let emitter = new EventEmitter();
+  let rtcEngine = new RtcEngine();
+
+  console.log('+++++ JS SDK Version: ' + rtcEngine.getSdkVersion());
 
   rtcEngine.on('channelJoinConfirm', (result) => {
     console.log('+++++ JS onChannelJoinConfirm, result: ' + result);
@@ -136,7 +139,7 @@
   rtcEngine.on('channelFailover', (state) => {
     console.log('+++++ JS onChannelFailover, state: ' + state)
   })
-  rtcEngine.on('activeSpeakerListUpdate', (userList) => {
+  rtcEngine.on('activeSpeakerListUpdated', (userList) => {
     console.log('+++++ JS onActiveSpeakerListUpdated, userList: ' + userList)
   })
   rtcEngine.on('audioMixingStateChanged', (taskId, state) => {
@@ -230,12 +233,12 @@
 
     // fetch PANO token from AppServer
     /*let url = 'http://10.0.0.8:8080/app/login';
-    var xreq = new XMLHttpRequest();
+    let xreq = new XMLHttpRequest();
     xreq.open('POST', url, true);
     xreq.setRequestHeader('Content-Type', 'application/json');
     xreq.setRequestHeader('Cache-Control', 'no-cache');
     xreq.setRequestHeader('Tracking-Id', uuidv4());
-    var o = {};
+    let o = {};
     o['appId'] = appId;
     o['channelId'] = channelId;
     o['userId'] = userId;
@@ -307,7 +310,7 @@
     rtcEngine.videoDeviceMgr().setDevice(camera);
     let view = viewMgr.getLocalView();
     if (view != null) {
-      var ret = rtcEngine.startVideo(view, {
+      let ret = rtcEngine.startVideo(view, {
         profile: VideoProfileType.HD720P, 
         scaling: VideoScalingMode.Fit, 
         mirror: true
@@ -345,14 +348,14 @@
 
   function onUserJoin(user) {
     let row = document.getElementById('tb-user-list').insertRow();
-    var cell = row.insertCell();
+    let cell = row.insertCell();
     cell.innerHTML = user.userId;
     cell = row.insertCell();
     cell.innerHTML = user.userName;
   }
   function onUserLeave(userId) {
     let tb = document.getElementById('tb-user-list');
-    for (var i=0; i<tb.rows.length; i++) {
+    for (let i=0; i<tb.rows.length; i++) {
       if (userId === tb.rows[i].cells[0].innerText) {
         tb.deleteRow(i);
         break;
@@ -361,13 +364,13 @@
   }
   function addLocalUser(userId) {
     let row = document.getElementById('tb-user-list').insertRow();
-    var cell = row.insertCell();
+    let cell = row.insertCell();
     cell.innerHTML = '<b>' + userId + '</b>';
     cell = row.insertCell();
     cell.innerHTML = '<b>Me</b>';
   }
   function clearUserList() {
-    var tb = document.getElementById('tb-user-list');
+    let tb = document.getElementById('tb-user-list');
     while(tb.hasChildNodes()) {
       tb.removeChild(tb.firstChild);
     }
@@ -439,7 +442,7 @@
 
   function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
       return v.toString(16);
     });
   }
