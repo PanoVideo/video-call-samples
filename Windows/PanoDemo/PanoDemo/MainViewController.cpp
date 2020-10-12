@@ -10,6 +10,12 @@ const int kDefaultVideoViewHeight = 540;
 
 const std::string kAppId = %%enter APPID of your APP%%;
 const std::string kPanoToken = %%enter APP Token which is got from PANO%%;
+/* Please refer to Glossary to understand the meaning of App ID, Channel ID, Token, User ID, and User Name: https://developer.pano.video/getting-started/terms/
+   请参考 名词解释 了解 App ID、Channel ID、Token、User ID、User Name 的含义：https://developer.pano.video/getting-started/terms/
+
+   You can use temporary token for temporary testing: https://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token
+   可以使用 临时token 来进行临时测试：https://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token
+*/
 
 using namespace pano::utils;
 using namespace panortc;

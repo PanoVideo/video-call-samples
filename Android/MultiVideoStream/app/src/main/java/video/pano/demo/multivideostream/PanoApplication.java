@@ -9,7 +9,9 @@ import com.pano.rtc.api.RtcEngineConfig;
 
 public class PanoApplication extends Application {
     public static final String APPID = %%填入应用的 APPID%%;
-    public static final String APP_TOKEN = %%填入从 PANO 获取的临时 APP Token%%;
+    public static final String APP_TOKEN = %%填入 Token%%;
+    // 请参考 名词解释 了解 App ID、Channel ID、Token、User ID、User Name 的含义：https://developer.pano.video/getting-started/terms/
+    // 可以使用 临时token 来进行临时测试：https://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token
     public static final String PANO_SERVER = "api.pano.video";
 
     private RtcEngine mRtcEngine;
