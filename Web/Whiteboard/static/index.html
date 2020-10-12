@@ -96,6 +96,14 @@
         border-radius: 5px;
         z-index: 3;
       }
+      #note{
+        border:1px solid #aaa;
+        border-radius: 5px;
+        padding:5px;
+        width:420px;
+        margin-top:15px;
+        color:#aaa;
+      }
     </style>
   </head>
   <body>
@@ -112,7 +120,7 @@
       /></label>
 
       <label>
-        <span> panoToken: </span>
+        <span> pano Token: </span>
         <input name="panoToken" type="text" value=""
       /></label>
 
@@ -127,6 +135,14 @@
       </label>
 
       <button class="join-btn" id="joinBtn">Join</button>
+
+      <div id="note">
+        Please refer to <a href="https://developer.pano.video/getting-started/terms/" target="developer">Glossary</a> to understand the meaning of App ID, Channel ID, Token, User ID, and User Name.
+        <br>请参考 <a href="https://developer.pano.video/getting-started/terms/" target="developer">名词解释</a> 了解 App ID、Channel ID、Token、User ID、User Name 的含义。
+
+        <br><br>You can use <a href="https://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token" target="developer">temporary token</a> for temporary testing.
+        <br>可以使用 <a href="https://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token" target="developer">临时token</a> 来进行临时测试。
+      </div>
     </div>
 
     <div class="pano-control-panel" id="panoControlPanel">

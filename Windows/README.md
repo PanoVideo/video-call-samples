@@ -14,7 +14,7 @@
 当前 Demo 兼容的 SDK 版本为v0.9.8。
 
 ## 5. 生成临时token
-用户在创建应用获取到 APPID 后，还需要 token 才可以使用拍乐云实时音视频服务。对于 Demo 用户可在拍乐云控制台为应用生成临时token。
+用户在创建应用获取到 APPID 后，还需要 token 才可以使用拍乐云实时音视频服务。对于 Demo 用户可在拍乐云控制台为应用 <a href="https://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token">生成临时token</a>。
 
 ## 6. 编译 Demo
 使用 Visual Studio 2017打开源码工程PanoDemo，然后将 APPID 和 token 拷贝到 Demo 中相应位置，即可开始编译运行。

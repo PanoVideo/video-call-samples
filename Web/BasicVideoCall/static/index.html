@@ -22,36 +22,41 @@
 <body>
   <div id="params" style="display: flex; justify-content: center; white-space: nowrap">
     <table border="1"  align = "center">
-      <tr align="center" height="50">
+      <tr align="center" height="40">
         <td colspan="2">Channel Parameters</td>
     </tr>
-    <tr align="center" height="50"> 
-      <td width="20%">App ID</td>
-      <td><input id="appID" style="width: 500px;height: 48px;font-size:18px;" type="text" value="[通过Pano Console创建App获取AppID]"/></td>
+    <tr align="center" height="40"> 
+      <td width="20%">说明</td>
+      <td style="text-align:left;padding-left:10px;font-size:13px;">请参考 <a href="https://developer.pano.video/getting-started/terms/" target="developer">名词解释</a> 了解App ID、Token、Channel ID、User ID、User Name的含义。
+      <br>可以使用 <a href="https://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token" target="developer">临时token </a>来进行临时测试。</td>
     </tr>
-    <tr align="center" height="50"> 
+    <tr align="center" height="40"> 
+      <td width="20%">App ID</td>
+      <td><input id="appID" style="width: 500px;height: 38px;font-size:14px;" type="text" placeholder="[通过Pano控制台创建App获取AppID]"/></td>
+    </tr>
+    <tr align="center" height="40"> 
       <td width="20%">Token</td>
-      <td><input id="token" style="width: 500px;height: 48px;font-size:18px;" type="text" value="[在Pano Console对应App下生成临时Token，并记住ChannelID]"/>
+      <td><input id="token" style="width: 500px;height: 38px;font-size:14px;" type="text" placeholder="[使用正式Token，或者在Pano控制台对应App下生成临时Token]"/>
       </td>
     </tr>
-    <tr align="center" height="50"> 
+    <tr align="center" height="40"> 
       <td width="20%">Channel ID</td>
-      <td><input id="channelID" style="width: 500px;height: 48px;font-size:18px;" type="text" value="[生成临时token时指定的channelID]"></td>
+      <td><input id="channelID" style="width: 500px;height: 38px;font-size:14px;" type="text" placeholder="[生成token时指定的channelID]"></td>
     </tr>
-    <tr align="center" height="50"> 
+    <tr align="center" height="40"> 
       <td width="20%">ChannelMode</td>
-      <td style="text-align: left;">
+      <td style="text-align: left;padding-left:10px;">
         meeting <input type="radio" value="meeting" name="channelMode" checked>
         <!-- 1_on_1 <input type="radio" value="1v1" name="channelMode"> -->
       </td>
     </tr>
-    <tr align="center" height="50"> 
+    <tr align="center" height="40"> 
       <td width="20%">User ID</td>
-      <td><input id="userID" style="width: 500px;height: 48px;font-size:18px;" type="text"></td>
+      <td><input id="userID" style="width: 500px;height: 38px;font-size:14px;" type="text"></td>
     </tr>
-    <tr align="center" height="50"> 
+    <tr align="center" height="40"> 
       <td width="20%">User Name</td>
-      <td><input id="userName" style="width: 500px;height: 48px;font-size:18px;" type="text"></td>
+      <td><input id="userName" style="width: 500px;height: 38px;font-size:14px;" type="text"></td>
     </tr>
     </table>
   </div>
@@ -86,7 +91,7 @@
 
     <div>
       <button id="snapshotVideo" style="height:30px;width:150px;color: green;font-size:13px;">Snapshot My Video</button>
-      <select id='snapshotImgObjType'  style="height:30px;width:80px;">
+      <select id='snapshotImgObjType'  style="height:30px;width:110px;">
         <option value='base64String'>base64String</option>
         <option value='blobFile'>blobFile</option>
       </select>
