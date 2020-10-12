@@ -10,7 +10,7 @@
 拍乐云Demo源代码托管在 [github](https://github.com/PanoVideo) 上，用户可从github上clone。
 
 ## 4. 生成临时token
-用户在创建应用获取到 APPID 后，还需要 token 才可以使用拍乐云实时音视频服务。对于 Demo 用户可在拍乐云控制台为应用生成临时token。
+用户在创建应用获取到 APPID 后，还需要 token 才可以使用拍乐云实时音视频服务。对于 Demo 用户可在拍乐云控制台为应用 <a href="https://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token">生成临时token</a>。
 
 ## 5. 安装依赖
 在 BasicVideoCall 或 Whiteboard 目录下，运行 `npm i`

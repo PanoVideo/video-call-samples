@@ -123,7 +123,6 @@ function joinChannel() {
     return
   }
 
-  // 使用创建的临时 token
   let channelParam = {
     appId: PanoDemo.appId,
     token: PanoDemo.token,

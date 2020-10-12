@@ -11,10 +11,9 @@
 
 ## 4. 下载 SDK
 拍乐云实时音视频 SDK 可从拍乐云 [开发者中心](https://developer.pano.video/download/) 下载，并放置到 Demo 源码的 SDK 目录中。
-当前 Demo 兼容的 SDK 版本为v0.9.8。
 
 ## 5. 生成临时 Token
-用户在创建应用并且获取到 AppID 后，还需要 Token 才可以使用拍乐云实时音视频服务。对于 Demo 用户可在拍乐云控制台为应用生成临时 Token。
+用户在创建应用并且获取到 AppID 后，还需要 Token 才可以使用拍乐云实时音视频服务。对于 Demo 用户可在拍乐云控制台为应用 <a href="https://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token">生成临时token</a>。
 
 ## 6. 编译 Demo 源码
 使用 Xcode（13.0 或以上的版本）打开源码工程 BasicVideoCall，然后将 AppID 和 Token 拷贝到 Demo 中相应位置，即可开始编译运行。
