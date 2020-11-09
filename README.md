@@ -1,9 +1,11 @@
-# 视频通话示例程序
+# Pano视频通话示例程序
 
-拍乐云（PANO）提供了一组示例程序，展示如何集成拍乐云音视频 SDK 以便于用户开发自己的视频通话应用。
+拍乐云Pano 提供了一组示例程序，展示如何集成拍乐云音视频 SDK 以便于用户开发自己的视频通话应用。
+
 ## 平台支持
 
 示例程序支持 Windows、Android、iOS、Web、Electron 平台。
+
 ## 演示功能
 
 - 加入 / 退出频道
@@ -14,6 +16,8 @@
 - 静音 / 取消静音
 - 扬声器 / 耳机切换
 
-## 文档
+## 链接
 
-查看完整的 API 文档，请访问拍乐云 [文档中心](https://developer.pano.video/sdk/sdkapi/)
+- 访问 [Pano官网](https://www.pano.video/) 了解更多功能和信息
+- 访问 [Pano开发者中心](https://developer.pano.video/) 查看入门介绍和详细文档
+- 访问 [SDK API 参考手册](https://developer.pano.video/sdk/sdkapi/) 查看完整的 API 接口说明
