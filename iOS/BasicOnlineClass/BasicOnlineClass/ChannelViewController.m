@@ -261,7 +261,7 @@
     channelConfig.mode = ChannelInfo.channelMode;
     channelConfig.userName = ChannelInfo.userName;
     PanoResult result = [self.engineKit joinChannelWithToken:ChannelInfo.token
-                                                   channelId:ChannelInfo.channelName
+                                                   channelId:ChannelInfo.channelId
                                                       userId:ChannelInfo.userId
                                                       config:channelConfig];
     if (result != kPanoResultOK) {
