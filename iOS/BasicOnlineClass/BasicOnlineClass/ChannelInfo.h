@@ -15,12 +15,12 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSString *)appId;
 + (NSString *)server;
 + (NSString *)token;
-+ (NSString *)channelName;
++ (NSString *)channelId;
 + (PanoChannelMode)channelMode;
 + (UInt64)userId;
 + (NSString *)userName;
 
-+ (void)setChannelName:(NSString *)channelName;
++ (void)setChannelId:(NSString *)channelId;
 + (void)setChannelMode:(PanoChannelMode)channelMode;
 + (void)setUserName:(NSString *)userName;
 
