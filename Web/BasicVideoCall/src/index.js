@@ -68,6 +68,7 @@ rtcEngine.on = new Proxy(rtcEngine.on, {
   apply(target, object, args) {
     Reflect.apply(target, object, [args[0], params => {
       eventTextarea.value += `${JSON.stringify(params)}\r\n \r\n`;
+      eventTextarea.scrollTop = eventTextarea.scrollHeight;
       Reflect.apply(args[1], object, [params]);
     }]);
   }
