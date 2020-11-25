@@ -3,6 +3,8 @@
 
 # SDK files
 Windows/SDK/api/
+Android/SDK/*.aar
+iOS/SDK/*.framework
 
 # User-specific files
 *.suo

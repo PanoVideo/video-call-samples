@@ -8,6 +8,7 @@ let PanoDemo = {
 const appId = document.getElementById('appID').value || 'temp';
 const countdownDic = document.getElementById('countdown');
 let rtcEngine = new PanoRtc.RtcEngine(appId);
+console.info('Pano SDK Version: ' + rtcEngine.getSdkVersion());
 
 const selfVideoContainer = document.getElementById('selfVideoArea');
 const previewVideoContainer = document.getElementById('previewVideoArea');
@@ -49,9 +50,6 @@ const select_cam = document.getElementById('cam_sel');
 const button_get_preview = document.getElementById('getPreview');
 const button_snapshot_video = document.getElementById('snapshotVideo');
 button_snapshot_video.onclick = pano_snapshotMyself;
-
-button_mute_mic.onclick = pano_muteMic;
-button_mute_screen.onclick = pano_muteScreen;
 button_get_mic.onclick = pano_getMics;
 button_get_speaker.onclick = pano_getSpeakers;
 button_get_cam.onclick = pano_getCams;
@@ -84,13 +82,21 @@ function init_UI () {
   button_unsubscribe_video.disabled = true;
 
   button_joinChannel.onclick = joinChannel;
-  button_audio.onclick = startAudio;
-  button_audio.innerHTML = 'Start Audio';
-  button_video.onclick = startVideo;
-  button_video.innerHTML = 'Start Video';
-  button_share.onclick = startShare;
-  button_share.innerHTML = 'Start Screen';
+  init_Btn_Stat();
 };
+
+function init_Btn_Stat(){
+  button_mute_mic.innerHTML = 'Mute Mic';
+  button_mute_mic.onclick = pano_muteMic;
+  button_audio.innerHTML = 'Start Audio';
+  button_audio.onclick = startAudio;
+  button_video.innerHTML = 'Start Video';
+  button_video.onclick = startVideo;
+  button_share.innerHTML = 'Start Screen';
+  button_share.onclick = startShare;
+  button_mute_screen.innerHTML = 'Mute Screen';
+  button_mute_screen.onclick = pano_muteScreen;
+}
 
 /*****************************************************************************************************************
  *                                         Global UI Functions                                                   *
@@ -143,6 +149,7 @@ function joinChannel() {
 function leaveChannel(passive = false) {
   button_leaveChannel.disabled = true;
   button_leaveChannel.style.color = 'black';
+  init_Btn_Stat();
   if (!passive) {
     rtcEngine.leaveChannel();
   }
