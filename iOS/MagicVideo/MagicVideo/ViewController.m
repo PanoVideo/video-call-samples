@@ -84,11 +84,47 @@ static NSString * _server = @"api.pano.video";
     [self.view addGestureRecognizer:doubleTapGesture];
 }
 
-- (void)handleScalingGesture: (UIPinchGestureRecognizer *)sender {
+- (void)handleScalingGesture: (UIPinchGestureRecognizer *)pinchRecognizer {
+    CGFloat xScale = 1.0f;
+    CGFloat yScale = 1.0f;
+    double theSlope;
+
+    if ([pinchRecognizer state] == UIGestureRecognizerStateBegan ||
+            [pinchRecognizer state] == UIGestureRecognizerStateChanged) {
+        if ([pinchRecognizer numberOfTouches] > 1) {
+            UIView *theView = [pinchRecognizer view];
+            CGPoint locationOne = [pinchRecognizer locationOfTouch:0 inView:theView];
+            CGPoint locationTwo = [pinchRecognizer locationOfTouch:1 inView:theView];
+            if (locationOne.x == locationTwo.x) {
+                    // perfect vertical line
+                    // not likely, but to avoid dividing by 0 in the slope equation
+                theSlope = 1000.0;
+            }else if (locationOne.y == locationTwo.y) {
+                    // perfect horz line
+                    // not likely, but to avoid any problems in the slope equation
+                theSlope = 0.0;
+            }else {
+                theSlope = (locationTwo.y - locationOne.y)/(locationTwo.x - locationOne.x);
+            }
+            double abSlope = (theSlope>0 ? theSlope : -theSlope);
+            if (abSlope < 0.5) {
+                //  Horizontal pinch - scale in the X
+                xScale = pinchRecognizer.scale;
+            }else if (abSlope > 1.7) {
+                // Vertical pinch - scale in the Y
+                yScale = pinchRecognizer.scale;
+            } else {
+                // Diagonal pinch - scale in both directions
+                xScale = yScale = pinchRecognizer.scale;
+            }  // else for diagonal pinch
+        }  // if numberOfTouches
+    }  // StateBegan if
+
     PanoBuiltinTransformOption * option = self.baseTransformOption;
-    option.scaling = sender.scale;
+    option.xScaling = xScale;
+    option.yScaling = yScale;
     [self.engineKit setOption:option forType:kPanoOptionBuiltinTransform];
-    sender.scale = 1;
+    pinchRecognizer.scale = 1;
 }
 
 - (void)handleRotateZGesture: (UIRotationGestureRecognizer *) sender {
