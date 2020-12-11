@@ -10,7 +10,7 @@
 
 - 摄像头切换
 - 魔法视频开启 / 关闭
-- 视频帧调整手势操作（缩放，X、Y、Z轴旋转，X、Y轴投影深度，重置等）
+- 视频帧调整手势操作（四边形变换，镜像，重置等）
 
 ## 文档
 
@@ -18,4 +18,4 @@
 
 ## PANO SDK 要求
 
-- iOS 1.2.7 及以上版本 [SDK下载](https://developer.pano.video/download/#sdk)
+- iOS 1.2.8 及以上版本 [SDK下载](https://developer.pano.video/download/#sdk)
