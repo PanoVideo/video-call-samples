@@ -7,8 +7,6 @@ let PanoDemo = {
 // UI
 const appId = document.getElementById('appID').value || 'temp';
 const countdownDic = document.getElementById('countdown');
-let rtcEngine = new PanoRtc.RtcEngine(appId);
-console.info('Pano SDK Version: ' + rtcEngine.getSdkVersion());
 
 const selfVideoContainer = document.getElementById('selfVideoArea');
 const previewVideoContainer = document.getElementById('previewVideoArea');
@@ -57,20 +55,9 @@ button_set_cam.onclick = pano_setCam;
 button_get_preview.onclick = pano_getPreview;
 button_snapshot_video.onclick = pano_snapshotMyself;
 
-// For easily debug
-window.rtcEngine = rtcEngine;
+
 window.PanoDemo = PanoDemo;
 
-const eventTextarea = document.getElementById('events');
-rtcEngine.on = new Proxy(rtcEngine.on, {
-  apply(target, object, args) {
-    Reflect.apply(target, object, [args[0], params => {
-      eventTextarea.value += `${JSON.stringify(params)}\r\n \r\n`;
-      eventTextarea.scrollTop = eventTextarea.scrollHeight;
-      Reflect.apply(args[1], object, [params]);
-    }]);
-  }
-});
 
 function init_UI () {
   button_mute_mic.disabled = true;
@@ -105,6 +92,258 @@ function init_Btn_Stat(){
 function joinChannel() {
   button_joinChannel.disabled = true;
   button_joinChannel.style.color = 'black';
+
+  let rtcServer = document.getElementById('rtcServer').value
+  let rtcEngine = new PanoRtc.RtcEngine({
+    appId,
+    rtcServer: rtcServer || 'https://aisle.pano.video'
+  });
+  console.info('Pano SDK Version: ' + rtcEngine.getSdkVersion());
+  // For easily debug
+  window.rtcEngine = rtcEngine;
+  const eventTextarea = document.getElementById('events');
+  rtcEngine.on = new Proxy(rtcEngine.on, {
+    apply(target, object, args) {
+      Reflect.apply(target, object, [args[0], params => {
+        eventTextarea.value += `${JSON.stringify(params)}\r\n \r\n`;
+        eventTextarea.scrollTop = eventTextarea.scrollHeight;
+        Reflect.apply(args[1], object, [params]);
+      }]);
+    }
+  });
+
+  /*****************************************************************************************************************
+   *                                         Events Handlers                                                       *
+   *****************************************************************************************************************
+  */
+
+  rtcEngine.on(PanoRtc.RtcEngine.Events.joinChannelConfirm, data => {
+    if (data.result !== 'success') {
+      button_leaveChannel.disabled = true;
+      button_leaveChannel.style.color = 'black';
+      button_joinChannel.disabled = false;
+      button_joinChannel.style.color = 'green';
+      window.alert(`join channel failed because: ${data.message}`);
+      return;
+    }
+    console.log('join channel success!');
+    button_leaveChannel.disabled = false;
+    button_leaveChannel.style.color = 'red';
+    button_leaveChannel.onclick = () => leaveChannel();
+    button_mute_mic.disabled = false;
+    button_mute_screen.disabled = false;
+    button_audio.disabled = false;
+    button_video.disabled = false;
+    button_share.disabled = false;
+    button_subscribe_video.disabled = false;
+    button_unsubscribe_video.disabled = false;
+  });
+
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userListChange, result => {
+    console.log('demo app: rosterChange', result);
+    PanoDemo.users = result.users.map(user => {
+      const oldUser = find(PanoDemo.users, { userId: user.userId }) || {};
+      return Object.assign(oldUser, user);
+    });
+    updateRoster();
+  });
+
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userLeave, (data) => {
+    console.log('demo app: userleave,', data);
+    unSubscribeVideo(null, data.userId);
+  });
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userJoin, (data) => {
+    console.log('demo app: userjoin,', data);
+  });
+  rtcEngine.on(PanoRtc.RtcEngine.Events.failedToSubscribeVideo, (data) =>
+    console.log('demo app: failed_to_subscribe_video,', data)
+  );
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioMute, (data) =>
+    console.log('demo app: userAudioMute,', data)
+  );
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioUnmute, (data) =>
+    console.log('demo app: userAudioUnmute,', data)
+  );
+  rtcEngine.on(PanoRtc.RtcEngine.Events.whiteboardAvailable, (data) =>
+    console.log('demo app: whiteboardAvailable', data)
+  );
+  rtcEngine.on(PanoRtc.RtcEngine.Events.whiteboardUnavailable, (data) =>
+    console.log('demo app: whiteboardUnavailable', data)
+  );
+  rtcEngine.on(PanoRtc.RtcEngine.Events.whiteboardStart, (data) =>
+    console.log('demo app: whiteboardStart', data)
+  );
+  rtcEngine.on(PanoRtc.RtcEngine.Events.whiteboardStop, (data) =>
+    console.log('demo app: whiteboardStop', data)
+  );
+  rtcEngine.on(PanoRtc.RtcEngine.Events.firstAudioDataReceived, (data) =>
+    console.log('demo app: firstAudioDataReceived', data)
+  );
+  rtcEngine.on(PanoRtc.RtcEngine.Events.channelFailover, (data) =>
+    console.error('demo app: channelFailover', data)
+  );
+  rtcEngine.on(PanoRtc.RtcEngine.Events.audioDeviceChange, (data) =>
+    console.log('demo app: audioDeviceChange', data)
+  );
+  rtcEngine.on(PanoRtc.RtcEngine.Events.videoDeviceChange, (data) =>
+    console.log('demo app: videoDeviceChange', data)
+  );
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userExpelled, (data) =>
+    console.log('demo app: userExpelled', data)
+  );
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioStart, (data) =>
+    console.log('demo app: userAudioStart', data)
+  );
+  rtcEngine.on(PanoRtc.RtcEngine.Events.channelCountDown, (data) => {
+    console.log('demo app: channelCountDown', data);
+    PanoDemo.remainsec = data.remainsec;
+    countdownDic.style.display = 'block';
+    countdownDic.innerHTML = `剩余时间: ${PanoDemo.remainsec}s`;
+    const interval = setInterval(() => {
+      if (PanoDemo.remainsec > 0) {
+        countdownDic.innerHTML = `剩余时间: ${--PanoDemo.remainsec}s`;
+      } else {
+        clearInterval(interval);
+      }
+    }, 1000);
+  });
+  rtcEngine.on(PanoRtc.RtcEngine.Events.leaveChannelIndication, (data) => {
+    console.log('demo app: leaveChannelIndication', data);
+    leaveChannel(true);
+  });
+  rtcEngine.on(PanoRtc.RtcEngine.Events.enumerateDeviceTimeout, (data) => {
+    console.log('demo app: enumerateDeviceTimeout', data);
+  });
+  // rtcEngine.on(PanoRtc.RtcEngine.Events.activeSpeakerListUpdate, data => console.log('demo app: activeSpeakerListUpdate', data))
+
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userVideoReceived, (data) => {
+    console.log('demo app: receive remote video,', data);
+    if (data.data.videoTag) {
+      if (data.data.videoTag.id === `video${data.data.userId}`) {
+        console.log(`get remote video again video${data.data.userId}`);
+        return;
+      }
+      data.data.videoTag.id = `video${data.data.userId}`;
+      const box = document.createElement('div');
+      const title = document.createElement('div');
+      title.innerHTML = 'user:' + data.data.userName + '(' + data.data.userId + ')';
+      title.setAttribute('style', 'width:320px;font-size:8px;opacity:0.6;top:-22px;left:0px; background:#00BCD4;position:relative');
+      box.setAttribute('style', 'width:320px;height:180px;display:inline-block');
+      box.setAttribute('id', 'video-user-' + data.data.userId);
+      box.ondblclick = () => {
+        if (!box.fullscreen) {
+          box.fullscreen = true;
+          box.setAttribute('style', 'z-index:100;top:0;left:0;width:320px;height:180px;display:inline-block;width:100%;height: 100%;position: absolute;');
+        } else {
+          box.fullscreen = false;
+          box.setAttribute('style', 'width:320px;height:180px;display:inline-block;');
+        }
+      };
+      data.data.videoTag.setAttribute('style', 'width:100%;height:100%;');
+      data.data.videoTag.onresize = function () { title.innerHTML = 'user:' + data.data.userName + '(' + data.data.userId + ') resolution:' + data.data.videoTag.videoWidth + 'x' + data.data.videoTag.videoHeight; };
+      box.appendChild(data.data.videoTag);
+      box.appendChild(title);
+      activeVideoContainer.appendChild(box);
+    }
+  });
+
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userScreenReceived, (data) => {
+    console.log('demo app: receive remote share,', data);
+    if (data.data.videoTag) {
+      if (data.data.videoTag.id === `video${data.data.userId}`) {
+        console.log(`get remote video again video${data.data.userId}`);
+        return;
+      }
+      data.data.videoTag.id = `video${data.data.userId}`;
+      const box = document.createElement('div');
+      const title = document.createElement('div');
+      title.innerHTML = 'user:' + data.data.userName + '(' + data.data.userId + ')';
+      title.setAttribute('style', 'width:320px;font-size:8px;opacity:0.6;top:-22px;left:0px; background:#00BCD4;position:relative');
+      box.setAttribute('style', 'width:320px;height:180px;display:inline-block');
+      box.setAttribute('id', 'video-user-' + data.data.userId);
+      box.ondblclick = () => {
+        if (!box.fullscreen) {
+          box.fullscreen = true;
+          box.setAttribute('style', 'z-index:100;top:0;left:0;width:320px;height:180px;display:inline-block;width:100%;height: 100%;position: absolute;');
+        } else {
+          box.fullscreen = false;
+          box.setAttribute('style', 'width:320px;height:180px;display:inline-block;');
+        }
+      };
+      data.data.videoTag.setAttribute('style', 'width:100%;height:100%;');
+      data.data.videoTag.onresize = function () { title.innerHTML = 'user:' + data.data.userName + '(' + data.data.userId + ') resolution:' + data.data.videoTag.videoWidth + 'x' + data.data.videoTag.videoHeight; };
+      box.appendChild(data.data.videoTag);
+      box.appendChild(title);
+      activeVideoContainer.appendChild(box);
+    }
+  });
+
+  rtcEngine.on(PanoRtc.RtcEngine.Events.screenStopped, (data) => {
+    button_share.innerHTML = 'Start Share';
+    button_share.onclick = startShare;
+  });
+
+  rtcEngine.on(PanoRtc.RtcEngine.Events.getScreenMediaFailed, (data) => {
+    button_share.innerHTML = 'Start Share';
+    button_share.onclick = startShare;
+    console.error(data);
+  });
+
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userScreenStart, (data) => {
+    userMediaStatusUpdate(data, 'share', 'unmute');
+  });
+
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userScreenStop, (data) => {
+    userMediaStatusUpdate(data, 'share', 'closed');
+  });
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userScreenMute, (data) => {
+    userMediaStatusUpdate(data, 'share', 'mute');
+  });
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userScreenUnmute, (data) => {
+    userMediaStatusUpdate(data, 'share', 'unmute');
+  });
+
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userVideoMuted, (data) => {
+    userMediaStatusUpdate(data, 'video', 'mute');
+  });
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userVideoStart, (data) => {
+    userMediaStatusUpdate(data, 'video', 'unmute');
+  });
+
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userVideoUnmuted, (data) => {
+    userMediaStatusUpdate(data, 'video', 'unmute');
+  });
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userVideoStop, (data) => {
+    const v = document.getElementById('video-user-' + data.userId);
+    if (v) {
+      activeVideoContainer.removeChild(v);
+    }
+    userMediaStatusUpdate(data, 'video', 'closed');
+  });
+
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioStart, (data) => {
+    userMediaStatusUpdate(data, 'audio', 'unmute');
+  });
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioStop, (data) => {
+    userMediaStatusUpdate(data, 'audio', 'closed');
+  });
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioMuted, (data) => {
+    userMediaStatusUpdate(data, 'audio', 'mute');
+  });
+
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioUnmute, (data) => {
+    userMediaStatusUpdate(data, 'audio', 'unmute');
+  });
+
+  rtcEngine.on(PanoRtc.RtcEngine.Events.getLocalVideo, (data) => {
+    if (data.data.videoTag) {
+      let label = document.createElement('p')
+      label.innerHTML='myself'
+      selfVideoContainer.appendChild(label);
+      data.data.videoTag.setAttribute('style', 'width:150px;height:150px; background: black');
+      selfVideoContainer.appendChild(data.data.videoTag);
+    }
+  });
 
   // init params
   PanoDemo.appId = document.getElementById('appID').value;
@@ -156,7 +395,11 @@ function leaveChannel(passive = false) {
   PanoDemo = {
     users: []
   };
-  rtcEngine = new PanoRtc.RtcEngine(appId);
+  let rtcServer = document.getElementById('rtcServer').value
+  rtcEngine = new PanoRtc.RtcEngine({
+    appId,
+    rtcServer: rtcServer || 'https://aisle.pano.video'
+  });
   window.rtcEngine = rtcEngine;
   button_joinChannel.disabled = false;
   button_joinChannel.style.color = 'green';
@@ -524,238 +767,6 @@ function switchFullScreen () {
   }
 }
 
-/*****************************************************************************************************************
- *                                         Events Handlers                                                       *
- *****************************************************************************************************************
- */
-
-rtcEngine.on(PanoRtc.RtcEngine.Events.joinChannelConfirm, data => {
-  if (data.result !== 'success') {
-    button_leaveChannel.disabled = true;
-    button_leaveChannel.style.color = 'black';
-    button_joinChannel.disabled = false;
-    button_joinChannel.style.color = 'green';
-    window.alert(`join channel failed because: ${data.message}`);
-    return;
-  }
-  console.log('join channel success!');
-  button_leaveChannel.disabled = false;
-  button_leaveChannel.style.color = 'red';
-  button_leaveChannel.onclick = () => leaveChannel();
-  button_mute_mic.disabled = false;
-  button_mute_screen.disabled = false;
-  button_audio.disabled = false;
-  button_video.disabled = false;
-  button_share.disabled = false;
-  button_subscribe_video.disabled = false;
-  button_unsubscribe_video.disabled = false;
-});
-
-rtcEngine.on(PanoRtc.RtcEngine.Events.userListChange, result => {
-  console.log('demo app: rosterChange', result);
-  PanoDemo.users = result.users.map(user => {
-    const oldUser = find(PanoDemo.users, { userId: user.userId }) || {};
-    return Object.assign(oldUser, user);
-  });
-  updateRoster();
-});
-
-rtcEngine.on(PanoRtc.RtcEngine.Events.userLeave, (data) => {
-  console.log('demo app: userleave,', data);
-  unSubscribeVideo(null, data.userId);
-});
-rtcEngine.on(PanoRtc.RtcEngine.Events.userJoin, (data) => {
-  console.log('demo app: userjoin,', data);
-});
-rtcEngine.on(PanoRtc.RtcEngine.Events.failedToSubscribeVideo, (data) =>
-  console.log('demo app: failed_to_subscribe_video,', data)
-);
-rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioMute, (data) =>
-  console.log('demo app: userAudioMute,', data)
-);
-rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioUnmute, (data) =>
-  console.log('demo app: userAudioUnmute,', data)
-);
-rtcEngine.on(PanoRtc.RtcEngine.Events.whiteboardAvailable, (data) =>
-  console.log('demo app: whiteboardAvailable', data)
-);
-rtcEngine.on(PanoRtc.RtcEngine.Events.whiteboardUnavailable, (data) =>
-  console.log('demo app: whiteboardUnavailable', data)
-);
-rtcEngine.on(PanoRtc.RtcEngine.Events.whiteboardStart, (data) =>
-  console.log('demo app: whiteboardStart', data)
-);
-rtcEngine.on(PanoRtc.RtcEngine.Events.whiteboardStop, (data) =>
-  console.log('demo app: whiteboardStop', data)
-);
-rtcEngine.on(PanoRtc.RtcEngine.Events.firstAudioDataReceived, (data) =>
-  console.log('demo app: firstAudioDataReceived', data)
-);
-rtcEngine.on(PanoRtc.RtcEngine.Events.channelFailover, (data) =>
-  console.error('demo app: channelFailover', data)
-);
-rtcEngine.on(PanoRtc.RtcEngine.Events.audioDeviceChange, (data) =>
-  console.log('demo app: audioDeviceChange', data)
-);
-rtcEngine.on(PanoRtc.RtcEngine.Events.videoDeviceChange, (data) =>
-  console.log('demo app: videoDeviceChange', data)
-);
-rtcEngine.on(PanoRtc.RtcEngine.Events.userExpelled, (data) =>
-  console.log('demo app: userExpelled', data)
-);
-rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioStart, (data) =>
-  console.log('demo app: userAudioStart', data)
-);
-rtcEngine.on(PanoRtc.RtcEngine.Events.channelCountDown, (data) => {
-  console.log('demo app: channelCountDown', data);
-  PanoDemo.remainsec = data.remainsec;
-  countdownDic.style.display = 'block';
-  countdownDic.innerHTML = `剩余时间: ${PanoDemo.remainsec}s`;
-  const interval = setInterval(() => {
-    if (PanoDemo.remainsec > 0) {
-      countdownDic.innerHTML = `剩余时间: ${--PanoDemo.remainsec}s`;
-    } else {
-      clearInterval(interval);
-    }
-  }, 1000);
-});
-rtcEngine.on(PanoRtc.RtcEngine.Events.leaveChannelIndication, (data) => {
-  console.log('demo app: leaveChannelIndication', data);
-  leaveChannel(true);
-});
-rtcEngine.on(PanoRtc.RtcEngine.Events.enumerateDeviceTimeout, (data) => {
-  console.log('demo app: enumerateDeviceTimeout', data);
-});
-// rtcEngine.on(PanoRtc.RtcEngine.Events.activeSpeakerListUpdate, data => console.log('demo app: activeSpeakerListUpdate', data))
-
-rtcEngine.on(PanoRtc.RtcEngine.Events.userVideoReceived, (data) => {
-  console.log('demo app: receive remote video,', data);
-  if (data.data.videoTag) {
-    if (data.data.videoTag.id === `video${data.data.userId}`) {
-      console.log(`get remote video again video${data.data.userId}`);
-      return;
-    }
-    data.data.videoTag.id = `video${data.data.userId}`;
-    const box = document.createElement('div');
-    const title = document.createElement('div');
-    title.innerHTML = 'user:' + data.data.userName + '(' + data.data.userId + ')';
-    title.setAttribute('style', 'width:320px;font-size:8px;opacity:0.6;top:-22px;left:0px; background:#00BCD4;position:relative');
-    box.setAttribute('style', 'width:320px;height:180px;display:inline-block');
-    box.setAttribute('id', 'video-user-' + data.data.userId);
-    box.ondblclick = () => {
-      if (!box.fullscreen) {
-        box.fullscreen = true;
-        box.setAttribute('style', 'z-index:100;top:0;left:0;width:320px;height:180px;display:inline-block;width:100%;height: 100%;position: absolute;');
-      } else {
-        box.fullscreen = false;
-        box.setAttribute('style', 'width:320px;height:180px;display:inline-block;');
-      }
-    };
-    data.data.videoTag.setAttribute('style', 'width:100%;height:100%;');
-    data.data.videoTag.onresize = function () { title.innerHTML = 'user:' + data.data.userName + '(' + data.data.userId + ') resolution:' + data.data.videoTag.videoWidth + 'x' + data.data.videoTag.videoHeight; };
-    box.appendChild(data.data.videoTag);
-    box.appendChild(title);
-    activeVideoContainer.appendChild(box);
-  }
-});
-
-rtcEngine.on(PanoRtc.RtcEngine.Events.userScreenReceived, (data) => {
-  console.log('demo app: receive remote share,', data);
-  if (data.data.videoTag) {
-    if (data.data.videoTag.id === `video${data.data.userId}`) {
-      console.log(`get remote video again video${data.data.userId}`);
-      return;
-    }
-    data.data.videoTag.id = `video${data.data.userId}`;
-    const box = document.createElement('div');
-    const title = document.createElement('div');
-    title.innerHTML = 'user:' + data.data.userName + '(' + data.data.userId + ')';
-    title.setAttribute('style', 'width:320px;font-size:8px;opacity:0.6;top:-22px;left:0px; background:#00BCD4;position:relative');
-    box.setAttribute('style', 'width:320px;height:180px;display:inline-block');
-    box.setAttribute('id', 'video-user-' + data.data.userId);
-    box.ondblclick = () => {
-      if (!box.fullscreen) {
-        box.fullscreen = true;
-        box.setAttribute('style', 'z-index:100;top:0;left:0;width:320px;height:180px;display:inline-block;width:100%;height: 100%;position: absolute;');
-      } else {
-        box.fullscreen = false;
-        box.setAttribute('style', 'width:320px;height:180px;display:inline-block;');
-      }
-    };
-    data.data.videoTag.setAttribute('style', 'width:100%;height:100%;');
-    data.data.videoTag.onresize = function () { title.innerHTML = 'user:' + data.data.userName + '(' + data.data.userId + ') resolution:' + data.data.videoTag.videoWidth + 'x' + data.data.videoTag.videoHeight; };
-    box.appendChild(data.data.videoTag);
-    box.appendChild(title);
-    activeVideoContainer.appendChild(box);
-  }
-});
-
-rtcEngine.on(PanoRtc.RtcEngine.Events.screenStopped, (data) => {
-  button_share.innerHTML = 'Start Share';
-  button_share.onclick = startShare;
-});
-
-rtcEngine.on(PanoRtc.RtcEngine.Events.getScreenMediaFailed, (data) => {
-  button_share.innerHTML = 'Start Share';
-  button_share.onclick = startShare;
-  console.error(data);
-});
-
-rtcEngine.on(PanoRtc.RtcEngine.Events.userScreenStart, (data) => {
-  userMediaStatusUpdate(data, 'share', 'unmute');
-});
-
-rtcEngine.on(PanoRtc.RtcEngine.Events.userScreenStop, (data) => {
-  userMediaStatusUpdate(data, 'share', 'closed');
-});
-rtcEngine.on(PanoRtc.RtcEngine.Events.userScreenMute, (data) => {
-  userMediaStatusUpdate(data, 'share', 'mute');
-});
-rtcEngine.on(PanoRtc.RtcEngine.Events.userScreenUnmute, (data) => {
-  userMediaStatusUpdate(data, 'share', 'unmute');
-});
-
-rtcEngine.on(PanoRtc.RtcEngine.Events.userVideoMuted, (data) => {
-  userMediaStatusUpdate(data, 'video', 'mute');
-});
-rtcEngine.on(PanoRtc.RtcEngine.Events.userVideoStart, (data) => {
-  userMediaStatusUpdate(data, 'video', 'unmute');
-});
-
-rtcEngine.on(PanoRtc.RtcEngine.Events.userVideoUnmuted, (data) => {
-  userMediaStatusUpdate(data, 'video', 'unmute');
-});
-rtcEngine.on(PanoRtc.RtcEngine.Events.userVideoStop, (data) => {
-  const v = document.getElementById('video-user-' + data.userId);
-  if (v) {
-    activeVideoContainer.removeChild(v);
-  }
-  userMediaStatusUpdate(data, 'video', 'closed');
-});
-
-rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioStart, (data) => {
-  userMediaStatusUpdate(data, 'audio', 'unmute');
-});
-rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioStop, (data) => {
-  userMediaStatusUpdate(data, 'audio', 'closed');
-});
-rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioMuted, (data) => {
-  userMediaStatusUpdate(data, 'audio', 'mute');
-});
-
-rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioUnmute, (data) => {
-  userMediaStatusUpdate(data, 'audio', 'unmute');
-});
-
-rtcEngine.on(PanoRtc.RtcEngine.Events.getLocalVideo, (data) => {
-  if (data.data.videoTag) {
-    let label = document.createElement('p')
-    label.innerHTML='myself'
-    selfVideoContainer.appendChild(label);
-    data.data.videoTag.setAttribute('style', 'width:150px;height:150px; background: black');
-    selfVideoContainer.appendChild(data.data.videoTag);
-  }
-});
 
 (function () {
   let rand = Math.random();

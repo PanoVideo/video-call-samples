@@ -17,6 +17,6 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "@pano.video/panortc": "^1.1.0"
+    "@pano.video/panortc": "^1.1.7"
   }
 }
