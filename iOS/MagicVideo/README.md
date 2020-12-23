@@ -18,4 +18,4 @@
 
 ## PANO SDK 要求
 
-- iOS 1.2.8 及以上版本 [SDK下载](https://developer.pano.video/download/#sdk)
+- iOS 1.2.9 及以上版本 [SDK下载](https://developer.pano.video/download/#sdk)
