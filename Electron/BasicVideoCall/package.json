@@ -1,13 +1,13 @@
 {
   "name": "panortc-demo",
-  "version": "0.2.2",
+  "version": "0.2.8",
   "description": "PANORTC DEMO",
   "main": "./src/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
-    "pack-win": "electron-packager . panortc-demo --win --arch=x64 --out ./OutApp --app-version 0.2.2 --electron-version=9.1.2 --overwrite",
-    "pack-mac": "electron-packager . panortc-demo --platform=darwin --arch=x64 --out ./OutApp --app-version 0.2.2 --electron-version=9.1.2 --overwrite"
+    "pack-win": "electron-packager . panortc-demo --win --arch=x64 --out ./OutApp --app-version 0.2.8 --electron-version=9.1.2 --overwrite",
+    "pack-mac": "electron-packager . panortc-demo --platform=darwin --arch=x64 --out ./OutApp --app-version 0.2.8 --electron-version=9.1.2 --overwrite"
   },
   "author": "PANO Cloud",
   "license": "MIT",
@@ -16,6 +16,6 @@
   },
   "dependencies": {
     "xmlhttprequest": "^1.8.0",
-    "@pano.video/panortc-electron-sdk": "^0.2.2"
+    "@pano.video/panortc-electron-sdk": "^0.2.8"
   }
 }

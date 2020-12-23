@@ -173,6 +173,27 @@
         this.mainViewInfo.isScreen = false;
       }
     }
+
+    stopRemoteUserViews(userId) {
+      if (!this.mainViewInfo.isFree && 
+          this.mainViewInfo.userId === userId &&
+          !this.mainViewInfo.isScreen) {
+        this.mainViewInfo.userId = null;
+        this.mainViewInfo.streamId = null;
+        this.mainViewInfo.isFree = true;
+        this.mainViewInfo.isScreen = false;
+        console.log('+++++ JS stopRemoteUserViews,main view, userId: ' + userId);
+      }
+      for (let vi of this.remoteViewInfoList) {
+        if (!vi.isFree && vi.userId === userId) {
+          vi.userId = null;
+          vi.streamId = null;
+          vi.isFree = true;
+          vi.view.style.display = 'none';
+          console.log('+++++ JS stopRemoteUserViews,remote view, userId: ' + userId);
+        }
+      }
+    }
   }
 
 

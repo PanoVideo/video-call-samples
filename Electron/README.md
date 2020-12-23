@@ -96,3 +96,6 @@ Electron source ID 'window:10618822:1', the ID '10618822' can set to PANO as SSI
 
 #### change dom view for video
 call startVideo/subscribeVideo with new dom view
+
+#### crashed on startVideo() when run in vscode console
+don't run demo in vscode, otherwise the camera privilege dialog won't popup.

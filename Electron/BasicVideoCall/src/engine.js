@@ -32,6 +32,8 @@
   rtcEngine.on('channelLeaveIndication', (result) => {
     console.log('+++++ JS onChannelLeaveIndication, result: ' + result);
     alert('Channel left, reason: ' + result);
+    viewMgr.freeViews();
+    userMgr.removeAllUsers();
     emitter.emit('channel-leave-indication', result);
   })
   rtcEngine.on('channelCountDown', (remain) => {
@@ -45,8 +47,7 @@
   })
   rtcEngine.on('userLeaveIndication', (userId, reason) => {
     console.log('+++++ JS onUserLeaveIndication, userId: ' + userId + ', reason: ' + reason);
-    viewMgr.stopRemoteUserVideoView(userId);
-    viewMgr.stopRemoteUserScreenView(userId);
+    viewMgr.stopRemoteUserViews(userId);
     userMgr.removeUser(userId);
     onUserLeave(userId);
     emitter.emit('user-leave-indication', userId);
@@ -128,13 +129,16 @@
     console.log('+++++ JS onFirstScreenDataReceived, userId: ' + userId)
   })
   rtcEngine.on('audioDeviceStateChanged', (deviceID, deviceType, deviceState) => {
-    console.log('+++++ JS onAudioDeviceStateChanged, id: ' + deviceID + ', type: ' + deviceType)
+    console.log('+++++ JS onAudioDeviceStateChanged, id: ' + deviceID + ', type: ' + deviceType + ', state: ' + deviceState)
   })
-  rtcEngine.on('audioDefaultDeviceChange', (deviceID, deviceType) => {
-    console.log('+++++ JS onAudioDefaultDeviceChange, id: ' + deviceID + ', type: ' + deviceType)
+  rtcEngine.on('audioDefaultDeviceChanged', (deviceID, deviceType) => {
+    console.log('+++++ JS onAudioDefaultDeviceChanged, id: ' + deviceID + ', type: ' + deviceType)
   })
   rtcEngine.on('videoDeviceStateChanged', (deviceID, deviceType, deviceState) => {
-    console.log('+++++ JS onVideoDeviceStateChanged, id: ' + deviceID + ', type: ' + deviceType)
+    console.log('+++++ JS onVideoDeviceStateChanged, id: ' + deviceID + ', type: ' + deviceType + ', state: ' + deviceState)
+  })
+  rtcEngine.on('videoCaptureStateChanged', (deviceID, captureState) => {
+    console.log('+++++ JS onVideoCaptureStateChanged, id: ' + deviceID + ', state: ' + captureState)
   })
   rtcEngine.on('channelFailover', (state) => {
     console.log('+++++ JS onChannelFailover, state: ' + state)
@@ -231,30 +235,6 @@
       audioScenario: 0
     });
 
-    // fetch PANO token from AppServer
-    /*let url = 'http://10.0.0.8:8080/app/login';
-    let xreq = new XMLHttpRequest();
-    xreq.open('POST', url, true);
-    xreq.setRequestHeader('Content-Type', 'application/json');
-    xreq.setRequestHeader('Cache-Control', 'no-cache');
-    xreq.setRequestHeader('Tracking-Id', uuidv4());
-    let o = {};
-    o['appId'] = appId;
-    o['channelId'] = channelId;
-    o['userId'] = userId;
-    //o['duration'] = 20;
-    //o['privileges'] = 49152;
-    xreq.send(JSON.stringify(o));
-    xreq.onreadystatechange = function () {
-      if (xreq.readyState == 4) {
-        if (xreq.status == 200) {
-          let token = xreq.responseText;
-          doJoinChannel(token, channelId, userId, userName);
-        } else {
-          console.log('+++++ JS failed to fetch token, status: ' + xreq.status + ', body: ' + xreq.responseText);
-        }
-      }
-    };*/
     doJoinChannel(token, channelId, userId, userName);
     addLocalUser(userId);
   }
@@ -262,6 +242,7 @@
   function leaveChannel() {
     rtcEngine.leaveChannel();
     viewMgr.freeViews();
+    userMgr.removeAllUsers();
     clearUserList();
   }
 
@@ -392,6 +373,11 @@
       this.userList.delete(userId);
       this.videoUserList.delete(userId);
       this.screenUserList.delete(userId);
+    }
+    removeAllUsers() {
+      this.userList = new Map();
+      this.videoUserList = new Map();
+      this.screenUserList = new Map();
     }
     addVideoUser(userId, profile) {
       this.videoUserList.set(userId, {userId: userId, profile: profile, subscribed: false});
