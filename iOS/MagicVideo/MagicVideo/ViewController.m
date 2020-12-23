@@ -80,13 +80,13 @@ static NSString * _server = @"api.pano.video";
         CGFloat halfWidth = self.view.frame.size.width/2.0f;
         CGFloat halfHeight = self.view.frame.size.height/2.0f;
         if (touchLoc.x<halfWidth && touchLoc.y<halfHeight) {
-            self.quadTransformIndex = TopLeft;
+            self.quadTransformIndex = kPanoQuadTopLeft;
         } else if (touchLoc.x>=halfWidth && touchLoc.y<halfHeight) {
-            self.quadTransformIndex = TopRight;
+            self.quadTransformIndex = kPanoQuadTopRight;
         } else if (touchLoc.x<halfWidth && touchLoc.y>=halfHeight) {
-            self.quadTransformIndex = BottomLeft;
+            self.quadTransformIndex = kPanoQuadBottomLeft;
         } else {
-            self.quadTransformIndex = BottomRight;
+            self.quadTransformIndex = kPanoQuadBottomRight;
         }
     } else if (sender.state == UIGestureRecognizerStateChanged) {
         CGPoint dist = [sender translationInView:self.view];
