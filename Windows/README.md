@@ -1,7 +1,7 @@
 # 拍乐云实时音视频 Demo 使用指导
 
 ## 1. 注册拍乐云账号
-进入拍乐云 [控制台](https://console.pano.video/) 页面，根据指导创建拍乐云账号。
+访问拍乐云 [注册账号](https://console.pano.video/#/user/register) 页面，根据指导创建拍乐云账号。
 
 ## 2. 创建应用
 登录拍乐云 [控制台](https://console.pano.video/) ，进入应用管理页面创建一个新的应用，获得 APPID，APPID 用以区分不同的实时音视频应用。
