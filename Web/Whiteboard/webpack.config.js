@@ -53,8 +53,8 @@ module.exports = {
       }
     ]
   },
-  entry: path.resolve(__dirname, './src/index.js'),
-  // entry: path.resolve(__dirname, './src/wbsdk.js'),
+  // entry: path.resolve(__dirname, './src/index.js'),
+  entry: path.resolve(__dirname, './src/wbsdk.js'),
   output: {
     path: path.resolve(__dirname, './index'),
     filename: 'index.js'
@@ -66,9 +66,9 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, './static'),
     hot: true,
-    inline: false,
     compress: true,
+    open: true,
     port: 8083,
-    host: '127.0.0.1'
+    host: '0.0.0.0',
   }
 }

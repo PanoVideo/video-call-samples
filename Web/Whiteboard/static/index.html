@@ -7,6 +7,7 @@
       content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"
     />
     <link href="assets/img/favicon.png" rel="icon" />
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_2231269_rbcjlpvcr1.css">
     <title>Pano Whiteboard</title>
     <style>
       * {
@@ -84,18 +85,6 @@
       .pano-control-panel {
         display: none;
       }
-      #close-btn {
-        display: none;
-        position: absolute;
-        left: 20px;
-        top: 20px;
-        padding: 8px 15px;
-        background: #f5f5f5;
-        border: none;
-        cursor: pointer;
-        border-radius: 5px;
-        z-index: 3;
-      }
       #note{
         border:1px solid #aaa;
         border-radius: 5px;
@@ -126,7 +115,7 @@
 
       <label>
         <span>User ID: </span>
-        <input name="userId" type="number" id="userId" />
+        <input name="userId" type="number" id="userId" value="" />
       </label>
 
       <label>
@@ -150,7 +139,6 @@
       <button class="join-btn" id="openWhiteboardBtn">open whiteboard</button>
     </div>
     <div id="whiteboardWrapper"></div>
-    <button id="close-btn">close</button>
     <script src="./index.js"></script>
   </body>
 </html>

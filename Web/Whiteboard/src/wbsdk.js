@@ -1,3 +1,6 @@
+/**
+ * 使用 @pano.video/whiteboard 使用白板的示例
+ */
 import * as PanoRtc from '@pano.video/whiteboard'
 // import Toolbar from './toolbar-react'
 import Toolbar from './toolbar-vue'
@@ -6,13 +9,13 @@ const joinForm = document.getElementById('joinForm')
 const joinBtn = document.getElementById('joinBtn')
 const whiteboardWrapper = document.getElementById('whiteboardWrapper')
 const panoControlPanel = document.getElementById('panoControlPanel')
-const closeBtn = document.getElementById('close-btn')
 const preBtnText = joinBtn.innerHTML
 const openWhiteboardBtn = document.getElementById('openWhiteboardBtn')
 const userIdInput = document.getElementById('userId')
+const userNameInput = document.getElementById('userName')
 
 userIdInput.value = Math.floor(Math.random() * 10000000) + ''
-// userIdInput.value = '190877'
+userNameInput.value = `pano-${userIdInput.value}`
 
 const rtcWhiteboard = new PanoRtc.RtcWhiteboard()
 window.rtcWhiteboard = rtcWhiteboard
@@ -42,7 +45,6 @@ function onOpenWhiteboard() {
   rtcWhiteboard.open(whiteboardWrapper)
   panoControlPanel.style.display = 'none'
   whiteboardWrapper.style.display = 'block'
-  closeBtn.style.display = 'block'
   Toolbar.install(rtcWhiteboard)
 }
 
@@ -81,14 +83,6 @@ joinBtn.onclick = async () => {
       // 正常情况下，如果用户加入的会议里已经有其他用户打开白板，那么别的用户会在刚加入 channel 时立即收到打开白板的指令
       // 如果没有人打开过白板，那么用户可以手动打开白板，sdk 会自动发送打开指令给别的 client
       openWhiteboardBtn.addEventListener('click', () => onOpenWhiteboard())
-
-      closeBtn.addEventListener('click', () => {
-        rtcWhiteboard.close()
-        whiteboardWrapper.style.display = 'none'
-        panoControlPanel.style.display = 'none'
-        panoControlPanel.style.display = 'block'
-        closeBtn.style.display = 'none'
-      })
     },
     (result) => {
       joinBtn.disabled = false

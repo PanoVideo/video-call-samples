@@ -4,7 +4,7 @@
   "description": "Basic whiteboard demo with panortc.",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.config.js --progress --colors --open"
+    "dev": "webpack-dev-server --config webpack.config.js --progress --colors"
   },
   "author": "villee.wang",
   "license": "MIT",
@@ -28,8 +28,8 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "@pano.video/panortc": "^1.0.2",
-    "@pano.video/whiteboard": "^1.0.2",
+    "@pano.video/panortc": "^1.2.7",
+    "@pano.video/whiteboard": "^1.2.6",
     "classnames": "^2.2.6",
     "element-ui": "^2.13.2",
     "lodash-es": "^4.17.15",

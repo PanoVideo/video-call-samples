@@ -1,3 +1,6 @@
+/**
+ * 使用 @pano.video/panortc 使用白板的示例
+ */
 import Panortc from '@pano.video/panortc'
 // import Toolbar from './toolbar-react'
 import Toolbar from './toolbar-vue'
@@ -6,7 +9,6 @@ const joinForm = document.getElementById('joinForm')
 const joinBtn = document.getElementById('joinBtn')
 const whiteboardWrapper = document.getElementById('whiteboardWrapper')
 const panoControlPanel = document.getElementById('panoControlPanel')
-const closeBtn = document.getElementById('close-btn')
 const preBtnText = joinBtn.innerHTML
 const openWhiteboardBtn = document.getElementById('openWhiteboardBtn')
 const userIdInput = document.getElementById('userId')
@@ -24,7 +26,6 @@ function onOpenWhiteboard(whiteboardClient) {
   whiteboardClient.open(whiteboardWrapper)
   panoControlPanel.style.display = 'none'
   whiteboardWrapper.style.display = 'block'
-  closeBtn.style.display = 'block'
   whiteboardClient && Toolbar.install(whiteboardClient)
 }
 const rtcEngine = new Panortc.RtcEngine(document.getElementById('appId'))
@@ -85,14 +86,6 @@ rtcEngine.on(PanoRtc.RtcEngine.Events.whiteboardAvailable, (data) => {
     onOpenWhiteboard(rtcWhiteboard)
   )
 
-  closeBtn.addEventListener('click', () => {
-    rtcWhiteboard.close()
-    whiteboardWrapper.style.display = 'none'
-    panoControlPanel.style.display = 'none'
-    panoControlPanel.style.display = 'block'
-    closeBtn.style.display = 'none'
-  })
-
   rtcWhiteboard.on(Panortc.RtcWhiteboard.Events.openStateChanged, () =>
     onOpenWhiteboard(rtcWhiteboard)
   )
@@ -130,7 +123,6 @@ rtcEngine.on(PanoRtc.RtcEngine.Events.whiteboardUnavailable, (data) => {
   console.log('demo app: whiteboardUnavailable', data)
   whiteboardWrapper.style.display = 'none'
   panoControlPanel.style.display = 'none'
-  closeBtn.style.display = 'none'
 })
 
 console.log(
