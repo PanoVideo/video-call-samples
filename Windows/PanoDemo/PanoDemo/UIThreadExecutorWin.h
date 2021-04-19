@@ -23,6 +23,7 @@ public:
 
     void async(Task task) override;
     void sync(Task task) override;
+    void post(Task task) override;
     bool inUIThread() const override;
 
 protected:

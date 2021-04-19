@@ -22,10 +22,10 @@ public:
     virtual void onUserScreenStart(uint64_t userId) = 0;
     virtual void onUserScreenStop(uint64_t userId) = 0;
 
-    virtual void onWhiteboardAvailable() = 0;
-    virtual void onWhiteboardUnavailable() = 0;
-    virtual void onWhiteboardStart() = 0;
-    virtual void onWhiteboardStop() = 0;
+    virtual void onWhiteboardAvailable() {}
+    virtual void onWhiteboardUnavailable() {}
+    virtual void onWhiteboardStart(const char *whiteboardId) {};
+    virtual void onWhiteboardStop(const char *whiteboardId) {};
 
     virtual void onAudioDeviceStateChanged(const char deviceID[panortc::kMaxDeviceIDLength],
         panortc::AudioDeviceType deviceType,
@@ -42,10 +42,6 @@ public:
     virtual void onAudioRecvStats(panortc::AudioRecvStats &stats) = 0;
     virtual void onVideoSendBweStats(panortc::VideoSendBweStats &stats) = 0;
     virtual void onVideoRecvBweStats(panortc::VideoRecvBweStats &stats) = 0;
-
-    virtual void onWhiteboardCreateDoc(panortc::QResult result, const char* fileId) = 0;
-    virtual void onWhiteboardDeleteDoc(panortc::QResult result, const char* fileId) = 0;
-    virtual void onWhiteboardSwitchDoc(panortc::QResult result, const char* fileId) = 0;
 
     virtual void asyncRunOnUIThread(Task t) = 0;
 };

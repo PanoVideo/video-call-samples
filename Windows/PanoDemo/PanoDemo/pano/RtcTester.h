@@ -13,7 +13,6 @@
 class TokenGetter;
 
 class RtcTester : public panortc::RtcEngine::Callback
-                , public panortc::RtcWhiteboard::Callback
                 , public panortc::MediaStatsObserver
 {
 public:
@@ -51,7 +50,7 @@ public:
     void unsubscribeScreen(uint64_t userId);
     void updateScreenOptimization(bool forMotion);
 
-    void startWhiteboard(void *view);
+    void startWhiteboard(void *view, panortc::RtcWhiteboard::Callback *cb);
     void stopWhiteboard();
 
     bool muteAudio();
@@ -169,12 +168,20 @@ public:
     }
 
     // Whiteboard command
+    void switchWhiteboard(const char* whiteboardId);
+    void scrollView(int dx, int dy);
     void setWbToolType(panortc::WBToolType type);
     void wbToolBoxUndo();
     void wbToolBoxRedo();
+    void wbToolClear();
+    void wbToolBoxImage(const char* imageUrl);
     void wbToolBoxBgImage(const char* imageUrl);
+    void wbToolBoxVideo(const char* mediaUrl);
+    void wbToolBoxAudio(const char* mediaUrl);
+    void wbToolSetStamp(const char* stampId);
     void wbToolBoxCreateDoc(const char* docUrl);
     void wbToolBoxSwitchDoc(const char* docUrl);
+    void wbToolBoxDeleteDoc(const char* docUrl);
     void wbToolBoxForeColor(int r, int g, int b);
     void wbToolBoxFontStyle(panortc::WBFontStyle style);
     void wbToolBoxFontSize(int size);
@@ -184,10 +191,19 @@ public:
     void wbToolBoxAddPage();
     void wbToolBoxDelPage();
     void wbToolBoxNextPage();
+    void wbToolBoxZoomIn();
+    void wbToolBoxZoomOut();
+    void wbToolAdminRole();
+
+    panortc::WBToolType getWbToolType();
     const char* getCurrentDoc();
+    const char* getDocName(const char* fileId);
+    void getPageInfo(int &currentPage, int &totalPage);
+
+    void addStampResource(const char* stampId, const char* path, bool resizable);
 
     bool createAudioMixingTask(int64_t taskId, const char *filename);
-    void destroyAduioMixingTask(int64_t taskId);
+    void destroyAudioMixingTask(int64_t taskId);
     bool startAudioMixingTask(int64_t taskId);
     bool updateAudioMixingTask(int64_t taskId);
     bool stopAudioMixingTask(int64_t taskId);
@@ -202,6 +218,7 @@ public:
     UserManager& getUserManager() { return userMgr_; }
 
     static RtcTester& instance();
+    void runOnUIThread(RtcViewController::Task t);
 
 public: // RtcEngine::Callback
     void onChannelJoinConfirm(panortc::QResult result) override;
@@ -230,6 +247,8 @@ public: // RtcEngine::Callback
     void onWhiteboardUnavailable() override;
     void onWhiteboardStart() override;
     void onWhiteboardStop() override;
+    void onWhiteboardStart(const char *whiteboardId) override;
+    void onWhiteboardStop(const char *whiteboardId) override;
 
     void onFirstAudioDataReceived(uint64_t userId) override;
     void onFirstVideoDataReceived(uint64_t userId) override;
@@ -241,23 +260,6 @@ public: // RtcEngine::Callback
         panortc::VideoDeviceType deviceType,
         panortc::VideoDeviceState deviceState) override;
     void onVideoSnapshotCompleted(bool succeed, uint64_t userId, const char *filename) override;
-
-public: // RtcWhiteboard::Callback
-    void onPageNumberChanged(panortc::WBPageNumber curPage, size_t totalPages) override;
-    void onImageStateChanged(const char *url, panortc::WBImageState state) override;
-    void onViewScaleChanged(float scale) override;
-    void onRoleTypeChanged(panortc::WBRoleType newRole) override;
-    void onContentUpdated() override;
-    void onSnapshotComplete(panortc::QResult result, const char *filename) override;
-    void onMessage(uint64_t userId, const char *msg, size_t size) override;
-    void onAddBackgroundImages(panortc::QResult result, const char *fileId) override;
-    void onDocTranscodeStatus(panortc::QResult result,
-                                const char *fileId,
-                                uint32_t progress,
-                                uint32_t totalPage) override;
-    void onCreateDoc(panortc::QResult result, const char *fileId) override;
-    void onDeleteDoc(panortc::QResult result, const char *fileId) override;
-    void onSwitchDoc(panortc::QResult result, const char *fileId) override;
 
 public: // MediaStatsObserver
     void onVideoSendStats(panortc::VideoSendStats &stats) override;

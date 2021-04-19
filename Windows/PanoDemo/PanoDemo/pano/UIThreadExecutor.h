@@ -12,6 +12,7 @@ public:
 
     virtual void async(Task task) = 0;
     virtual void sync(Task task) = 0;
+    virtual void post(Task task) = 0;
     virtual bool inUIThread() const = 0;
 };
 

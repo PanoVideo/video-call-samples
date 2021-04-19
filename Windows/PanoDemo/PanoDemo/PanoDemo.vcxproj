@@ -100,6 +100,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_WINDOWS;STRICT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>./pano;../../SDK/api</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -128,7 +129,8 @@
     </Manifest>
     <PostBuildEvent>
       <Command>xcopy /I /S /Y "..\..\SDK\lib\x86\PanoRtc.dll" "..\bin\$(Platform)\$(Configuration)"
-xcopy /I /S /Y "..\..\SDK\lib\x86\PanoHost.exe" "..\bin\$(Platform)\$(Configuration)"</Command>
+xcopy /I /S /Y "..\..\SDK\lib\x86\PanoHost.exe" "..\bin\$(Platform)\$(Configuration)"
+xcopy /I /S /Y ".\resource\*.*" "..\bin\$(Platform)\$(Configuration)\resource"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -141,6 +143,7 @@ xcopy /I /S /Y "..\..\SDK\lib\x86\PanoHost.exe" "..\bin\$(Platform)\$(Configurat
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_WINDOWS;STRICT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>./pano;../../SDK/api</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -168,7 +171,8 @@ xcopy /I /S /Y "..\..\SDK\lib\x86\PanoHost.exe" "..\bin\$(Platform)\$(Configurat
     </Manifest>
     <PostBuildEvent>
       <Command>xcopy /I /S /Y "..\..\SDK\lib\x64\PanoRtc.dll" "..\bin\$(Platform)\$(Configuration)"
-xcopy /I /S /Y "..\..\SDK\lib\x64\PanoHost.exe" "..\bin\$(Platform)\$(Configuration)"</Command>
+xcopy /I /S /Y "..\..\SDK\lib\x64\PanoHost.exe" "..\bin\$(Platform)\$(Configuration)"
+xcopy /I /S /Y ".\resource\*.*" "..\bin\$(Platform)\$(Configuration)\resource"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -180,6 +184,7 @@ xcopy /I /S /Y "..\..\SDK\lib\x64\PanoHost.exe" "..\bin\$(Platform)\$(Configurat
       <DebugInformationFormat />
       <PreprocessorDefinitions>WIN32;_WINDOWS;STRICT;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>./pano;../../SDK/api</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -207,7 +212,8 @@ xcopy /I /S /Y "..\..\SDK\lib\x64\PanoHost.exe" "..\bin\$(Platform)\$(Configurat
     </Manifest>
     <PostBuildEvent>
       <Command>xcopy /I /S /Y "..\..\SDK\lib\x86\PanoRtc.dll" "..\bin\$(Platform)\$(Configuration)"
-xcopy /I /S /Y "..\..\SDK\lib\x86\PanoHost.exe" "..\bin\$(Platform)\$(Configuration)"</Command>
+xcopy /I /S /Y "..\..\SDK\lib\x86\PanoHost.exe" "..\bin\$(Platform)\$(Configuration)"
+xcopy /I /S /Y ".\resource\*.*" "..\bin\$(Platform)\$(Configuration)\resource"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -219,6 +225,7 @@ xcopy /I /S /Y "..\..\SDK\lib\x86\PanoHost.exe" "..\bin\$(Platform)\$(Configurat
       <DebugInformationFormat />
       <PreprocessorDefinitions>_WINDOWS;STRICT;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>./pano;../../SDK/api</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -245,7 +252,8 @@ xcopy /I /S /Y "..\..\SDK\lib\x86\PanoHost.exe" "..\bin\$(Platform)\$(Configurat
     </Manifest>
     <PostBuildEvent>
       <Command>xcopy /I /S /Y "..\..\SDK\lib\x64\PanoRtc.dll" "..\bin\$(Platform)\$(Configuration)"
-xcopy /I /S /Y "..\..\SDK\lib\x64\PanoHost.exe" "..\bin\$(Platform)\$(Configuration)"</Command>
+xcopy /I /S /Y "..\..\SDK\lib\x64\PanoHost.exe" "..\bin\$(Platform)\$(Configuration)"
+xcopy /I /S /Y ".\resource\*.*" "..\bin\$(Platform)\$(Configuration)\resource"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

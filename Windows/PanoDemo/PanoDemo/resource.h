@@ -2,11 +2,23 @@
 // Microsoft Visual C++ generated include file.
 // Used by PanoDemo.rc
 //
+#define IDPANE_STATUS                   1
+#define IDPANE_VIEW                     2
 #define IDD_ABOUTBOX                    100
 #define IDR_MAINFRAME                   128
 #define IDD_MAINDLG                     129
 #define IDR_TOOLBAR_WB                  203
-#define IDC_BUTTON1                     1000
+#define IDR_TOOLBAR_HOLLOW              207
+#define IDR_TOOLBAR1                    212
+#define IDR_TOOLBAR_MEDIA               212
+#define IDR_TOOLBAR_COLOR               213
+#define IDR_MENU_COLOR                  214
+#define IDR_TOOLBAR_STAMP               214
+#define IDR_MENU_HOLLOW                 215
+#define IDR_TOOLBAR_ERASER              215
+#define IDR_MENU_STAMP                  216
+#define IDR_MENU_MEDIA                  217
+#define IDR_MENU_ERASER                 218
 #define IDC_START_CALL                  1000
 #define IDC_BTN_CAMERA_PREVIEW          1001
 #define IDC_EDIT_CHANNEL_ID             1002
@@ -92,13 +104,43 @@
 #define IDM_WB_IMAGE                    32811
 #define IDM_WB_DOC                      32812
 #define IDM_WB_DOC_LIST                 32813
+#define IDM_ZOOMIN                      32814
+#define IDM_ZOOMOUT                     32815
+#define IDM_WB_PLAY                     32816
+#define IDM_WB_LASER                    32817
+#define IDM_WB_VIDEO                    32818
+#define IDM_WB_AUDIO                    32819
+#define IDM_ADMIN                       32820
+#define IDM_WB_HOLLOW                   32825
+#define IDM_WB_STAMP_CROSS              32830
+#define IDM_WB_STAMP_PRAISE             32833
+#define IDM_WB_STAMP                    32835
+#define IDM_WB_COLOR_BLACK              32836
+#define IDM_WB_COLOR_RED                32837
+#define IDM_WB_COLOR_GREEN              32838
+#define IDM_WB_COLOR_BLUE               32839
+#define IDM_WB_COLOR_YELLOW             32840
+#define IDM_WB_STAMP_HEART              32841
+#define IDM_WB_STAMP_TICK               32842
+#define IDM_WB_STAMP_STAR               32843
+#define IDM_WB_MEDIA                    32845
+#define ID_MEDIA_IMAGE                  32846
+#define IDM_WB_BACKGROUND               32847
+#define IDM_WB_IMAGE_BACKGROUND         32848
+#define IDM_WB_ERASE                    32850
+#define IDM_WB_ERASER_ONE               32851
+#define IDM_WB_CLEAR                    32852
+#define IDM_WB_ERASER_BRUSH             32853
+#define IDM_WB_ERASER_CLEAR             32854
+#define IDM_WB_STAMP_HOUSE              32855
+#define IDM_WB_STAMP_ROCKET             32856
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        205
-#define _APS_NEXT_COMMAND_VALUE         32814
+#define _APS_NEXT_RESOURCE_VALUE        219
+#define _APS_NEXT_COMMAND_VALUE         32857
 #define _APS_NEXT_CONTROL_VALUE         1040
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

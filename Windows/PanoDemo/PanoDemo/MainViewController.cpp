@@ -9,11 +9,11 @@ const int kDefaultVideoViewWidth = 960;
 const int kDefaultVideoViewHeight = 540;
 
 /* Please refer to Glossary to understand the meaning of App ID, Channel ID, Token, User ID, and User Name:
-   è¯·å‚è€ƒ åè¯è§£é‡Š äº†è§£ App IDã€Channel IDã€Tokenã€User IDã€User Name çš„å«ä¹‰ï¼š
+   Çë²Î¿¼ Ãû´Ê½âÊÍ ÁË½â App ID¡¢Channel ID¡¢Token¡¢User ID¡¢User Name µÄº¬Òå£º
    https://developer.pano.video/getting-started/terms/
 
    You can use temporary token for temporary testing:
-   å¯ä»¥ä½¿ç”¨ ä¸´æ—¶token æ¥è¿›è¡Œä¸´æ—¶æµ‹è¯•ï¼šhttps://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token
+   ¿ÉÒÔÊ¹ÓÃ ÁÙÊ±token À´½øĞĞÁÙÊ±²âÊÔ£ºhttps://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token
 */
 const std::string kAppId = %% Your App ID %%;
 const std::string kPanoToken = %% Your Token %%;
@@ -51,7 +51,6 @@ bool MainViewController::init(CMainDlg *mainView)
 void MainViewController::onMainViewClosing()
 {
     leaveChannel();
-    whiteboardController_.close();
 }
 
 bool MainViewController::joinChannel()
@@ -239,19 +238,27 @@ void MainViewController::updateVideoCaptureDevice()
     RtcTester::instance().setVideoCaptureDevice(cameraDeviceId);
 }
 
-void MainViewController::startWhiteboard()
+void MainViewController::startWhiteboard(const char* whiteboardId)
 {
-    whiteboardController_.startWhiteboard();
+    if (whiteboardControllerMap_.end() == whiteboardControllerMap_.find(whiteboardId)) {
+        std::unique_ptr<WBViewController> wbctr(new WBViewController(whiteboardId));
+        wbctr->startWhiteboard();
+        whiteboardControllerMap_.emplace(whiteboardId, std::move(wbctr));
+    }
 }
 
-void MainViewController::stopWhiteboard()
+void MainViewController::stopWhiteboard(const char* whiteboardId)
 {
-    whiteboardController_.stopWhiteboard();
+    auto wbIter = whiteboardControllerMap_.find(whiteboardId);
+    if (whiteboardControllerMap_.end() != wbIter) {
+        wbIter->second->stopWhiteboard();
+        whiteboardControllerMap_.erase(wbIter);
+    }
 }
 
 void MainViewController::startAudioMixing(const char* filename) {
     if (audioMixingStarted_) {
-        RtcTester::instance().destroyAduioMixingTask(0);
+        RtcTester::instance().destroyAudioMixingTask(0);
         audioMixingStarted_ = false;
     }
     bool ret = RtcTester::instance().createAudioMixingTask(0, filename);
@@ -263,7 +270,7 @@ void MainViewController::startAudioMixing(const char* filename) {
 }
 
 void MainViewController::stopAudioMixing() {
-    RtcTester::instance().destroyAduioMixingTask(0);
+    RtcTester::instance().destroyAudioMixingTask(0);
     audioMixingStarted_ = false;
 }
 
@@ -558,7 +565,7 @@ void MainViewController::onWhiteboardAvailable()
 {
     taskExecutor_->async([=] {
         if (mainView_->IsWhiteboardEnabled()) {
-            startWhiteboard();
+            startWhiteboard("default");
         }
     });
 }
@@ -566,16 +573,26 @@ void MainViewController::onWhiteboardAvailable()
 void MainViewController::onWhiteboardUnavailable()
 {
     taskExecutor_->async([=] {
-        stopWhiteboard();
+        stopWhiteboard("default");
     });
 }
 
-void MainViewController::onWhiteboardStart()
+void MainViewController::onWhiteboardStart(const char *whiteboardId)
 {
+    taskExecutor_->async([=, str=std::string(whiteboardId)] {
+        if (mainView_->IsWhiteboardEnabled()) {
+            startWhiteboard(str.c_str());
+        }
+    });
 }
 
-void MainViewController::onWhiteboardStop()
+void MainViewController::onWhiteboardStop(const char *whiteboardId)
 {
+    taskExecutor_->async([=, str=std::string(whiteboardId)] {
+        if (mainView_->IsWhiteboardEnabled()) {
+            stopWhiteboard(str.c_str());
+        }
+    });
 }
 
 void MainViewController::onAudioDeviceStateChanged(const char deviceID[kMaxDeviceIDLength],
@@ -706,33 +723,12 @@ void MainViewController::onVideoRecvBweStats(panortc::VideoRecvBweStats &stats)
 
 }
 
-void MainViewController::onWhiteboardCreateDoc(panortc::QResult result, const char* fileId)
-{
-    taskExecutor_->async([=, str=std::string(fileId)] {
-        whiteboardController_.onCreateDoc(str.c_str());
-    });
-}
-
-void MainViewController::onWhiteboardDeleteDoc(panortc::QResult result, const char* fileId)
-{
-    taskExecutor_->async([=, str=std::string(fileId)] {
-        whiteboardController_.onDeleteDoc(str.c_str());
-    });
-}
-
-void MainViewController::onWhiteboardSwitchDoc(panortc::QResult result, const char* fileId)
-{
-    taskExecutor_->async([=, str = std::string(fileId)]{
-        whiteboardController_.onSwitchDoc(str.c_str());
-    });
-}
-
 void MainViewController::clearCallState()
 {
     if (localVideoView_.IsWindow()) {
         localVideoView_.ShowWindow(SW_HIDE);
     }
-    stopWhiteboard();
+    whiteboardControllerMap_.clear();
     remoteUserVideoViewMap_.clear();
     remoteUserScreenViewMap_.clear();
     channelJoined_ = false;

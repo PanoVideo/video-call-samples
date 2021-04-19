@@ -74,6 +74,15 @@ void UIThreadExecutorWin::sync(Task task)
     }
 }
 
+void UIThreadExecutorWin::post(Task task)
+{
+    {
+        LockGuard g(mutex_);
+        taskQueue_.push(std::move(task));
+    }
+    notifyUIThread();
+}
+
 void UIThreadExecutorWin::processTasks()
 {
     std::unique_lock<LockType> g(mutex_);

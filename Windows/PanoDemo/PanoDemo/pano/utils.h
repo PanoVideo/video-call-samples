@@ -20,6 +20,9 @@ std::string utf8_encode(const wchar_t *wstr);
 std::string utf8_encode(const std::wstring &wstr);
 std::wstring utf8_decode(const std::string &str);
 
+std::wstring getModulePathW();
+std::string getModulePathA();
+
 #endif
 
 template <typename T>

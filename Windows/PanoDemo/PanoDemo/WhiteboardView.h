@@ -6,32 +6,33 @@
 class CWhiteboardView : public CWindowImpl<CWhiteboardView>
 {
 public:
-	DECLARE_WND_CLASS(NULL)
+    DECLARE_WND_CLASS(NULL)
 
-	BOOL PreTranslateMessage(MSG* pMsg)
-	{
-		pMsg;
-		return FALSE;
-	}
+    BOOL PreTranslateMessage(MSG* pMsg)
+    {
+        pMsg;
+        return FALSE;
+    }
 
-	BEGIN_MSG_MAP(CView)
-		MESSAGE_HANDLER(WM_PAINT, OnPaint)
+    BEGIN_MSG_MAP(CView)
+        MESSAGE_HANDLER(WM_PAINT, OnPaint)
         MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBkgnd)
-	END_MSG_MAP()
+        MESSAGE_HANDLER(WM_HSCROLL, OnHScroll)
+        MESSAGE_HANDLER(WM_VSCROLL, OnVScroll)
+    END_MSG_MAP()
 
-// Handler prototypes (uncomment arguments if needed):
-//	LRESULT MessageHandler(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
-//	LRESULT CommandHandler(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
-//	LRESULT NotifyHandler(int /*idCtrl*/, LPNMHDR /*pnmh*/, BOOL& /*bHandled*/)
+    // Handler prototypes (uncomment arguments if needed):
+    //	LRESULT MessageHandler(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+    //	LRESULT CommandHandler(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+    //	LRESULT NotifyHandler(int /*idCtrl*/, LPNMHDR /*pnmh*/, BOOL& /*bHandled*/)
 
-	LRESULT OnPaint(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
-	{
-		//CPaintDC dc(m_hWnd);
+    LRESULT OnPaint(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
+    {
+        //CPaintDC dc(m_hWnd);
+        bHandled = FALSE;
 
-		//TODO: Add your drawing code here
-
-		return 0;
-	}
+        return 0;
+    }
 
     LRESULT OnEraseBkgnd(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
     {
@@ -45,5 +46,19 @@ public:
         myDC.SelectBrush(hOld);
         bHandled = bRes;
         return bRes;
+    }
+
+    LRESULT OnHScroll(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+    {
+        HWND hParent = GetParent();
+        ::PostMessage(hParent, WM_HSCROLL, wParam, NULL);
+        return 0;
+    }
+
+    LRESULT OnVScroll(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+    {
+        HWND hParent = GetParent();
+        ::PostMessage(hParent, WM_VSCROLL, wParam, NULL);
+        return 0;
     }
 };

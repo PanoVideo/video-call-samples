@@ -2,7 +2,6 @@
 #include <atlwin.h>
 #include <atlframe.h>
 #include <functional>
-#include <string>
 
 class VideoRenderWindow : public CFrameWindowImpl<VideoRenderWindow>
 {

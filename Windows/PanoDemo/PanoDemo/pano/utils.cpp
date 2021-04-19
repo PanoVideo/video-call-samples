@@ -61,6 +61,38 @@ std::wstring utf8_decode(const std::string &str)
     return wstrTo;
 }
 
+std::wstring getModulePathW()
+{
+    wchar_t file_name[2048] = { 0 };
+    auto count = ::GetModuleFileNameW(NULL, file_name, ARRAYSIZE(file_name));
+    if (count == 0) {
+        return L"";
+    }
+    std::wstring str_path = file_name;
+    auto pos = str_path.rfind(L"\\");
+    if (pos == std::string::npos) {
+        return L"";
+    }
+    str_path.erase(pos);
+    return str_path;
+}
+
+std::string getModulePathA()
+{
+    char file_name[2048] = { 0 };
+    auto count = ::GetModuleFileNameA(NULL, file_name, ARRAYSIZE(file_name));
+    if (count == 0) {
+        return "";
+    }
+    std::string str_path = file_name;
+    auto pos = str_path.rfind("\\");
+    if (pos == std::string::npos) {
+        return "";
+    }
+    str_path.erase(pos);
+    return str_path;
+}
+
 #endif
 
 

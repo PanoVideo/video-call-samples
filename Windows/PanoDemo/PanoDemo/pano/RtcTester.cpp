@@ -10,10 +10,6 @@ using namespace panortc;
 RtcTester::RtcTester()
 {
     rtcEngine_.reset(createPanoRtcEngine());
-    if (rtcEngine_) {
-        auto wbEngine = rtcEngine_->getWhiteboardEngine();
-        wbEngine->setCallback(this);
-    }
 }
 
 RtcTester::~RtcTester()
@@ -233,17 +229,33 @@ void RtcTester::updateScreenOptimization(bool forMotion)
     }
 }
 
-void RtcTester::startWhiteboard(void *view)
+void RtcTester::startWhiteboard(void *view, panortc::RtcWhiteboard::Callback *cb)
 {
     if (rtcEngine_) {
         auto *wbEngine = rtcEngine_->getWhiteboardEngine();
+        wbEngine->setCallback(cb);
         wbEngine->open(view);
 
         wbEngine->setFillType(WBFillType::NONE);
         wbEngine->setFillColor({0.5f, 0.5f, 0.5f, 0.5f});
 
         wbEngine->setForegroundColor({192.f/255, 0, 123.f/255, 1});
-        wbEngine->setBackgroundColor({ 1, 1, 1, 1 });
+        wbEngine->setBackgroundColor({ 1, 1, 0.99, 1 });
+    }
+}
+
+void RtcTester::switchWhiteboard(const char* whiteboardId)
+{
+    if (rtcEngine_) {
+        rtcEngine_->switchWhiteboardEngine(whiteboardId);
+    }
+}
+
+void RtcTester::scrollView(int dx, int dy)
+{
+    if (rtcEngine_) {
+        auto *wbEngine = rtcEngine_->getWhiteboardEngine();
+        wbEngine->scrollView(dx, dy);
     }
 }
 
@@ -271,19 +283,67 @@ void RtcTester::wbToolBoxRedo()
     }
 }
 
+void  RtcTester::wbToolClear()
+{
+    if (rtcEngine_) {
+        auto wbEngine = rtcEngine_->getWhiteboardEngine();
+        wbEngine->clearContents(true, WBClearType::ALL);
+    }
+}
+
+void RtcTester::wbToolBoxImage(const char* imageUrl)
+{
+    if (rtcEngine_) {
+        auto wbEngine = rtcEngine_->getWhiteboardEngine();
+        wbEngine->addImageFile(imageUrl);
+    }
+}
+
 void RtcTester::wbToolBoxBgImage(const char* imageUrl)
 {
     if (rtcEngine_) {
-        auto *wbEngine = rtcEngine_->getWhiteboardEngine();
+        auto wbEngine = rtcEngine_->getWhiteboardEngine();
         wbEngine->setBackgroundImage(imageUrl);
+    }
+}
+
+void RtcTester::wbToolBoxVideo(const char* mediaUrl)
+{
+    if (rtcEngine_) {
+        auto wbEngine = rtcEngine_->getWhiteboardEngine();
+        wbEngine->addVideoFile(mediaUrl);
+    }
+}
+
+void RtcTester::wbToolBoxAudio(const char* mediaUrl)
+{
+    if (rtcEngine_) {
+        auto wbEngine = rtcEngine_->getWhiteboardEngine();
+        wbEngine->addAudioFile(mediaUrl);
+    }
+}
+
+void RtcTester::wbToolSetStamp(const char* stampId)
+{
+    if (rtcEngine_) {
+        auto wbEngine = rtcEngine_->getWhiteboardEngine();
+        wbEngine->setToolType(WBToolType::STAMP);
+        wbEngine->setStamp(stampId);
     }
 }
 
 void RtcTester::wbToolBoxCreateDoc(const char* docUrl)
 {
     if (rtcEngine_) {
+        size_t pos = std::string(docUrl).find_last_of('.');
+        auto suffix = std::string(docUrl).substr(pos);
+        if (suffix == ".pptx" || suffix == ".ppt") {
+            auto *wbEngine = rtcEngine_->getWhiteboardEngine();
+            wbEngine->createDoc(docUrl, { WBDocConvertType::H5, false });
+        } else {
         auto *wbEngine = rtcEngine_->getWhiteboardEngine();
-        wbEngine->createDoc(docUrl);
+            wbEngine->createDoc(docUrl, { WBDocConvertType::JPG, false });
+        }
     }
 }
 
@@ -292,6 +352,14 @@ void RtcTester::wbToolBoxSwitchDoc(const char* docUrl)
     if (rtcEngine_) {
         auto *wbEngine = rtcEngine_->getWhiteboardEngine();
         wbEngine->switchDoc(docUrl);
+    }
+}
+
+void RtcTester::wbToolBoxDeleteDoc(const char* docUrl)
+{
+    if (rtcEngine_) {
+        auto *wbEngine = rtcEngine_->getWhiteboardEngine();
+        wbEngine->deleteDoc(docUrl);
     }
 }
 
@@ -335,6 +403,15 @@ void RtcTester::wbToolBoxSnapshot(const char *outputDir)
     }
 }
 
+panortc::WBToolType RtcTester::getWbToolType()
+{
+    if (rtcEngine_) {
+        auto *wbEngine = rtcEngine_->getWhiteboardEngine();
+        return wbEngine->getToolType();
+    }
+    return panortc::WBToolType::NONE;
+}
+
 const char* RtcTester::getCurrentDoc()
 {
     if (rtcEngine_) {
@@ -342,6 +419,35 @@ const char* RtcTester::getCurrentDoc()
         return wbEngine->getCurrentFileId();
     }
     return nullptr;
+}
+
+const char* RtcTester::getDocName(const char* fileId)
+{
+    if (rtcEngine_) {
+        auto *wbEngine = rtcEngine_->getWhiteboardEngine();
+        auto info = wbEngine->getFileInfo(fileId);
+        if (info) {
+            return info->name;
+        }
+    }
+    return nullptr;
+}
+
+void RtcTester::getPageInfo(int &currentPage, int &totalPage)
+{
+    if (rtcEngine_) {
+        auto *wbEngine = rtcEngine_->getWhiteboardEngine();
+        currentPage = wbEngine->getCurrentPageNumber();
+        totalPage = wbEngine->getTotalNumberOfPages();
+    }
+}
+
+void RtcTester::addStampResource(const char* stampId, const char* path, bool resizable)
+{
+    if (rtcEngine_) {
+        auto wbEngine = rtcEngine_->getWhiteboardEngine();
+        wbEngine->addStamp({ stampId, path, resizable });
+    }
 }
 
 bool RtcTester::createAudioMixingTask(int64_t taskId, const char *filename) {
@@ -355,7 +461,7 @@ bool RtcTester::createAudioMixingTask(int64_t taskId, const char *filename) {
     return false;
 }
 
-void RtcTester::destroyAduioMixingTask(int64_t taskId) {
+void RtcTester::destroyAudioMixingTask(int64_t taskId) {
     if (rtcEngine_) {
         auto *mix = rtcEngine_->getAudioMixingManager();
         if (mix) {
@@ -481,11 +587,40 @@ void RtcTester::wbToolBoxNextPage()
     }
 }
 
+void RtcTester::wbToolBoxZoomIn()
+{
+    if (rtcEngine_) {
+        auto *wbEngine = rtcEngine_->getWhiteboardEngine();
+        float scale = wbEngine->getCurrentScaleFactor();
+        scale += 0.1f;
+        wbEngine->setCurrentScaleFactor(scale);
+    }
+}
+
+void RtcTester::wbToolBoxZoomOut()
+{
+    if (rtcEngine_) {
+        auto *wbEngine = rtcEngine_->getWhiteboardEngine();
+        float scale = wbEngine->getCurrentScaleFactor();
+        scale -= 0.1f;
+        wbEngine->setCurrentScaleFactor(scale);
+    }
+}
+
+void RtcTester::wbToolAdminRole()
+{
+    if (rtcEngine_) {
+        auto wbEngine = rtcEngine_->getWhiteboardEngine();
+        wbEngine->setRoleType(WBRoleType::ADMIN);
+    }
+}
+
 void RtcTester::stopWhiteboard()
 {
     if (rtcEngine_) {
         auto *wbEngine = rtcEngine_->getWhiteboardEngine();
         wbEngine->close();
+        wbEngine->setCallback(nullptr);
     }
 }
 
@@ -812,14 +947,28 @@ void RtcTester::onWhiteboardUnavailable()
 void RtcTester::onWhiteboardStart()
 {
     if (viewController_) {
-        viewController_->onWhiteboardStart();
+        viewController_->onWhiteboardStart("default");
     }
 }
 
 void RtcTester::onWhiteboardStop()
 {
     if (viewController_) {
-        viewController_->onWhiteboardStop();
+        viewController_->onWhiteboardStop("default");
+    }
+}
+
+void RtcTester::onWhiteboardStart(const char *whiteboardId)
+{
+    if (viewController_) {
+        viewController_->onWhiteboardStart(whiteboardId);
+    }
+}
+
+void RtcTester::onWhiteboardStop(const char *whiteboardId)
+{
+    if (viewController_) {
+        viewController_->onWhiteboardStop(whiteboardId);
     }
 }
 
@@ -857,65 +1006,6 @@ void RtcTester::onVideoDeviceStateChanged(const char deviceID[kMaxDeviceIDLength
 }
 
 void RtcTester::onVideoSnapshotCompleted(bool succeed, uint64_t userId, const char *filename) {
-}
-
-//////////////////////////////////////////////////////////////////
-// RtcWhiteboard::Callback
-void RtcTester::onPageNumberChanged(panortc::WBPageNumber curPage, size_t totalPages)
-{}
-
-void RtcTester::onImageStateChanged(const char *url, panortc::WBImageState state)
-{}
-
-void RtcTester::onViewScaleChanged(float scale)
-{}
-
-void RtcTester::onRoleTypeChanged(panortc::WBRoleType newRole)
-{}
-
-void RtcTester::onContentUpdated()
-{}
-
-void RtcTester::onSnapshotComplete(panortc::QResult result, const char *filename)
-{}
-
-void RtcTester::onMessage(uint64_t userId, const char *msg, size_t size)
-{}
-
-void RtcTester::onAddBackgroundImages(panortc::QResult result, const char *fileId)
-{}
-
-void RtcTester::onDocTranscodeStatus(panortc::QResult result,
-                                const char *filePath,
-                                uint32_t progress,
-                                uint32_t totalPage)
-{}
-
-void RtcTester::onCreateDoc(panortc::QResult result, const char *fileId)
-{
-    if (panortc::QResult::OK == result && fileId) {
-        if (viewController_) {
-            viewController_->onWhiteboardCreateDoc(result, fileId);
-        }
-    }
-}
-
-void RtcTester::onDeleteDoc(panortc::QResult result, const char *fileId)
-{
-    if (panortc::QResult::OK == result && fileId) {
-        if (viewController_) {
-            viewController_->onWhiteboardDeleteDoc(result, fileId);
-        }
-    }
-}
-
-void RtcTester::onSwitchDoc(panortc::QResult result, const char *fileId)
-{
-    if (panortc::QResult::OK == result && fileId) {
-        if (viewController_) {
-            viewController_->onWhiteboardSwitchDoc(result, fileId);
-        }
-    }
 }
 
 //////////////////////////////////////////////////////////////////
@@ -981,9 +1071,15 @@ void RtcTester::onSystemStats(SystemStats &stats)
 
 }
 
-
 RtcTester& RtcTester::instance()
 {
     static RtcTester s_instance;
     return s_instance;
+}
+
+void RtcTester::runOnUIThread(RtcViewController::Task t)
+{
+    if (viewController_) {
+        viewController_->asyncRunOnUIThread(std::move(t));
+    }
 }

@@ -19,6 +19,109 @@
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_TOOLBAR_HOLLOW TOOLBAR 24, 24
+BEGIN
+    BUTTON      IDM_WB_LINE
+    BUTTON      IDM_WB_ARROW
+    BUTTON      IDM_WB_RECTANGLE
+    BUTTON      IDM_WB_ELLIPSE
+    BUTTON      IDM_WB_POLYLINE
+    BUTTON      IDM_WB_CURVE
+    BUTTON      IDM_WB_POLYGON
+END
+
+IDR_TOOLBAR_MEDIA TOOLBAR 24, 24
+BEGIN
+    BUTTON      IDM_WB_IMAGE
+    BUTTON      IDM_WB_IMAGE_BACKGROUND
+    BUTTON      IDM_WB_VIDEO
+    BUTTON      IDM_WB_AUDIO
+END
+
+IDR_TOOLBAR_WB TOOLBAR 24, 24
+BEGIN
+    BUTTON      IDM_WB_SELECT
+    BUTTON      IDM_WB_TEXT
+    BUTTON      IDM_WB_PEN
+    BUTTON      IDM_WB_HOLLOW
+    BUTTON      IDM_WB_PLAY
+    BUTTON      IDM_WB_LASER
+    SEPARATOR
+    BUTTON      IDM_WB_FORE_COLOR
+    BUTTON      IDM_WB_FONT
+    BUTTON      IDM_WB_BOLD
+    BUTTON      IDM_WB_ITALIC
+    BUTTON      IDM_WB_LINE_WIDTH
+    SEPARATOR
+    BUTTON      IDM_WB_UNDO
+    BUTTON      IDM_WB_REDO
+    BUTTON      IDM_WB_ERASER
+    BUTTON      IDM_WB_MEDIA
+    BUTTON      IDM_WB_STAMP
+    BUTTON      IDM_WB_DOC
+    BUTTON      IDM_WB_DOC_LIST
+    SEPARATOR
+    BUTTON      IDM_WB_SNAPSHOT
+    BUTTON      IDM_PREV_PAGE
+    BUTTON      IDM_ADD_PAGE
+    BUTTON      IDM_DEL_PAGE
+    BUTTON      IDM_NEXT_PAGE
+    BUTTON      IDM_ZOOMIN
+    BUTTON      IDM_ZOOMOUT
+    BUTTON      IDM_ADMIN
+END
+
+IDR_TOOLBAR_COLOR TOOLBAR 24, 24
+BEGIN
+    BUTTON      IDM_WB_COLOR_RED
+    BUTTON      IDM_WB_COLOR_GREEN
+    BUTTON      IDM_WB_COLOR_BLUE
+    BUTTON      IDM_WB_COLOR_YELLOW
+    BUTTON      IDM_WB_COLOR_BLACK
+END
+
+IDR_TOOLBAR_STAMP TOOLBAR 24, 24
+BEGIN
+    BUTTON      IDM_WB_STAMP_CROSS
+    BUTTON      IDM_WB_STAMP_HEART
+    BUTTON      IDM_WB_STAMP_STAR
+    BUTTON      IDM_WB_STAMP_TICK
+    BUTTON      IDM_WB_STAMP_PRAISE
+    BUTTON      IDM_WB_STAMP_HOUSE
+    BUTTON      IDM_WB_STAMP_ROCKET
+END
+
+IDR_TOOLBAR_ERASER TOOLBAR 24, 24
+BEGIN
+    BUTTON      IDM_WB_ERASER_ONE
+    BUTTON      IDM_WB_ERASER_CLEAR
+    BUTTON      IDM_WB_ERASER_BRUSH
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_TOOLBAR_HOLLOW      BITMAP                  "res\\toolbar_hollow.bmp"
+
+IDR_TOOLBAR_MEDIA       BITMAP                  "res\\toolbar_media.bmp"
+
+IDR_TOOLBAR_WB          BITMAP                  "res\\toolbar_wb.bmp"
+
+IDR_TOOLBAR_COLOR       BITMAP                  "res\\toolbar_color.bmp"
+
+IDR_TOOLBAR_STAMP       BITMAP                  "res\\toolbar_stamp.bmp"
+
+IDR_TOOLBAR_ERASER      BITMAP                  "res\\toolbar_eraser.bmp"
+
+
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -219,51 +322,69 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// Toolbar
+// Menu
 //
 
-IDR_TOOLBAR_WB TOOLBAR 16, 16
+IDR_MENU_COLOR MENU
 BEGIN
-    BUTTON      IDM_WB_SELECT
-    BUTTON      IDM_WB_TEXT
-    BUTTON      IDM_WB_PEN
-    BUTTON      IDM_WB_LINE
-    BUTTON      IDM_WB_ARROW
-    BUTTON      IDM_WB_RECTANGLE
-    BUTTON      IDM_WB_ELLIPSE
-    BUTTON      IDM_WB_ARC
-    BUTTON      IDM_WB_CURVE
-    BUTTON      IDM_WB_POLYLINE
-    BUTTON      IDM_WB_POLYGON
-    SEPARATOR
-    BUTTON      IDM_WB_FORE_COLOR
-    BUTTON      IDM_WB_FONT
-    BUTTON      IDM_WB_BOLD
-    BUTTON      IDM_WB_ITALIC
-    BUTTON      IDM_WB_LINE_WIDTH
-    SEPARATOR
-    BUTTON      IDM_WB_UNDO
-    BUTTON      IDM_WB_REDO
-    BUTTON      IDM_WB_ERASER
-    BUTTON      IDM_WB_BRUSH
-    BUTTON      IDM_WB_IMAGE
-    BUTTON      IDM_WB_DOC
-    BUTTON      IDM_WB_DOC_LIST
-    SEPARATOR
-    BUTTON      IDM_WB_SNAPSHOT
-    BUTTON      IDM_PREV_PAGE
-    BUTTON      IDM_ADD_PAGE
-    BUTTON      IDM_DEL_PAGE
-    BUTTON      IDM_NEXT_PAGE
+    POPUP "Color"
+BEGIN
+        MENUITEM "RED",                         IDM_WB_COLOR_RED
+        MENUITEM "Green",                       IDM_WB_COLOR_GREEN
+        MENUITEM "Blue",                        IDM_WB_COLOR_BLUE
+        MENUITEM "Yellow",                      IDM_WB_COLOR_YELLOW
+        MENUITEM "Black",                       IDM_WB_COLOR_BLACK
+    END
 END
 
+IDR_MENU_HOLLOW MENU
+BEGIN
+    POPUP "Hollow"
+    BEGIN
+        MENUITEM "Line",                        IDM_WB_LINE
+        MENUITEM "Arrow",                       IDM_WB_ARROW
+        MENUITEM "Rectangle",                   IDM_WB_RECTANGLE
+        MENUITEM "Ellipse",                     IDM_WB_ELLIPSE
+        MENUITEM "Polyline",                    IDM_WB_POLYLINE
+        MENUITEM "Curve",                       IDM_WB_CURVE
+        MENUITEM "Polygon",                     IDM_WB_POLYGON
+    END
+END
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// Bitmap
-//
+IDR_MENU_STAMP MENU
+BEGIN
+    POPUP "Stamp"
+    BEGIN
+        MENUITEM "Cross",                       IDM_WB_STAMP_CROSS
+        MENUITEM "Heart",                       IDM_WB_STAMP_HEART
+        MENUITEM "Star",                        IDM_WB_STAMP_STAR
+        MENUITEM "Tick",                        IDM_WB_STAMP_TICK
+        MENUITEM "Praise",                      IDM_WB_STAMP_PRAISE
+        MENUITEM "House",                       IDM_WB_STAMP_HOUSE
+        MENUITEM "Rocket",                      IDM_WB_STAMP_ROCKET
+    END
+END
 
-IDR_TOOLBAR_WB          BITMAP                  "res\\toolbar_wb.bmp"
+IDR_MENU_MEDIA MENU
+BEGIN
+    POPUP "Media"
+    BEGIN
+        MENUITEM "Image",                       IDM_WB_IMAGE
+        MENUITEM "Background",                  IDM_WB_IMAGE_BACKGROUND
+        MENUITEM "Video",                       IDM_WB_VIDEO
+        MENUITEM "Audio",                       IDM_WB_AUDIO
+    END
+END
+
+IDR_MENU_ERASER MENU
+BEGIN
+    POPUP "Stamp"
+    BEGIN
+        MENUITEM "Eraser",                      IDM_WB_ERASER_ONE
+        MENUITEM "Clear",                       IDM_WB_ERASER_CLEAR
+        MENUITEM "Brush",                       IDM_WB_ERASER_BRUSH
+    END
+END
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -352,6 +473,48 @@ END
 STRINGTABLE
 BEGIN
     ATL_IDS_MRU_FILE        "Open this document"
+END
+
+STRINGTABLE
+BEGIN
+    IDPANE_STATUS           "Status pane in status bar"
+    IDPANE_VIEW             "View pane in status bar"
+END
+
+STRINGTABLE
+BEGIN
+    IDM_WB_SELECT           "Select"
+    IDM_WB_PEN              "Pen"
+    IDM_WB_ERASER           "Eraser"
+    IDM_WB_TEXT             "Text"
+    IDM_WB_RECTANGLE        "Rectangle"
+    IDM_WB_LINE             "Line"
+    IDM_WB_ELLIPSE          "Ellipse"
+    IDM_WB_UNDO             "Undo"
+    IDM_WB_REDO             "Redo"
+    IDM_WB_FORE_COLOR       "Foreground Color"
+    IDM_WB_BOLD             "Bold"
+    IDM_WB_ITALIC           "Italic"
+    IDM_WB_FONT             "Font"
+    IDM_WB_BRUSH            "Brush"
+    IDM_WB_ARROW            "Arrow"
+    IDM_WB_ARC              "Arc"
+    IDM_WB_CURVE            "Curve"
+    IDM_WB_POLYLINE         "Polyline"
+    IDM_WB_POLYGON          "Polygon"
+    IDM_WB_SNAPSHOT         "Snapshot"
+    IDM_PREV_PAGE           "Previous Page"
+    IDM_ADD_PAGE            "Add Page"
+    IDM_DEL_PAGE            "Delete Page"
+    IDM_NEXT_PAGE           "Next Page"
+    IDM_WB_IMAGE            "Upload Image"
+    IDM_WB_DOC              "Upload Doc"
+    IDM_ZOOMIN              "Zoom In"
+    IDM_ZOOMOUT             "Zoom Out"
+    IDM_WB_LASER            "Laser"
+    IDM_WB_VIDEO            "Upload Video"
+    IDM_WB_AUDIO            "Upload Audio"
+    IDM_ADMIN               "Request Admin"
 END
 
 #endif    // English (United States) resources

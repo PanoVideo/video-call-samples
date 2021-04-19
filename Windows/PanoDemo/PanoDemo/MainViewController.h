@@ -51,8 +51,8 @@ public:
     void updateAudioPlayoutDevice();
     void updateVideoCaptureDevice();
 
-    void startWhiteboard();
-    void stopWhiteboard();
+    void startWhiteboard(const char* whiteboardId);
+    void stopWhiteboard(const char* whiteboardId);
 
     void updateLogsUploadFlag();
     void updateAudioDumpUploadFlag();
@@ -88,8 +88,8 @@ public:
 
     void onWhiteboardAvailable() override;
     void onWhiteboardUnavailable() override;
-    void onWhiteboardStart() override;
-    void onWhiteboardStop() override;
+    void onWhiteboardStart(const char *whiteboardId) override;
+    void onWhiteboardStop(const char *whiteboardId) override;
 
     void onAudioDeviceStateChanged(const char deviceID[panortc::kMaxDeviceIDLength],
         panortc::AudioDeviceType deviceType,
@@ -106,10 +106,6 @@ public:
     void onAudioRecvStats(panortc::AudioRecvStats &stats) override;
     void onVideoSendBweStats(panortc::VideoSendBweStats &stats) override;
     void onVideoRecvBweStats(panortc::VideoRecvBweStats &stats) override;
-
-    void onWhiteboardCreateDoc(panortc::QResult result, const char* fileId) override;
-    void onWhiteboardDeleteDoc(panortc::QResult result, const char* fileId) override;
-    void onWhiteboardSwitchDoc(panortc::QResult result, const char* fileId) override;
 
     void asyncRunOnUIThread(Task t) override
     {
@@ -145,8 +141,9 @@ protected:
     bool audioTestStarted_ = false;
     bool audioMixingStarted_ = false;
 
+    std::unordered_map<std::string, std::unique_ptr<WBViewController>> whiteboardControllerMap_;
+
     std::unordered_map<uint64_t, std::unique_ptr<RemoteVideoWindow>> remoteUserVideoViewMap_;
     std::unordered_map<uint64_t, std::unique_ptr<RemoteVideoWindow>> remoteUserScreenViewMap_;
-    WBViewController whiteboardController_;
 };
 
