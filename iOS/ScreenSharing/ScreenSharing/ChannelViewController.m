@@ -56,6 +56,8 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         if (result == kPanoResultOK) {
             [self displayMessage:[NSString stringWithFormat:@"Join channel successfully."]];
+            // 开启音频以后台保活，避免主App退至后台后被系统挂起，导致发送数据暂停
+            [self.engineKit startAudio];
         } else {
             [self displayMessage:[NSString stringWithFormat:@"Join channel failed with error: %ld.", (long)result]];
         }
@@ -71,6 +73,32 @@
 - (void)onChannelFailover:(PanoFailoverState)state {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self displayMessage:[NSString stringWithFormat:@"Failover channel with state: %ld.", (long)state]];
+    });
+}
+
+- (void)onUserJoinIndication:(UInt64)userId
+                    withName:(NSString * _Nullable)userName {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) join channel.", userName, userId]];
+        [self.userManager addUser:userId withName:userName];
+    });
+}
+
+- (void)onUserLeaveIndication:(UInt64)userId
+                   withReason:(PanoUserLeaveReason)reason {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) leave channel with reason: %ld.", nil, userId, reason]];
+        UserInfo * user = [self.userManager removeUser:userId];
+        if (user.screenView) {
+            // Find a waiting user and subscribe it.
+            UserInfo * waitingUser = [self.userManager findWatingUser];
+            if (waitingUser) {
+                waitingUser.screenView = user.screenView;
+                [self subscribeScreen:waitingUser.userId withView:waitingUser.screenView];
+            }
+            // Clear video view of the stoped video user.
+            user.screenView = nil;
+        }
     });
 }
 

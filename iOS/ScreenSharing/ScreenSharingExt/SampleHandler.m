@@ -16,7 +16,7 @@
  * 2. Capability 添加 App Groups
  * 3. 点击“+”新增自定义 App Group ID
  */
-static NSString *kAppGroupId = @"";
+static NSString *kAppGroupId = <#NSString * Your App Group ID#>;
 
 @interface SampleHandler () <PanoScreenSharingExtDelegate>
 
