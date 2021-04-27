@@ -8,7 +8,7 @@
 
 ## 演示功能
 
-- 开启关闭屏幕共享
+- 开启/关闭屏幕共享
 
 ## 注意
 
@@ -20,7 +20,7 @@
 
 ## PANO SDK 要求
 
-- iOS 1.3.9 及以上版本 [SDK下载](https://developer.pano.video/download/#sdk)
+- iOS 1.3.9 及以上版本 [SDK下载](https://www.pano.video/download.html#sdk)
 
 ## 开发环境要求
 

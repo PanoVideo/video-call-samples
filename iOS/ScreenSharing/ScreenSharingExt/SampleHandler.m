@@ -73,7 +73,7 @@ static NSString *kAppGroupId = <#NSString * Your App Group ID#>;
             log = @"Screen share is closed by host app";
             break;
         case PanoScreenSharingResultDisconnected:
-            log = @"The connect with host app is disconnected unnormal";
+            log = @"The connect with host app is abnormally disconnected";
             break;
         default:
             break;
