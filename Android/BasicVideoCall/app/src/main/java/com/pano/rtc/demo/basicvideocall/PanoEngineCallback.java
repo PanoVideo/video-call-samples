@@ -9,7 +9,7 @@ import static com.pano.rtc.demo.basicvideocall.ThreadUtils.runOnUiThread;
 
 
 public class PanoEngineCallback implements RtcEngineCallback {
-    private ArrayList<PanoEventHandler> mHandler = new ArrayList<>();
+    private final ArrayList<PanoEventHandler> mHandler = new ArrayList<>();
 
     public void addHandler(PanoEventHandler handler) {
         mHandler.add(handler);

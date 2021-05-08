@@ -24,7 +24,6 @@ import com.pano.rtc.api.model.RtcDeviceInfo;
 
 import video.pano.RendererCommon;
 
-import static com.pano.rtc.api.Constants.kDefaultVideoStreamId;
 import static com.pano.rtc.api.IVideoRender.ScalingType.SCALE_ASPECT_FILL;
 
 public class CallActivity extends AppCompatActivity implements PanoEventHandler,
@@ -50,7 +49,7 @@ public class CallActivity extends AppCompatActivity implements PanoEventHandler,
     private ControlPanel mControlPanel;
     protected boolean mIsControlPanelShowed = false;
 
-    private int[] mVideoStreams = new int[] {-1, -1};
+    private final int[] mVideoStreams = new int[] {-1, -1};
 
 
     static class VideoInfo {
@@ -62,7 +61,7 @@ public class CallActivity extends AppCompatActivity implements PanoEventHandler,
         long userId;
         SparseArray<VideoInfo> videoInfos = new SparseArray<>();
     }
-    private LongSparseArray<VideoUserInfo> mUnsubscribedVideoUsers = new LongSparseArray<>();
+    private final LongSparseArray<VideoUserInfo> mUnsubscribedVideoUsers = new LongSparseArray<>();
 
     // 用于保存用户视图信息，
     class UserViewInfo {
@@ -108,7 +107,7 @@ public class CallActivity extends AppCompatActivity implements PanoEventHandler,
     }
 
     // 视图数组，总共5个视频视图，1个大图4个小图，0为大图，其他为小图
-    private int mUserViewCount = 5;
+    private final int mUserViewCount = 5;
     UserViewInfo[] mUserViewArray = new UserViewInfo[mUserViewCount];
     {
         for (int i=0; i < mUserViewCount; i++) {

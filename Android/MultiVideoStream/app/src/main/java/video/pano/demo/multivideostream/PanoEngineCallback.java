@@ -5,11 +5,11 @@ import com.pano.rtc.api.RtcEngineCallback;
 
 import java.util.ArrayList;
 
-import static com.pano.rtc.base.thread.ThreadUtils.runOnUiThread;
+import static video.pano.rtc.base.thread.ThreadUtils.runOnUiThread;
 
 
 public class PanoEngineCallback implements RtcEngineCallback {
-    private ArrayList<PanoEventHandler> mHandler = new ArrayList<>();
+    private final ArrayList<PanoEventHandler> mHandler = new ArrayList<>();
 
     public void addHandler(PanoEventHandler handler) {
         mHandler.add(handler);

@@ -6,12 +6,12 @@ import com.pano.rtc.api.RtcWhiteboard;
 
 import java.util.ArrayList;
 
-import static com.pano.rtc.base.thread.ThreadUtils.runOnUiThread;
+import static com.pano.rtc.demo.basicvideocall.ThreadUtils.runOnUiThread;
 
 
 public class PanoWhiteboardCallback implements RtcWhiteboard.Callback {
     private static final String TAG = "PanoCall";
-    private ArrayList<PanoWhiteboardHandler> mHandler = new ArrayList<>();
+    private final ArrayList<PanoWhiteboardHandler> mHandler = new ArrayList<>();
 
     public void addHandler(PanoWhiteboardHandler handler) {
         mHandler.add(handler);

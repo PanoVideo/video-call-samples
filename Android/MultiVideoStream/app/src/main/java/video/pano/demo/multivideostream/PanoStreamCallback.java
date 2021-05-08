@@ -5,11 +5,11 @@ import com.pano.rtc.api.RtcVideoStreamManager;
 
 import java.util.ArrayList;
 
-import static com.pano.rtc.base.thread.ThreadUtils.runOnUiThread;
+import static video.pano.rtc.base.thread.ThreadUtils.runOnUiThread;
 
 
 public class PanoStreamCallback implements RtcVideoStreamManager.Callback {
-    private ArrayList<PanoStreamHandler> mHandler = new ArrayList<>();
+    private final ArrayList<PanoStreamHandler> mHandler = new ArrayList<>();
 
     public void addHandler(PanoStreamHandler handler) {
         mHandler.add(handler);

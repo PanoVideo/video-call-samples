@@ -21,8 +21,8 @@ public class PanoApplication extends Application {
     public static final String PANO_SERVER = "api.pano.video";
 
     private RtcEngine mRtcEngine;
-    private PanoEngineCallback mRtcCallback = new PanoEngineCallback();
-    private PanoWhiteboardCallback mWhiteboardCallback = new PanoWhiteboardCallback();
+    private final PanoEngineCallback mRtcCallback = new PanoEngineCallback();
+    private final PanoWhiteboardCallback mWhiteboardCallback = new PanoWhiteboardCallback();
 
     protected Constants.AudioAecType mAudioAecType = Constants.AudioAecType.Default;
     protected boolean mHwAcceleration = false;
