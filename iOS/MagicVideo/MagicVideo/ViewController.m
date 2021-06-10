@@ -56,8 +56,8 @@ static NSString * _server = @"api.pano.video";
 - (IBAction)enableMagicVideo:(UIButton *)sender {
     sender.selected = !sender.selected;
     self.magicEnabled = sender.selected;
-    PanoBuiltinTransformOption * option = self.baseTransformOption;
-    [self.engineKit setOption:option forType:kPanoOptionBuiltinTransform];
+    PanoQuadTransformOption * option = self.baseTransformOption;
+    [self.engineKit setOption:option forType:kPanoOptionQuadTransform];
 }
 
 #pragma mark Gesture Methods
@@ -144,8 +144,8 @@ static NSString * _server = @"api.pano.video";
     return renderConfig;
 }
 
-- (PanoBuiltinTransformOption *)baseTransformOption {
-    PanoBuiltinTransformOption * option = [PanoBuiltinTransformOption new];
+- (PanoQuadTransformOption *)baseTransformOption {
+    PanoQuadTransformOption * option = [PanoQuadTransformOption new];
     option.enable = self.magicEnabled;
     return option;
 }
