@@ -7,6 +7,7 @@ let PanoDemo = {
 // UI
 const appId = document.getElementById('appID').value || 'temp';
 const countdownDic = document.getElementById('countdown');
+let countdownInterval; // 频道倒计时
 
 const selfVideoContainer = document.getElementById('selfVideoArea');
 const previewVideoContainer = document.getElementById('previewVideoArea');
@@ -199,11 +200,12 @@ function joinChannel() {
     PanoDemo.remainsec = data.remainsec;
     countdownDic.style.display = 'block';
     countdownDic.innerHTML = `剩余时间: ${PanoDemo.remainsec}s`;
-    const interval = setInterval(() => {
+    clearInterval(countdownInterval);
+    countdownInterval = setInterval(() => {
       if (PanoDemo.remainsec > 0) {
         countdownDic.innerHTML = `剩余时间: ${--PanoDemo.remainsec}s`;
       } else {
-        clearInterval(interval);
+        clearInterval(countdownInterval);
       }
     }, 1000);
   });
