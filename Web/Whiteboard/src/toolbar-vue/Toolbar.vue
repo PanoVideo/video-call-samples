@@ -1263,13 +1263,10 @@ export default {
       this.whiteboard.clearContents(true, Constants.WBClearType.All);
     },
     clearMyDraws() {
-      this.whiteboard.clearContents(false, Constants.WBClearType.DRAWS);
+      this.whiteboard.clearUserContents(this.whiteboard.userId, false, Constants.WBClearType.DRAWS);
     },
     clearMyBg() {
-      this.whiteboard.clearContents(
-        false,
-        Constants.WBClearType.BACKGROUND_IMAGE
-      );
+      this.whiteboard.clearUserContents(this.whiteboard.userId, false, Constants.WBClearType.BACKGROUND_IMAGE);
     },
     applyForWbAdmin() {
       this.whiteboard.setRoleType(Constants.WBRoleType.Admin)
