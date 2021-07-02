@@ -20,7 +20,7 @@
   let emitter = new EventEmitter();
   let rtcEngine = new RtcEngine();
 
-  console.log('+++++ JS SDK Version: ' + rtcEngine.getSdkVersion());
+  console.log('+++++ JS - Native SDK Version: ' + rtcEngine.getSdkVersion());
 
   rtcEngine.on('channelJoinConfirm', (result) => {
     console.log('+++++ JS onChannelJoinConfirm, result: ' + result);

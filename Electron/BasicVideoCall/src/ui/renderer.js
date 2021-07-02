@@ -7,8 +7,6 @@
   const enginejs = require('../engine');
   var joined = false;
 
-  console.error("***** please enter your APPID and PANO token *****")
-
   /* Please refer to Glossary to understand the meaning of App ID, Channel ID, Token, User ID, and User Name:
      请参考 名词解释 了解 App ID、Channel ID、Token、User ID、User Name 的含义：
      https://developer.pano.video/getting-started/terms/
