@@ -1,6 +1,9 @@
 package com.pano.rtc.demo.basicvideocall;
 
 import android.app.Application;
+import android.content.Context;
+
+import androidx.multidex.MultiDex;
 
 import com.pano.rtc.api.Constants;
 import com.pano.rtc.api.RtcEngine;
@@ -27,6 +30,12 @@ public class PanoApplication extends Application {
     protected Constants.AudioAecType mAudioAecType = Constants.AudioAecType.Default;
     protected boolean mHwAcceleration = false;
 
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     @Override
     public void onCreate() {
