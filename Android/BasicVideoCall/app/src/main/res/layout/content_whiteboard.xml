@@ -29,7 +29,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.pano.rtc.api.RtcWbView
+        <com.pano.rtc.api.PanoCoursePageView
             android:id="@+id/wbSurfaceView"
             android:layout_width="match_parent"
             android:layout_height="0dp"

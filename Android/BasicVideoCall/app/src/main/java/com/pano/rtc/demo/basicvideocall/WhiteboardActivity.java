@@ -14,6 +14,8 @@ import android.widget.EditText;
 import java.util.List;
 
 import com.pano.rtc.api.Constants;
+import com.pano.rtc.api.PanoCoursePageView;
+import com.pano.rtc.api.PanoWebView;
 import com.pano.rtc.api.RtcWbView;
 import com.pano.rtc.api.RtcWhiteboard;
 
@@ -69,8 +71,8 @@ public class WhiteboardActivity extends AppCompatActivity implements PanoWhitebo
         mWhiteboard = app.getPanoEngine().getWhiteboard();
 
         clDummy = findViewById(R.id.cl_wb_dummy);
-        RtcWbView wbView = findViewById(R.id.wbSurfaceView);
-        wbView.setZOrderMediaOverlay(true);
+        PanoCoursePageView panoCoursePageView = findViewById(R.id.wbSurfaceView);
+        RtcWbView wbView = panoCoursePageView.getAttachRtcWbView();
         mWhiteboard.open(wbView);
 
         mWhiteboard.setLineWidth(10);
