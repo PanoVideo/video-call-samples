@@ -107,18 +107,6 @@
   rtcEngine.on('userScreenUnmute', (userId) => {
     console.log('+++++ JS onUserScreenUnmute, userId: ' + userId)
   })
-  rtcEngine.on('whiteboardAvailable', () => {
-    console.log('+++++ JS onWhiteboardAvailable')
-  })
-  rtcEngine.on('whiteboardUnavailable', () => {
-    console.log('+++++ JS onWhiteboardUnavailable')
-  })
-  rtcEngine.on('whiteboardStart', () => {
-    console.log('+++++ JS onWhiteboardStart')
-  })
-  rtcEngine.on('whiteboardStop', () => {
-    console.log('+++++ JS onWhiteboardStop')
-  })
   rtcEngine.on('firstAudioDataReceived', (userId) => {
     console.log('+++++ JS onFirstAudioDataReceived, userId: ' + userId)
   })

@@ -166,6 +166,7 @@ ClientBin/
 *.publishsettings
 node_modules/
 package-lock.json
+yarn.lock
 
 # RIA/Silverlight projects
 Generated_Code/
