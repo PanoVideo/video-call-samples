@@ -5,7 +5,17 @@ let PanoDemo = {
 };
 
 // UI
-const appId = document.getElementById('appID').value || 'temp';
+const input_rtcServer = document.getElementById('rtcServer');
+const input_appId = document.getElementById('appID');
+const input_token = document.getElementById('token');
+const input_channel = document.getElementById('channelID');
+
+input_rtcServer.value = localStorage.getItem("PanoDemoRtcServer");
+input_appId.value = localStorage.getItem("PanoDemoAppid");
+input_token.value = localStorage.getItem("PanoDemoToken");
+input_channel.value = localStorage.getItem("PanoDemoChannelid");
+
+const appId = input_appId.value;
 const countdownDic = document.getElementById('countdown');
 let countdownInterval; // 频道倒计时
 
@@ -56,9 +66,7 @@ button_set_cam.onclick = pano_setCam;
 button_get_preview.onclick = pano_getPreview;
 button_snapshot_video.onclick = pano_snapshotMyself;
 
-
 window.PanoDemo = PanoDemo;
-
 
 function init_UI () {
   button_mute_mic.disabled = true;
@@ -91,13 +99,9 @@ function init_Btn_Stat(){
  *****************************************************************************************************************
  */
 function joinChannel() {
-  button_joinChannel.disabled = true;
-  button_joinChannel.style.color = 'black';
-
-  let rtcServer = document.getElementById('rtcServer').value
   let rtcEngine = new PanoRtc.RtcEngine({
     appId,
-    rtcServer: rtcServer || 'https://aisle.pano.video'
+    rtcServer: input_rtcServer.value || 'https://api.pano.video'
   });
   console.info('Pano SDK Version: ' + rtcEngine.getSdkVersion());
   // For easily debug
@@ -106,7 +110,8 @@ function joinChannel() {
   rtcEngine.on = new Proxy(rtcEngine.on, {
     apply(target, object, args) {
       Reflect.apply(target, object, [args[0], params => {
-        eventTextarea.value += `${JSON.stringify(params)}\r\n \r\n`;
+        eventTextarea.value += new Date().toLocaleString();
+        eventTextarea.value += ` ${JSON.stringify(params)}\r\n\r\n`;
         eventTextarea.scrollTop = eventTextarea.scrollHeight;
         Reflect.apply(args[1], object, [params]);
       }]);
@@ -122,10 +127,11 @@ function joinChannel() {
     if (data.result !== 'success') {
       button_leaveChannel.disabled = true;
       button_leaveChannel.style.color = 'black';
-      button_joinChannel.disabled = false;
-      button_joinChannel.style.color = 'green';
       window.alert(`join channel failed because: ${data.message}`);
       return;
+    }else{
+      button_joinChannel.disabled = true;
+      button_joinChannel.style.color = 'black';
     }
     console.log('join channel success!');
     button_leaveChannel.disabled = false;
@@ -216,7 +222,6 @@ function joinChannel() {
   rtcEngine.on(PanoRtc.RtcEngine.Events.enumerateDeviceTimeout, (data) => {
     console.log('demo app: enumerateDeviceTimeout', data);
   });
-  // rtcEngine.on(PanoRtc.RtcEngine.Events.activeSpeakerListUpdate, data => console.log('demo app: activeSpeakerListUpdate', data))
 
   rtcEngine.on(PanoRtc.RtcEngine.Events.userVideoReceived, (data) => {
     console.log('demo app: receive remote video,', data);
@@ -348,11 +353,18 @@ function joinChannel() {
   });
 
   // init params
-  PanoDemo.appId = document.getElementById('appID').value;
-  PanoDemo.token = document.getElementById('token').value;
-  PanoDemo.channelId = document.getElementById('channelID').value;
+  PanoDemo.rtcServer = input_rtcServer.value;
+  PanoDemo.appId = input_appId.value;
+  PanoDemo.token = input_token.value;
+  PanoDemo.channelId = input_channel.value;
   PanoDemo.userId = document.getElementById('userID').value;
   PanoDemo.userName = document.getElementById('userName').value;
+
+  localStorage.setItem('PanoDemoRtcServer', PanoDemo.rtcServer);
+  localStorage.setItem('PanoDemoAppid', PanoDemo.appId);
+  localStorage.setItem('PanoDemoToken', PanoDemo.token);
+  localStorage.setItem('PanoDemoChannelid', PanoDemo.channelId);
+
   document.querySelectorAll('input[name="channelMode"]').forEach((radio) => {
     if (radio.checked) {
       PanoDemo.channelMode =
@@ -397,22 +409,12 @@ function leaveChannel(passive = false) {
   PanoDemo = {
     users: []
   };
-  let rtcServer = document.getElementById('rtcServer').value
-  rtcEngine = new PanoRtc.RtcEngine({
-    appId,
-    rtcServer: rtcServer || 'https://aisle.pano.video'
-  });
-  window.rtcEngine = rtcEngine;
   button_joinChannel.disabled = false;
   button_joinChannel.style.color = 'green';
   textArea_roster.value = '';
 
   selfVideoContainer.innerHTML = '';
   activeVideoContainer.innerHTML = '';
-
-  setTimeout(function () {
-    // location.reload(true);
-  }, 2000);
 }
 
 function updateRoster() {
@@ -774,6 +776,6 @@ function switchFullScreen () {
   let rand = Math.random();
   let userId = '1908' + Math.round(rand * 9000);
   document.getElementById('userID').value = userId;
-  document.getElementById('userName').value = 'Alice-' + userId;
+  document.getElementById('userName').value = 'User-' + userId;
   init_UI();
 })();
