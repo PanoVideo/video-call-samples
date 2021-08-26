@@ -21,7 +21,7 @@ bool RtcTester::init(RtcViewController *vc,
     const std::string &appId)
 {
     viewController_ = vc;
-    RtcEngine::Configuration config{ this, appId.c_str(), kPanoServer.c_str(), AudioAecType::Default, false };
+    RtcEngine::Configuration config{ this, appId.c_str(), kPanoServer.c_str() };
     auto ret = rtcEngine_->initialize(config);
     return ret == QResult::OK;
 }
@@ -761,7 +761,7 @@ void RtcTester::updateVideoFrameRate(bool lowFPS)
 
 bool RtcTester::joinChannel()
 {
-    RtcEngine::Configuration config{ this, appId_.c_str(), kPanoServer.c_str(), AudioAecType::Default, false };
+    RtcEngine::Configuration config{ this, appId_.c_str(), kPanoServer.c_str() };
     auto ret = rtcEngine_->initialize(config);
     if (ret != QResult::OK) {
         if (viewController_) {
