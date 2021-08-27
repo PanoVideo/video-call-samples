@@ -11,11 +11,17 @@ const whiteboardWrapper = document.getElementById('whiteboardWrapper')
 const panoControlPanel = document.getElementById('panoControlPanel')
 const preBtnText = joinBtn.innerHTML
 const openWhiteboardBtn = document.getElementById('openWhiteboardBtn')
+const appIdInput = document.getElementById('appId')
+const channelIdInput = document.getElementById('channelId')
+const panoTokenInput = document.getElementById('panoToken')
 const userIdInput = document.getElementById('userId')
 const userNameInput = document.getElementById('userName')
 
+appIdInput.value = localStorage.getItem("PanoDemoAppid");
+channelIdInput.value = localStorage.getItem("PanoDemoChannelid");
+panoTokenInput.value = localStorage.getItem("PanoDemoToken");
 userIdInput.value = Math.floor(Math.random() * 10000000) + ''
-userNameInput.value = `pano-${userIdInput.value}`
+userNameInput.value = `User-${userIdInput.value}`
 
 const rtcWhiteboard = new PanoRtc.RtcWhiteboard()
 window.rtcWhiteboard = rtcWhiteboard
@@ -60,6 +66,9 @@ joinBtn.onclick = async () => {
     joinParams[item.name] = item.value
   })
   const { appId, channelId, userId, name, panoToken } = joinParams
+  localStorage.setItem('PanoDemoAppid', appId);
+  localStorage.setItem('PanoDemoChannelid', channelId);
+  localStorage.setItem('PanoDemoToken', panoToken);
 
   rtcWhiteboard.joinChannel(
     {
