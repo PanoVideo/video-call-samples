@@ -125,28 +125,35 @@ void CMainDlg::RefreshVideoDevices()
 
 void CMainDlg::RefreshScreenSources()
 {
-    CComboBox cbCamera(GetDlgItem(IDC_COMBO_SOURCE));
-    cbCamera.ResetContent();
+    CComboBox cbSource(GetDlgItem(IDC_COMBO_SOURCE));
+    cbSource.ResetContent();
     m_vecScreenSources.clear();
 
-    std::map<std::string, ScreenSourceID> sourceMap;
-    RtcTester::instance().enumDisplays([&sourceMap]
+    using SourceItem = std::pair<ScreenSourceID, std::string>;
+    std::vector<SourceItem> sourceVec;
+    RtcTester::instance().enumDisplays([&sourceVec]
     (ScreenSourceID ssid, const char *name) {
-        sourceMap.emplace(std::string(name), ssid);
+        sourceVec.emplace_back(ssid, std::string(name));
+    });
+    std::sort(sourceVec.begin(), sourceVec.end(), [](const SourceItem &a, const SourceItem &b) {
+        return a.second < b.second;
     });
 
-    for (auto &kv : sourceMap) {
-        m_vecScreenSources.emplace_back(ScreenSource{ kv.second, ScreenSourceType::Display, kv.first });
+    for (auto &pr : sourceVec) {
+        m_vecScreenSources.emplace_back(ScreenSource{ pr.first, ScreenSourceType::Display, pr.second });
     }
 
-    sourceMap.clear();
-    RtcTester::instance().enumApplications([&sourceMap]
+    sourceVec.clear();
+    RtcTester::instance().enumApplications([&sourceVec]
     (ScreenSourceID ssid, const char *name) {
-        sourceMap.emplace(std::string(name), ssid);
+        sourceVec.emplace_back(ssid, std::string(name));
+    });
+    std::sort(sourceVec.begin(), sourceVec.end(), [](const SourceItem &a, const SourceItem &b) {
+        return a.second < b.second;
     });
 
-    for (auto &kv : sourceMap) {
-        m_vecScreenSources.emplace_back(ScreenSource{ kv.second, ScreenSourceType::Application, kv.first });
+    for (auto &pr : sourceVec) {
+        m_vecScreenSources.emplace_back(ScreenSource{ pr.first, ScreenSourceType::Application, pr.second });
     }
 
     int idx = 0;
@@ -155,11 +162,11 @@ void CMainDlg::RefreshScreenSources()
         if (s.type != ScreenSourceType::Display) {
             wstr = L"[" + std::to_wstring(s.ssid) + L"] - " + wstr;
         }
-        cbCamera.AddString(wstr.c_str());
-        cbCamera.SetItemData(idx, idx);
+        cbSource.AddString(wstr.c_str());
+        cbSource.SetItemData(idx, idx);
         ++idx;
     }
-    cbCamera.SetCurSel(0);
+    cbSource.SetCurSel(0);
 }
 
 std::string CMainDlg::_GetDlgItemText(int nID) const
