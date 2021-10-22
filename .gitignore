@@ -216,3 +216,7 @@ libs
 
 #generated documents
 doc/
+
+# SDK
+*.framework
+*.xcframework

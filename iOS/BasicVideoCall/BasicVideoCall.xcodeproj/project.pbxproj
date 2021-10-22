@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -17,8 +17,8 @@
 		5793BBF924021BBD00EC9137 /* ChannelViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5793BBF624021BBD00EC9137 /* ChannelViewController.m */; };
 		5793BBFA24021BBD00EC9137 /* JoinViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5793BBF824021BBD00EC9137 /* JoinViewController.m */; };
 		5793BBFD24021D1100EC9137 /* ChannelInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 5793BBFC24021D1100EC9137 /* ChannelInfo.m */; };
-		5793BC0024021D5C00EC9137 /* PanoRtc.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5793BBFF24021D5C00EC9137 /* PanoRtc.framework */; };
-		5793BC0224021D7400EC9137 /* PanoRtc.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 5793BBFF24021D5C00EC9137 /* PanoRtc.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		57A3A5AA27229FCD00C81239 /* PanoRtc.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57A3A5A827229FC500C81239 /* PanoRtc.xcframework */; };
+		57A3A5AB27229FCD00C81239 /* PanoRtc.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 57A3A5A827229FC500C81239 /* PanoRtc.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,7 +28,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				5793BC0224021D7400EC9137 /* PanoRtc.framework in Embed Frameworks */,
+				57A3A5AB27229FCD00C81239 /* PanoRtc.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -54,7 +54,7 @@
 		5793BBF824021BBD00EC9137 /* JoinViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JoinViewController.m; sourceTree = "<group>"; };
 		5793BBFB24021D1100EC9137 /* ChannelInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChannelInfo.h; sourceTree = "<group>"; };
 		5793BBFC24021D1100EC9137 /* ChannelInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChannelInfo.m; sourceTree = "<group>"; };
-		5793BBFF24021D5C00EC9137 /* PanoRtc.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PanoRtc.framework; path = ../SDK/PanoRtc.framework; sourceTree = "<group>"; };
+		57A3A5A827229FC500C81239 /* PanoRtc.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = PanoRtc.xcframework; path = ../SDK/PanoRtc.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,7 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5793BC0024021D5C00EC9137 /* PanoRtc.framework in Frameworks */,
+				57A3A5AA27229FCD00C81239 /* PanoRtc.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,7 +113,7 @@
 		5793BBFE24021D4800EC9137 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				5793BBFF24021D5C00EC9137 /* PanoRtc.framework */,
+				57A3A5A827229FC500C81239 /* PanoRtc.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -225,6 +225,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				"ARCHS[sdk=iphonesimulator*]" = x86_64;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -282,6 +283,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				"ARCHS[sdk=iphonesimulator*]" = x86_64;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

@@ -3,10 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		57A3A5A027226EE000C81239 /* PanoRtc.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57A3A59A2722691B00C81239 /* PanoRtc.xcframework */; };
+		57A3A5A127226EE600C81239 /* PanoRtc.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 57A3A59A2722691B00C81239 /* PanoRtc.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		57B293B7250B1AE30061D03C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 57B293B6250B1AE30061D03C /* AppDelegate.m */; };
 		57B293BA250B1AE30061D03C /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 57B293B9250B1AE30061D03C /* SceneDelegate.m */; };
 		57B293BD250B1AE30061D03C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 57B293BC250B1AE30061D03C /* ViewController.m */; };
@@ -14,8 +16,6 @@
 		57B293C2250B1AE70061D03C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 57B293C1250B1AE70061D03C /* Assets.xcassets */; };
 		57B293C5250B1AE70061D03C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 57B293C3250B1AE70061D03C /* LaunchScreen.storyboard */; };
 		57B293C8250B1AE70061D03C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 57B293C7250B1AE70061D03C /* main.m */; };
-		57B293D0250B1BE00061D03C /* PanoRtc.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57B293CF250B1BE00061D03C /* PanoRtc.framework */; };
-		57B293D2250B237B0061D03C /* PanoRtc.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 57B293CF250B1BE00061D03C /* PanoRtc.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		57B293D4250B479F0061D03C /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 57B293D3250B479F0061D03C /* README.md */; };
 /* End PBXBuildFile section */
 
@@ -26,7 +26,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				57B293D2250B237B0061D03C /* PanoRtc.framework in Embed Frameworks */,
+				57A3A5A127226EE600C81239 /* PanoRtc.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -34,6 +34,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		57A3A59A2722691B00C81239 /* PanoRtc.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = PanoRtc.xcframework; path = ../SDK/PanoRtc.xcframework; sourceTree = "<group>"; };
 		57B293B2250B1AE30061D03C /* MagicVideo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MagicVideo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		57B293B5250B1AE30061D03C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		57B293B6250B1AE30061D03C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -46,7 +47,6 @@
 		57B293C4250B1AE70061D03C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		57B293C6250B1AE70061D03C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		57B293C7250B1AE70061D03C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		57B293CF250B1BE00061D03C /* PanoRtc.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PanoRtc.framework; path = ../SDK/PanoRtc.framework; sourceTree = "<group>"; };
 		57B293D3250B479F0061D03C /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -55,7 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				57B293D0250B1BE00061D03C /* PanoRtc.framework in Frameworks */,
+				57A3A5A027226EE000C81239 /* PanoRtc.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,7 +101,7 @@
 		57B293CE250B1BA80061D03C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				57B293CF250B1BE00061D03C /* PanoRtc.framework */,
+				57A3A59A2722691B00C81239 /* PanoRtc.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -211,6 +211,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				"ARCHS[sdk=iphonesimulator*]" = x86_64;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -269,6 +270,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				"ARCHS[sdk=iphonesimulator*]" = x86_64;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
