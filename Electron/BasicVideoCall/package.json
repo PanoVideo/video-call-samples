@@ -12,10 +12,10 @@
   "author": "PANO Cloud",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^9.1.2"
+    "electron": ">=11.5.0"
   },
   "dependencies": {
     "xmlhttprequest": "^1.8.0",
-    "@pano.video/panortc-electron-sdk": ">=1.1.0"
+    "@pano.video/panortc-electron-sdk": ">=1.1.9"
   }
 }

@@ -6,8 +6,6 @@
 
 ## RtcEngine 连接步骤
 
-[RtcEngine 接口文档](https://developer.pano.video/sdk/websdk/websdk_rtc/)
-
 连接步骤：
 
 1. 获取`PanoRtc`接口类: `const {RtcEngine} = require('@pano.video/panortc-electron-sdk')`
