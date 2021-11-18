@@ -15,7 +15,6 @@ import java.util.List;
 
 import com.pano.rtc.api.Constants;
 import com.pano.rtc.api.PanoCoursePageView;
-import com.pano.rtc.api.PanoWebView;
 import com.pano.rtc.api.RtcWbView;
 import com.pano.rtc.api.RtcWhiteboard;
 
