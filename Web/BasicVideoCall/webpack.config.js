@@ -13,9 +13,8 @@ module.exports = {
     ws: 'ws'
   },
   devServer: {
-    contentBase: path.join(__dirname, './static'),
+    static: path.join(__dirname, './static'),
     hot: true,
-    inline: false,
     compress: true,
     port: 8082,
     host: '127.0.0.1',

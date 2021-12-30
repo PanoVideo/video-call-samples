@@ -9,14 +9,16 @@ const input_rtcServer = document.getElementById('rtcServer');
 const input_appId = document.getElementById('appID');
 const input_token = document.getElementById('token');
 const input_channel = document.getElementById('channelID');
+const input_userId = document.getElementById('userID');
 
 input_rtcServer.value = localStorage.getItem("PanoDemoRtcServer");
-input_appId.value = localStorage.getItem("PanoDemoAppid");
+input_appId.value = localStorage.getItem("PanoDemoAppId");
 input_token.value = localStorage.getItem("PanoDemoToken");
-input_channel.value = localStorage.getItem("PanoDemoChannelid");
+input_channel.value = localStorage.getItem("PanoDemoChannelId");
+input_userId.value = localStorage.getItem("PanoDemoUserId");
 
 const appId = input_appId.value;
-const countdownDic = document.getElementById('countdown');
+const countdownDiv = document.getElementById('countdown');
 let countdownInterval; // 频道倒计时
 
 const selfVideoContainer = document.getElementById('selfVideoArea');
@@ -69,6 +71,7 @@ button_snapshot_video.onclick = pano_snapshotMyself;
 window.PanoDemo = PanoDemo;
 
 function init_UI () {
+  input_userId.oninput = onInputUserId;
   button_mute_mic.disabled = true;
   button_mute_screen.disabled = true;
   button_audio.disabled = true;
@@ -99,10 +102,10 @@ function init_Btn_Stat(){
  *****************************************************************************************************************
  */
 function joinChannel() {
-  let rtcEngine = new PanoRtc.RtcEngine({
-    appId,
-    rtcServer: input_rtcServer.value || 'https://api.pano.video'
-  });
+  if(input_rtcServer.value){
+    PanoRtc.RtcEngine.setServer(rtcServer.value);
+  }
+  let rtcEngine = new PanoRtc.RtcEngine(appId);
   console.info('Pano SDK Version: ' + rtcEngine.getSdkVersion());
   // For easily debug
   window.rtcEngine = rtcEngine;
@@ -124,15 +127,15 @@ function joinChannel() {
   */
 
   rtcEngine.on(PanoRtc.RtcEngine.Events.joinChannelConfirm, data => {
+    button_joinChannel.innerText = 'Join Channel';
     if (data.result !== 'success') {
       button_leaveChannel.disabled = true;
       button_leaveChannel.style.color = 'black';
       window.alert(`join channel failed because: ${data.message}`);
       return;
-    }else{
-      button_joinChannel.disabled = true;
-      button_joinChannel.style.color = 'black';
     }
+    button_joinChannel.disabled = true;
+    button_joinChannel.style.color = 'black';
     console.log('join channel success!');
     button_leaveChannel.disabled = false;
     button_leaveChannel.style.color = 'red';
@@ -204,12 +207,12 @@ function joinChannel() {
   rtcEngine.on(PanoRtc.RtcEngine.Events.channelCountDown, (data) => {
     console.log('demo app: channelCountDown', data);
     PanoDemo.remainsec = data.remainsec;
-    countdownDic.style.display = 'block';
-    countdownDic.innerHTML = `剩余时间: ${PanoDemo.remainsec}s`;
+    countdownDiv.style.display = 'block';
+    countdownDiv.innerHTML = `Remaining Time: ${PanoDemo.remainsec} s`;
     clearInterval(countdownInterval);
     countdownInterval = setInterval(() => {
       if (PanoDemo.remainsec > 0) {
-        countdownDic.innerHTML = `剩余时间: ${--PanoDemo.remainsec}s`;
+        countdownDiv.innerHTML = `Remaining Time: ${--PanoDemo.remainsec} s`;
       } else {
         clearInterval(countdownInterval);
       }
@@ -334,7 +337,7 @@ function joinChannel() {
   rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioStop, (data) => {
     userMediaStatusUpdate(data, 'audio', 'closed');
   });
-  rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioMuted, (data) => {
+  rtcEngine.on(PanoRtc.RtcEngine.Events.userAudioMute, (data) => {
     userMediaStatusUpdate(data, 'audio', 'mute');
   });
 
@@ -353,17 +356,19 @@ function joinChannel() {
   });
 
   // init params
+  button_joinChannel.innerText = 'Joining...';
   PanoDemo.rtcServer = input_rtcServer.value;
   PanoDemo.appId = input_appId.value;
   PanoDemo.token = input_token.value;
   PanoDemo.channelId = input_channel.value;
-  PanoDemo.userId = document.getElementById('userID').value;
+  PanoDemo.userId = input_userId.value;
   PanoDemo.userName = document.getElementById('userName').value;
 
   localStorage.setItem('PanoDemoRtcServer', PanoDemo.rtcServer);
-  localStorage.setItem('PanoDemoAppid', PanoDemo.appId);
+  localStorage.setItem('PanoDemoAppId', PanoDemo.appId);
   localStorage.setItem('PanoDemoToken', PanoDemo.token);
-  localStorage.setItem('PanoDemoChannelid', PanoDemo.channelId);
+  localStorage.setItem('PanoDemoChannelId', PanoDemo.channelId);
+  localStorage.setItem('PanoDemoUserId', PanoDemo.userId);
 
   document.querySelectorAll('input[name="channelMode"]').forEach((radio) => {
     if (radio.checked) {
@@ -392,10 +397,10 @@ function joinChannel() {
     userName: PanoDemo.userName,
     subscribeAudioAll: true
   };
-  const joinChannelResult = rtcEngine.joinChannel(channelParam, {
+  const joinChannelAPIResult = rtcEngine.joinChannel(channelParam, {
     joinChannelType: PanoRtc.Constants.JoinChannelType.mediaOnly
   });
-  console.log('joinChannelResult: ', joinChannelResult);
+  console.log('joinChannelAPIResult: ', joinChannelAPIResult);
 } 
 
 
@@ -413,8 +418,13 @@ function leaveChannel(passive = false) {
   button_joinChannel.style.color = 'green';
   textArea_roster.value = '';
 
+  countdownDiv.style.display = 'none';
   selfVideoContainer.innerHTML = '';
   activeVideoContainer.innerHTML = '';
+
+  select_mic.options.length = 0;
+  select_speaker.options.length = 0;
+  select_cam.options.length = 0;
 }
 
 function updateRoster() {
@@ -426,7 +436,7 @@ function updateRoster() {
       list += 'Name: ' + user.userName + ', ID: ' + user.userId + ' \r\n' +
         'Audio: ' + (user.audioStatus ? user.audioStatus : 'closed') +
         ', Video: ' + (user.videoStatus ? user.videoStatus : 'closed') +
-        ', Share:  ' + (user.screenStatus ? user.screenStatus : 'closed') + '\r\n \r\n';
+        ', Share: ' + (user.screenStatus ? user.screenStatus : 'closed') + '\r\n \r\n';
       if (user.videoStatus === 'open' || user.videoStatus === 'unmute') {
         let option = document.createElement('option');
         option.text = user.userName;
@@ -771,11 +781,22 @@ function switchFullScreen () {
   }
 }
 
+function onInputUserId(event){
+  setUserNameWith(event.target.value);
+}
+
+function setUserNameWith(userId){
+  document.getElementById('userName').value = 'Web_' + userId;
+}
 
 (function () {
-  let rand = Math.random();
-  let userId = '1908' + Math.round(rand * 9000);
-  document.getElementById('userID').value = userId;
-  document.getElementById('userName').value = 'User-' + userId;
+  if(input_userId.value){
+    setUserNameWith(input_userId.value);
+  }else{
+    let rand = Math.random();
+    let userId = '1908' + Math.round(rand * 9000);
+    input_userId.value = userId;
+    setUserNameWith(userId);
+  }
   init_UI();
 })();
