@@ -9,11 +9,11 @@ const int kDefaultVideoViewWidth = 960;
 const int kDefaultVideoViewHeight = 540;
 
 /* Please refer to Glossary to understand the meaning of App ID, Channel ID, Token, User ID, and User Name:
-   Çë²Î¿¼ Ãû´Ê½âÊÍ ÁË½â App ID¡¢Channel ID¡¢Token¡¢User ID¡¢User Name µÄº¬Òå£º
+   è¯·å‚è€ƒ åè¯è§£é‡Š äº†è§£ App IDã€Channel IDã€Tokenã€User IDã€User Name çš„å«ä¹‰ï¼š
    https://developer.pano.video/getting-started/terms/
 
    You can use temporary token for temporary testing:
-   ¿ÉÒÔÊ¹ÓÃ ÁÙÊ±token À´½øÐÐÁÙÊ±²âÊÔ£ºhttps://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token
+   å¯ä»¥ä½¿ç”¨ ä¸´æ—¶token æ¥è¿›è¡Œä¸´æ—¶æµ‹è¯•ï¼šhttps://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token
 */
 const std::string kAppId = %% Your App ID %%;
 const std::string kPanoToken = %% Your Token %%;
@@ -95,11 +95,11 @@ void MainViewController::startPreviewVideo()
 
     previewDeviceId_ = deviceId;
     auto profile = mainView_->GetCurrentVideoProfile();
-    RenderConfig renderConfig;
-    renderConfig.profileType = profile;
-    renderConfig.scalingMode = mainView_->GetCurrentVideoScalingMode();
-    renderConfig.enableMirror = mainView_->IsMirror();
-    RtcTester::instance().startPreview(previewDeviceId_, hWnd, renderConfig);
+    VideoConfig config;
+    config.profileType = profile;
+    config.scalingMode = mainView_->GetCurrentVideoScalingMode();
+    config.enableMirror = mainView_->IsMirror();
+    RtcTester::instance().startPreview(previewDeviceId_, hWnd, config);
 }
 
 void MainViewController::stopPreviewVideo()
@@ -128,16 +128,16 @@ void MainViewController::startLocalVideo()
 
     localVideoDeviceId_ = deviceId;
     auto profile = mainView_->GetCurrentVideoProfile();
-    RenderConfig renderConfig;
-    renderConfig.profileType = profile;
-    renderConfig.scalingMode = mainView_->GetCurrentVideoScalingMode();
-    renderConfig.enableMirror = mainView_->IsMirror();
+    VideoConfig config;
+    config.profileType = profile;
+    config.scalingMode = mainView_->GetCurrentVideoScalingMode();
+    config.enableMirror = mainView_->IsMirror();
     if (!yuvFile.empty()) {
-        renderConfig.enableMirror = false;
-        RtcTester::instance().startExternalVideo(yuvFile, hWnd, renderConfig);
+        config.enableMirror = false;
+        RtcTester::instance().startExternalVideo(yuvFile, hWnd, config);
     }
     else {
-        RtcTester::instance().startVideo(localVideoDeviceId_, hWnd, renderConfig);
+        RtcTester::instance().startVideo(localVideoDeviceId_, hWnd, config);
     }
     videoStarted_ = true;
 }
@@ -485,7 +485,7 @@ void MainViewController::onUserVideoStart(uint64_t userId, panortc::VideoProfile
             auto it = remoteUserVideoViewMap_.find(userId);
             if (it != remoteUserVideoViewMap_.end()) {
                 if (it->second->IsWindow()) {
-                    RenderConfig config;
+                    VideoConfig config;
                     config.profileType = user->getMaxVideoProfile();
                     config.scalingMode = mainView_->GetCurrentVideoScalingMode();
                     config.enableMirror = false;

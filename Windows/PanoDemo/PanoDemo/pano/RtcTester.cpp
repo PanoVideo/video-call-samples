@@ -53,7 +53,7 @@ void RtcTester::uninit()
     viewController_ = nullptr;
 }
 
-bool RtcTester::startPreview(const std::string &strDeviceId, void *view, RenderConfig &config)
+bool RtcTester::startPreview(const std::string &strDeviceId, void *view, VideoConfig &config)
 {
     if (rtcEngine_) {
         auto *videoDeviceMgr = rtcEngine_->getVideoDeviceManager();
@@ -75,7 +75,7 @@ void RtcTester::stopPreview(const std::string &strDeviceId)
     }
 }
 
-void RtcTester::startVideo(const std::string &strDeviceId, void *view, RenderConfig &config)
+void RtcTester::startVideo(const std::string &strDeviceId, void *view, VideoConfig &config)
 {
     if (rtcEngine_) {
         if (exCapturer_) {
@@ -90,7 +90,7 @@ void RtcTester::startVideo(const std::string &strDeviceId, void *view, RenderCon
     }
 }
 
-void RtcTester::startExternalVideo(const std::wstring &yuvFile, void *view, panortc::RenderConfig &config)
+void RtcTester::startExternalVideo(const std::wstring &yuvFile, void *view, panortc::VideoConfig &config)
 {
     if (rtcEngine_) {
         auto *videoDeviceMgr = rtcEngine_->getVideoDeviceManager();
@@ -161,7 +161,7 @@ void RtcTester::setVideoCaptureDevice(const std::string &cameraDeviceId)
     }
 }
 
-QResult RtcTester::subscribeVideo(uint64_t userId, void *view, RenderConfig &config)
+QResult RtcTester::subscribeVideo(uint64_t userId, void *view, VideoConfig &config)
 {
     if (rtcEngine_) {
         return rtcEngine_->subscribeVideo(userId, view, config);

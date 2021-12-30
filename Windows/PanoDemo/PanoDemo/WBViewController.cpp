@@ -205,7 +205,7 @@ void WBViewController::onToolLineWidth(int size)
 
 void WBViewController::onToolEraser()
 {
-    RtcTester::instance().setWbToolType(WBToolType::ERASER);
+    RtcTester::instance().setWbToolType(WBToolType::DELETER);
 }
 
 void WBViewController::onToolClear()

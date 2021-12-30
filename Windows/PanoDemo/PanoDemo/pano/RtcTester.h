@@ -30,17 +30,17 @@ public:
     void stop();
     void uninit();
 
-    bool startPreview(const std::string &deviceId, void *view, panortc::RenderConfig &config);
+    bool startPreview(const std::string &deviceId, void *view, panortc::VideoConfig &config);
     void stopPreview(const std::string &deviceId);
-    void startVideo(const std::string &deviceId, void *view, panortc::RenderConfig &config);
-    void startExternalVideo(const std::wstring &yuvFile, void *view, panortc::RenderConfig &config);
+    void startVideo(const std::string &deviceId, void *view, panortc::VideoConfig &config);
+    void startExternalVideo(const std::wstring &yuvFile, void *view, panortc::VideoConfig &config);
     void stopVideo();
     void startAudio(const std::string &recordDeviceId, const std::string &playoutDeviceId);
     void stopAudio();
     void setAudioRecordDevice(const std::string &recordDeviceId);
     void setAudioPlayoutDevice(const std::string &playoutDeviceId);
     void setVideoCaptureDevice(const std::string &cameraDeviceId);
-    panortc::QResult subscribeVideo(uint64_t userId, void *view, panortc::RenderConfig &config);
+    panortc::QResult subscribeVideo(uint64_t userId, void *view, panortc::VideoConfig &config);
     void unsubscribeVideo(uint64_t userId);
 
     void startScreen(panortc::ScreenSourceID sourceId, panortc::ScreenSourceType type);

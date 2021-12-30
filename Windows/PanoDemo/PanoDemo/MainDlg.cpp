@@ -62,7 +62,7 @@ void CMainDlg::InitDemoSettings()
     CheckDlgButton(IDC_CHECK_ENABLE_VIDEO, true);
     CheckDlgButton(IDC_CHECK_MIRROR, true);
     CheckDlgButton(IDC_CHECK_ENABLE_AUDIO, true);
-    CheckDlgButton(IDC_CHECK_ENABLE_WHITEBOARD, true);
+    CheckDlgButton(IDC_CHECK_ENABLE_WHITEBOARD, false);
 }
 
 void CMainDlg::RefreshRtcDevices()
@@ -522,5 +522,13 @@ LRESULT CMainDlg::OnBnClickedBtnYuvBrowse(WORD /*wNotifyCode*/, WORD /*wID*/, HW
     if (dlg.DoModal() == IDOK) {
         SetDlgItemText(IDC_EDIT_YUV_FILE, dlg.m_szFileName);
     }
+    return 0;
+}
+
+
+LRESULT CMainDlg::OnBnClickedCheckEnableWhiteboard(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+    // TODO: 在此添加控件通知处理程序代码
+
     return 0;
 }
