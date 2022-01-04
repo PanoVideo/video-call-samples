@@ -95,6 +95,7 @@
       let settings = JSON.parse(str_settings);
       if (settings) {
         document.getElementById('text_channel_id').value = settings.channelId;
+        if(settings.userId) document.getElementById('text_user_id').value = settings.userId;
         document.getElementById('text_user_name').value = settings.userName;
       }
     }
