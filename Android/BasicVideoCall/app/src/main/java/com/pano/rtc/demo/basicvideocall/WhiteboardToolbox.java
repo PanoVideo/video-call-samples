@@ -106,9 +106,9 @@ public class WhiteboardToolbox extends Fragment {
 
         mEraserView = v.findViewById(R.id.btn_tb_eraser);
         mEraserView.setOnClickListener( v1 -> {
-            if (mToolType != Constants.WBToolType.Eraser) {
+            if (mToolType != Constants.WBToolType.Delete) {
                 unselectToolbox(mToolType);
-                mToolType = Constants.WBToolType.Eraser;
+                mToolType = Constants.WBToolType.Delete;
             }
             mEraserView.setImageResource(R.drawable.btn_tb_eraser_1);
             mListener.onToolTypeChanged(mToolType);
@@ -151,7 +151,7 @@ public class WhiteboardToolbox extends Fragment {
             case Text:
                 mTextView.setImageResource(R.drawable.btn_tb_text_1);
                 break;
-            case Eraser:
+            case Delete:
                 mEraserView.setImageResource(R.drawable.btn_tb_eraser_1);
                 break;
             default:
@@ -179,7 +179,7 @@ public class WhiteboardToolbox extends Fragment {
             case Text:
                 mTextView.setImageResource(R.drawable.btn_tb_text);
                 break;
-            case Eraser:
+            case Delete:
                 mEraserView.setImageResource(R.drawable.btn_tb_eraser);
                 break;
             default:

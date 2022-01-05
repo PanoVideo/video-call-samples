@@ -25,9 +25,11 @@ public class PanoApplication extends Application {
     private final PanoEngineCallback mRtcCallback = new PanoEngineCallback();
     private final PanoStreamCallback mStreamCallback = new PanoStreamCallback();
 
-    protected Constants.AudioAecType mAudioAecType = Constants.AudioAecType.Default;
-    protected boolean mHwAcceleration = false;
-
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 
     @Override
     public void onCreate() {
@@ -53,18 +55,13 @@ public class PanoApplication extends Application {
         Constants.AudioAecType audioAecType = Constants.AudioAecType.Default;
         boolean hwAcceleration = false;
 
-        if (mRtcEngine == null || audioAecType != mAudioAecType || hwAcceleration != mHwAcceleration) {
-            mAudioAecType = audioAecType;
-            mHwAcceleration = hwAcceleration;
-
+        if (mRtcEngine == null) {
             // 设置PANO媒体引擎的配置参数
             RtcEngineConfig engineConfig = new RtcEngineConfig();
             engineConfig.appId = APPID;
             engineConfig.server = PANO_SERVER;
             engineConfig.context = getApplicationContext();
             engineConfig.callback = mRtcCallback;
-            engineConfig.audioAecType = mAudioAecType;
-            engineConfig.videoCodecHwAcceleration = mHwAcceleration;
             try {
                 mRtcEngine = RtcEngine.create(engineConfig);
                 assert mRtcEngine != null;
@@ -80,6 +77,6 @@ public class PanoApplication extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        RtcEngine.destroy();
+        mRtcEngine.destroy();
     }
 }
