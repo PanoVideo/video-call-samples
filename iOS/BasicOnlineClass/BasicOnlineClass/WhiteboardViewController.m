@@ -137,7 +137,7 @@ static NSString * kDefaultImageUrl = @"https://www.pano.video/assets/img/optimiz
     if (self.eraserItem.tintColor != self.selectColor) {
         [self clearAllToolItemSelectColor];
         self.eraserItem.tintColor = self.selectColor;
-        [self.whiteboardEngine setToolType:kPanoWBToolEraser];
+        [self.whiteboardEngine setToolType:kPanoWBToolDelete];
     }
 }
 

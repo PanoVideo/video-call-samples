@@ -19,8 +19,8 @@ static NSString * _appId = <#NSString * Your App ID#>;
 static NSString * _token = <#NSString * Your Token#>;
 static NSString * _server = @"api.pano.video";
 static NSString * _channelId = nil;
-static PanoChannelMode _channelMode = kPanoChannel1v1;
-static NSString * _userName = nil;
+static UInt64 _userId;
+static PanoChannelMode _channelMode = kPanoChannelMeeting;
 
 /**
  * App Group ID 可选，配置 App Group ID 可以获得更稳定、高效的数据传输。
@@ -54,11 +54,11 @@ static NSString * _appGroupId = <#NSString * Your App Group ID#>;
 }
 
 + (UInt64)userId {
-    return arc4random();
+    return _userId;
 }
 
-+ (NSString *)userName {
-    return _userName;
++ (void)setUserId:(UInt64)userId{
+    _userId = userId;
 }
 
 + (NSString *)appGroupId {
@@ -71,10 +71,6 @@ static NSString * _appGroupId = <#NSString * Your App Group ID#>;
 
 + (void)setChannelMode:(PanoChannelMode)channelMode {
     _channelMode = channelMode;
-}
-
-+ (void)setUserName:(NSString *)userName {
-    _userName = userName;
 }
 
 @end

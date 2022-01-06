@@ -11,14 +11,8 @@
 /* Please refer to Glossary to understand the meaning of App ID, Channel ID, Token, User ID, and User Name:
    请参考 名词解释 了解 App ID、Channel ID、Token、User ID、User Name 的含义：
    https://developer.pano.video/getting-started/terms/
-
-   You can use temporary token for temporary testing:
-   可以使用 临时token 来进行临时测试：https://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token
 */
 static NSString * _appId = %% Your App ID %%;
-static NSString * _token = %% Your Token %%;
-
-static NSString * _server = @"api.pano.video";
 
 @interface ViewController () <PanoRtcEngineDelegate>
 
@@ -113,7 +107,6 @@ static NSString * _server = @"api.pano.video";
 - (void)createEngineKit {
     PanoRtcEngineConfig * engineConfig = [[PanoRtcEngineConfig alloc] init];
     engineConfig.appId = _appId;
-    engineConfig.rtcServer = _server;
     self.engineKit = [PanoRtcEngineKit engineWithConfig:engineConfig delegate:self];
     engineConfig = nil;
 }

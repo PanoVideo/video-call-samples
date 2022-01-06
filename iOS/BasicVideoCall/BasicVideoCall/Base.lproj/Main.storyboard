@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -27,23 +28,18 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="User Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jcw-1T-qrR">
-                                <rect key="frame" x="50" y="220" width="314" height="34"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="cOf-v7-vcN" userLabel="Channel Mode">
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="cOf-v7-vcN" userLabel="Channel Mode">
                                 <rect key="frame" x="99.5" y="262" width="215" height="32"/>
                                 <segments>
                                     <segment title="1v1 Mode"/>
                                     <segment title="Meeting Mode"/>
                                 </segments>
-                                <color key="selectedSegmentTintColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="selectedSegmentTintColor" systemColor="systemGreenColor"/>
                                 <connections>
                                     <action selector="changeChannelMode:" destination="BYZ-38-t0r" eventType="valueChanged" id="Gmw-o5-4MS"/>
                                 </connections>
                             </segmentedControl>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="si3-VV-lKw" userLabel="Enter Channel">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="si3-VV-lKw" userLabel="Enter Channel">
                                 <rect key="frame" x="175" y="758" width="64" height="64"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="64" id="3a6-Zk-Pgo"/>
@@ -55,8 +51,14 @@
                                     <segue destination="bzC-Wf-UmS" kind="presentation" modalPresentationStyle="fullScreen" id="NKc-Bh-UAl"/>
                                 </connections>
                             </button>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="User ID" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jcw-1T-qrR">
+                                <rect key="frame" x="50" y="220" width="314" height="34"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="eZ7-2J-HKl" firstAttribute="top" secondItem="wJb-AE-VDl" secondAttribute="bottom" constant="60" id="1N8-LM-5RB"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="jcw-1T-qrR" secondAttribute="trailing" constant="50" id="5Gc-27-Jak"/>
@@ -71,12 +73,11 @@
                             <constraint firstItem="jcw-1T-qrR" firstAttribute="top" secondItem="eZ7-2J-HKl" secondAttribute="bottom" constant="8" id="qDW-4r-743"/>
                             <constraint firstItem="cOf-v7-vcN" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="tIH-Bp-5fr"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
-                        <outlet property="channelMode" destination="cOf-v7-vcN" id="Kmu-zG-QSt"/>
                         <outlet property="channelId" destination="eZ7-2J-HKl" id="XmT-RQ-YDC"/>
-                        <outlet property="userName" destination="jcw-1T-qrR" id="1z8-67-gEY"/>
+                        <outlet property="channelMode" destination="cOf-v7-vcN" id="Kmu-zG-QSt"/>
+                        <outlet property="userId" destination="jcw-1T-qrR" id="kPD-Fl-K5d"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -93,7 +94,7 @@
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6sl-Fh-aUy" userLabel="Remote View">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="S5C-yS-mKM" userLabel="Local View">
                                 <rect key="frame" x="8" y="52" width="90" height="160"/>
@@ -118,7 +119,7 @@
                             </view>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" alpha="0.5" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vXm-Us-V0z" userLabel="Message">
                                 <rect key="frame" x="20" y="398" width="374" height="100"/>
-                                <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="backgroundColor" systemColor="darkTextColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="100" id="Q6H-pl-UCZ"/>
                                 </constraints>
@@ -126,7 +127,7 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Voj-7a-PYB" userLabel="Switch Speaker">
+                            <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Voj-7a-PYB" userLabel="Switch Speaker">
                                 <rect key="frame" x="47" y="812" width="64" height="64"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="64" id="7Va-if-JlR"/>
@@ -138,7 +139,7 @@
                                     <action selector="switchSpeaker:" destination="bzC-Wf-UmS" eventType="touchUpInside" id="Mmw-XW-3hL"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gWR-0c-kKk" userLabel="Enable Audio">
+                            <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gWR-0c-kKk" userLabel="Enable Audio">
                                 <rect key="frame" x="111" y="812" width="64" height="64"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="64" id="L2h-hf-Xhb"/>
@@ -150,7 +151,7 @@
                                     <action selector="enableAudio:" destination="bzC-Wf-UmS" eventType="touchUpInside" id="UDt-ox-gBs"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tcj-jm-egB" userLabel="Exit Channel">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tcj-jm-egB" userLabel="Exit Channel">
                                 <rect key="frame" x="175" y="812" width="64" height="64"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="64" id="FQl-bq-lT8"/>
@@ -162,7 +163,7 @@
                                     <action selector="exitChannel:" destination="bzC-Wf-UmS" eventType="touchUpInside" id="Taw-TQ-5vL"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="odS-yC-vuL" userLabel="Enable Video">
+                            <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="odS-yC-vuL" userLabel="Enable Video">
                                 <rect key="frame" x="239" y="812" width="64" height="64"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="64" id="2qY-wr-QCK"/>
@@ -174,7 +175,7 @@
                                     <action selector="enableVideo:" destination="bzC-Wf-UmS" eventType="touchUpInside" id="hFE-cF-haQ"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mla-o8-uKB" userLabel="Switch Camera">
+                            <button opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mla-o8-uKB" userLabel="Switch Camera">
                                 <rect key="frame" x="303" y="812" width="64" height="64"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="64" id="3Np-3r-RdO"/>
@@ -187,7 +188,8 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="WJh-ZT-RpH"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="vXm-Us-V0z" firstAttribute="leading" secondItem="WJh-ZT-RpH" secondAttribute="leading" constant="20" id="6T1-Ew-k6L"/>
                             <constraint firstItem="WJh-ZT-RpH" firstAttribute="trailing" secondItem="e10-nO-yVy" secondAttribute="trailing" constant="8" id="83c-D5-165"/>
@@ -214,7 +216,6 @@
                             <constraint firstItem="WJh-ZT-RpH" firstAttribute="trailing" secondItem="vXm-Us-V0z" secondAttribute="trailing" constant="20" id="wq9-dO-6Ga"/>
                             <constraint firstItem="S5C-yS-mKM" firstAttribute="leading" secondItem="WJh-ZT-RpH" secondAttribute="leading" constant="8" id="zGF-x5-cZo"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="WJh-ZT-RpH"/>
                     </view>
                     <connections>
                         <outlet property="localView" destination="S5C-yS-mKM" id="84H-Lo-AkJ"/>
@@ -229,4 +230,15 @@
             <point key="canvasLocation" x="1039.1304347826087" y="114.50892857142857"/>
         </scene>
     </scenes>
+    <resources>
+        <systemColor name="darkTextColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGreenColor">
+            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
 </document>

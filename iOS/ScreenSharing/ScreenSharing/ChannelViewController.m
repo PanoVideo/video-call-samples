@@ -79,7 +79,7 @@
 - (void)onUserJoinIndication:(UInt64)userId
                     withName:(NSString * _Nullable)userName {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) join channel.", userName, userId]];
+        [self displayMessage:[NSString stringWithFormat:@"User %llu(%@) join channel.", userId, userName]];
         [self.userManager addUser:userId withName:userName];
     });
 }
@@ -87,8 +87,8 @@
 - (void)onUserLeaveIndication:(UInt64)userId
                    withReason:(PanoUserLeaveReason)reason {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) leave channel with reason: %ld.", nil, userId, reason]];
         UserInfo * user = [self.userManager removeUser:userId];
+        [self displayMessage:[NSString stringWithFormat:@"User %llu(%@) leave channel with reason: %ld.", userId, user.userName, reason]];
         if (user.screenView) {
             // Find a waiting user and subscribe it.
             UserInfo * waitingUser = [self.userManager findWatingUser];
@@ -110,9 +110,9 @@
 
 - (void)onUserScreenStart:(UInt64)userId {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) start Screen.", nil, userId]];
         UserInfo * user = [self.userManager findUser:userId];
         user.screenEnable = YES;
+        [self displayMessage:[NSString stringWithFormat:@"User %llu(%@) start Screen.", userId, user.userName]];
         user.screenView = [self findIdleVideoView];
         if (user.screenView) {
             [self subscribeScreen:userId withView:user.screenView];
@@ -122,9 +122,9 @@
 
 - (void)onUserScreenStop:(UInt64)userId {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) stop screen.", nil, userId]];
         UserInfo * user = [self.userManager findUser:userId];
         user.screenEnable = NO;
+        [self displayMessage:[NSString stringWithFormat:@"User %llu(%@) stop screen.", userId, user.userName]];
         if (user.screenView) {
             // Find a waiting user and subscribe it.
             UserInfo * waitingUser = [self.userManager findWatingUser];
@@ -140,17 +140,17 @@
 
 - (void)onUserScreenMute:(UInt64)userId {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) mute screen.", nil, userId]];
         UserInfo * user = [self.userManager findUser:userId];
         user.screenMute = YES;
+        [self displayMessage:[NSString stringWithFormat:@"User %llu(%@) mute screen.", userId, user.userName]];
     });
 }
 
 - (void)onUserScreenUnmute:(UInt64)userId {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) unmute screen.", nil, userId]];
         UserInfo * user = [self.userManager findUser:userId];
         user.screenMute = NO;
+        [self displayMessage:[NSString stringWithFormat:@"User %llu(%@) unmute screen.", userId, user.userName]];
     });
 }
 
@@ -170,7 +170,7 @@
 - (void)joinChannel {
     PanoRtcChannelConfig * channelConfig = [[PanoRtcChannelConfig alloc] init];
     channelConfig.mode = ChannelInfo.channelMode;
-    channelConfig.userName = ChannelInfo.userName;
+    channelConfig.userName = [@"iOS_" stringByAppendingString:@(ChannelInfo.userId).stringValue];
     PanoResult result = [self.engineKit joinChannelWithToken:ChannelInfo.token
                                                    channelId:ChannelInfo.channelId
                                                       userId:ChannelInfo.userId

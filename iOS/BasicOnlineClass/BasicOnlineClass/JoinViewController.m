@@ -11,7 +11,7 @@
 @interface JoinViewController () <UITextFieldDelegate>
 
 @property (strong, nonatomic) IBOutlet UITextField * channelId;
-@property (strong, nonatomic) IBOutlet UITextField * userName;
+@property (strong, nonatomic) IBOutlet UITextField * userId;
 @property (strong, nonatomic) IBOutlet UISegmentedControl * channelMode;
 
 @end
@@ -22,7 +22,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     _channelId.delegate = self;
-    _userName.delegate = self;
+    _userId.delegate = self;
 }
 
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(nullable id)sender {
@@ -38,8 +38,8 @@
 - (void)textFieldDidEndEditing:(UITextField *)textField {
     if (textField == _channelId) {
         [ChannelInfo setChannelId:_channelId.text];
-    } else if (textField == _userName) {
-        [ChannelInfo setUserName:_userName.text];
+    } else if (textField == _userId) {
+        [ChannelInfo setUserId:@([_userId.text doubleValue]).unsignedLongLongValue];
     }
 }
 

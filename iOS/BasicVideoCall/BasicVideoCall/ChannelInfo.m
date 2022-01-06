@@ -19,8 +19,8 @@ static NSString * _appId = %% Your App ID %%;
 static NSString * _token = %% Your Token %%;
 static NSString * _server = @"api.pano.video";
 static NSString * _channelId = nil;
-static PanoChannelMode _channelMode = kPanoChannel1v1;
-static NSString * _userName = nil;
+static UInt64 _userId;
+static PanoChannelMode _channelMode = kPanoChannelMeeting;
 
 @implementation ChannelInfo
 
@@ -45,11 +45,11 @@ static NSString * _userName = nil;
 }
 
 + (UInt64)userId {
-    return arc4random();
+    return _userId;
 }
 
-+ (NSString *)userName {
-    return _userName;
++ (void)setUserId:(UInt64)userId{
+    _userId = userId;
 }
 
 + (void)setChannelId:(NSString *)channelId {
@@ -58,10 +58,6 @@ static NSString * _userName = nil;
 
 + (void)setChannelMode:(PanoChannelMode)channelMode {
     _channelMode = channelMode;
-}
-
-+ (void)setUserName:(NSString *)userName {
-    _userName = userName;
 }
 
 @end

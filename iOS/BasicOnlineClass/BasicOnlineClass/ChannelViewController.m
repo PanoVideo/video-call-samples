@@ -112,7 +112,7 @@
 - (void)onUserJoinIndication:(UInt64)userId
                     withName:(NSString * _Nullable)userName {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) join channel.", userName, userId]];
+        [self displayMessage:[NSString stringWithFormat:@"User %llu(%@) join channel.", userId, userName]];
         [self.userManager addUser:userId withName:userName];
     });
 }
@@ -120,8 +120,8 @@
 - (void)onUserLeaveIndication:(UInt64)userId
                    withReason:(PanoUserLeaveReason)reason {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) leave channel with reason: %ld.", nil, userId, (long)reason]];
         UserInfo * user = [self.userManager removeUser:userId];
+        [self displayMessage:[NSString stringWithFormat:@"User %llu(%@) leave channel with reason: %ld.", userId, user.userName, reason]];
         if (user.videoView) {
             // Find a waiting user and subscribe it.
             UserInfo * waitingUser = [self.userManager findWatingUser];
@@ -137,42 +137,42 @@
 
 - (void)onUserAudioStart:(UInt64)userId {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) start audio.", nil, userId]];
         UserInfo * user = [self.userManager findUser:userId];
         user.audioEnable = YES;
+        [self displayMessage:[NSString stringWithFormat:@"User %llu(%@) start audio.", userId, user.userName]];
     });
 }
 
 - (void)onUserAudioStop:(UInt64)userId {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) stop audio.", nil, userId]];
         UserInfo * user = [self.userManager findUser:userId];
         user.audioEnable = NO;
+        [self displayMessage:[NSString stringWithFormat:@"User %llu(%@) stop audio.", userId, user.userName]];
     });
 }
 
 - (void)onUserAudioMute:(UInt64)userId {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) mute audio.", nil, userId]];
         UserInfo * user = [self.userManager findUser:userId];
         user.audioMute = YES;
+        [self displayMessage:[NSString stringWithFormat:@"User %llu(%@) mute audio.", userId, user.userName]];
     });
 }
 
 - (void)onUserAudioUnmute:(UInt64)userId {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) unmute audio.", nil, userId]];
         UserInfo * user = [self.userManager findUser:userId];
         user.audioMute = NO;
+        [self displayMessage:[NSString stringWithFormat:@"User %llu(%@) unmute audio.", userId, user.userName]];
     });
 }
 
 - (void)onUserVideoStart:(UInt64)userId
           withMaxProfile:(PanoVideoProfileType)maxProfile {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) start video.", nil, userId]];
         UserInfo * user = [self.userManager findUser:userId];
         user.videoEnable = YES;
+        [self displayMessage:[NSString stringWithFormat:@"User %llu(%@) start video.", userId, user.userName]];
         user.videoView = [self findIdleVideoView];
         if (user.videoView) {
             [self subscribeVideo:userId withView:user.videoView];
@@ -182,9 +182,9 @@
 
 - (void)onUserVideoStop:(UInt64)userId {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) stop video.", nil, userId]];
         UserInfo * user = [self.userManager findUser:userId];
         user.videoEnable = NO;
+        [self displayMessage:[NSString stringWithFormat:@"User %llu(%@) stop video.", userId, user.userName]];
         if (user.videoView) {
             // Find a waiting user and subscribe it.
             UserInfo * waitingUser = [self.userManager findWatingUser];
@@ -200,17 +200,17 @@
 
 - (void)onUserVideoMute:(UInt64)userId {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) mute video.", nil, userId]];
         UserInfo * user = [self.userManager findUser:userId];
         user.videoMute = YES;
+        [self displayMessage:[NSString stringWithFormat:@"User %llu(%@) mute video.", userId, user.userName]];
     });
 }
 
 - (void)onUserVideoUnmute:(UInt64)userId {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self displayMessage:[NSString stringWithFormat:@"User %@ (%lld) unmute video.", nil, userId]];
         UserInfo * user = [self.userManager findUser:userId];
         user.videoMute = NO;
+        [self displayMessage:[NSString stringWithFormat:@"User %llu(%@) unmute video.", userId, user.userName]];
     });
 }
 
@@ -259,7 +259,7 @@
 - (void)joinChannel {
     PanoRtcChannelConfig * channelConfig = [[PanoRtcChannelConfig alloc] init];
     channelConfig.mode = ChannelInfo.channelMode;
-    channelConfig.userName = ChannelInfo.userName;
+    channelConfig.userName = [@"iOS_" stringByAppendingString:@(ChannelInfo.userId).stringValue];
     PanoResult result = [self.engineKit joinChannelWithToken:ChannelInfo.token
                                                    channelId:ChannelInfo.channelId
                                                       userId:ChannelInfo.userId
