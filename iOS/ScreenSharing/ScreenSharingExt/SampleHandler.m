@@ -63,7 +63,7 @@ static NSString *kAppGroupId = <#NSString * Your App Group ID#>;
 
 //MARK: - PanoScreenSharingExtDelegate
 
-- (void)screenSharingFinished:(PanoScreenSharingResult)reason {
+- (void)screenSharingFinished:(PanoScreenSharingResult)reason error:(nullable NSError *)error {
     NSString *log;
     switch (reason) {
         case PanoScreenSharingResultVersionMismatch:
@@ -78,8 +78,9 @@ static NSString *kAppGroupId = <#NSString * Your App Group ID#>;
         default:
             break;
     }
-    NSError *error = [NSError errorWithDomain:NSStringFromClass([self classForCoder]) code:0 userInfo:@{ NSLocalizedFailureReasonErrorKey : log }];
-    [self finishBroadcastWithError:error];
+    
+    NSError *err = [NSError errorWithDomain:error.domain code:error.code userInfo:@{ NSLocalizedFailureReasonErrorKey : log }];
+    [self finishBroadcastWithError:err];
 }
 
 @end

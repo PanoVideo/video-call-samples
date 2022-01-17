@@ -19,6 +19,7 @@
   let userMgr;
   let emitter = new EventEmitter();
   let rtcEngine = new RtcEngine();
+  window.rtcEngine = rtcEngine;
 
   console.log('+++++ JS - Native SDK Version: ' + rtcEngine.getSdkVersion());
 

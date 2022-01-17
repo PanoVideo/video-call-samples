@@ -1,7 +1,7 @@
 import PanoRtc from '@pano.video/panortc'
 import { find } from 'lodash-es';
 let PanoDemo = {
-  users: []
+  users: new Map()
 };
 
 // UI
@@ -149,21 +149,16 @@ function joinChannel() {
     button_unsubscribe_video.disabled = false;
   });
 
-  rtcEngine.on(PanoRtc.RtcEngine.Events.userListChange, result => {
-    console.log('demo app: rosterChange', result);
-    PanoDemo.users = result.users.map(user => {
-      const oldUser = find(PanoDemo.users, { userId: user.userId }) || {};
-      return Object.assign(oldUser, user);
-    });
-    updateRoster();
-  });
-
   rtcEngine.on(PanoRtc.RtcEngine.Events.userLeave, (data) => {
     console.log('demo app: userleave,', data);
     unSubscribeVideo(null, data.userId);
+    PanoDemo.users.delete(data.userId)
+    updateRoster()
   });
   rtcEngine.on(PanoRtc.RtcEngine.Events.userJoin, (data) => {
     console.log('demo app: userjoin,', data);
+    PanoDemo.users.set(data.user.userId, {userId: data.user.userId, userName: data.user.userName})
+    updateRoster()
   });
   rtcEngine.on(PanoRtc.RtcEngine.Events.failedToSubscribeVideo, (data) =>
     console.log('demo app: failed_to_subscribe_video,', data)
@@ -428,56 +423,53 @@ function leaveChannel(passive = false) {
 }
 
 function updateRoster() {
-  if (PanoDemo.users instanceof Array) {
-    let list = '';
-    video_user_list.innerHTML = '';
-    share_user_list.innerHTML = '';
-    PanoDemo.users.forEach(function (user) {
-      list += 'Name: ' + user.userName + ', ID: ' + user.userId + ' \r\n' +
-        'Audio: ' + (user.audioStatus ? user.audioStatus : 'closed') +
-        ', Video: ' + (user.videoStatus ? user.videoStatus : 'closed') +
-        ', Share: ' + (user.screenStatus ? user.screenStatus : 'closed') + '\r\n \r\n';
-      if (user.videoStatus === 'open' || user.videoStatus === 'unmute') {
-        let option = document.createElement('option');
-        option.text = user.userName;
-        option.value = user.userId;
-        video_user_list.add(option);
-      }
-      if (user.screenStatus === 'open' || user.screenStatus === 'unmute') {
-        let option = document.createElement('option');
-        option.text = user.userName;
-        option.value = user.userId;
-        share_user_list.add(option);
-      }
-    });
-    textArea_roster.value = list;
-  }
+  let list = '';
+  video_user_list.innerHTML = '';
+  share_user_list.innerHTML = '';
+  PanoDemo.users.forEach(function (user) {
+    list += 'Name: ' + user.userName + ', ID: ' + user.userId + ' \r\n' +
+      'Audio: ' + (user.audioStatus ? user.audioStatus : 'closed') +
+      ', Video: ' + (user.videoStatus ? user.videoStatus : 'closed') +
+      ', Share: ' + (user.screenStatus ? user.screenStatus : 'closed') + '\r\n \r\n';
+    if (user.videoStatus === 'open' || user.videoStatus === 'unmute') {
+      let option = document.createElement('option');
+      option.text = user.userName;
+      option.value = user.userId;
+      video_user_list.add(option);
+    }
+    if (user.screenStatus === 'open' || user.screenStatus === 'unmute') {
+      let option = document.createElement('option');
+      option.text = user.userName;
+      option.value = user.userId;
+      share_user_list.add(option);
+    }
+  });
+  textArea_roster.value = list;
 }
 
-function userMediaStatusUpdate (data, kind, status) {
-  console.log('demo app: receive user video status update,', data);
-  if (PanoDemo.users instanceof Array) {
-    for (let i = 0; i < PanoDemo.users.length; i++) {
-      if (PanoDemo.users[i].userId === data.userId) {
-        if (kind === 'audio') {
-          PanoDemo.users[i].audioStatus = status;
-        } else if (kind === 'video') {
-          PanoDemo.users[i].videoStatus = status;
-          if (!PanoDemo.users[i].subscribedVideo && (PanoDemo.users[i].videoStatus === 'open' || PanoDemo.users[i].videoStatus === 'unmute')) {
-            PanoDemo.users[i].subscribedVideo = true;
-            subscribeVideo(null, PanoDemo.users[i].userId);
-          } else if (PanoDemo.users[i].subscribedVideo && (PanoDemo.users[i].videoStatus === 'closed' || PanoDemo.users[i].videoStatus === 'mute')) {
-            PanoDemo.users[i].subscribedVideo = false;
-            unSubscribeVideo(null, PanoDemo.users[i].userId);
-          }
-        } else if (kind === 'share') {
-          PanoDemo.users[i].screenStatus = status;
+function userMediaStatusUpdate (data, type, status) {
+  console.log('demo app: receive user status update,', data);
+  const users = Array.from(PanoDemo.users.values())
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].userId === data.userId) {
+      if (type === 'audio') {
+        users[i].audioStatus = status;
+      } else if (type === 'video') {
+        users[i].videoStatus = status;
+        if (!users[i].subscribedVideo && (users[i].videoStatus === 'open' || users[i].videoStatus === 'unmute')) {
+          users[i].subscribedVideo = true;
+          subscribeVideo(null, users[i].userId);
+        } else if (users[i].subscribedVideo && (users[i].videoStatus === 'closed' || users[i].videoStatus === 'mute')) {
+          users[i].subscribedVideo = false;
+          unSubscribeVideo(null, users[i].userId);
         }
-        break;
+      } else if (type === 'share') {
+        users[i].screenStatus = status;
       }
+      break;
     }
-    updateRoster();
   }
+  updateRoster();
 }
 
 
@@ -618,10 +610,11 @@ function subscribeVideo (e, userId) {
   }
 
   let user = null;
-  if (userId && PanoDemo.users instanceof Array) {
-    for (let i = 0; i < PanoDemo.users.length; i++) {
-      if (PanoDemo.users[i].userId === userId && (PanoDemo.users[i].videoStatus === 'open' || PanoDemo.users[i].videoStatus === 'unmute')) {
-        user = PanoDemo.users[i];
+  if (userId && PanoDemo.users.has(userId)) {
+    const users = Array.from(PanoDemo.users.values())
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].userId === userId && (users[i].videoStatus === 'open' || users[i].videoStatus === 'unmute')) {
+        user = users[i];
         break;
       }
     }
@@ -631,8 +624,7 @@ function subscribeVideo (e, userId) {
     const quality = sub_video_quality.options[sub_video_quality.selectedIndex].value
     let params = {
       userId: user.userId,
-      quality: VideoProfileType[quality],
-      userName: user.userName
+      quality: VideoProfileType[quality]
     };
 
     rtcEngine.subscribeVideo(params);
@@ -648,10 +640,11 @@ function unSubscribeVideo (e, userId) {
   }
 
   let user = null;
-  if (userId && PanoDemo.users instanceof Array) {
-    for (let i = 0; i < PanoDemo.users.length; i++) {
-      if (PanoDemo.users[i].userId === userId) {
-        user = PanoDemo.users[i];
+  if (userId && PanoDemo.users.has(userId)) {
+    const users = Array.from(PanoDemo.users.values())
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].userId === userId) {
+        user = users[i];
         break;
       }
     }
@@ -699,10 +692,11 @@ function subscribeShare (e, userId) {
   }
 
   let user = null;
-  if (userId && PanoDemo.users instanceof Array) {
-    for (let i = 0; i < PanoDemo.users.length; i++) {
-      if (PanoDemo.users[i].userId === userId && (PanoDemo.users[i].screenStatus === 'open' || PanoDemo.users[i].screenStatus === 'unmute')) {
-        user = PanoDemo.users[i];
+  if (userId && PanoDemo.users.has(userId)) {
+    const users = Array.from(PanoDemo.users.values())
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].userId === userId && (users[i].screenStatus === 'open' || users[i].screenStatus === 'unmute')) {
+        user = users[i];
         break;
       }
     }
@@ -726,10 +720,11 @@ function unSubscribeShare (e, userId) {
   }
 
   let user = null;
-  if (userId && PanoDemo.users instanceof Array) {
-    for (let i = 0; i < PanoDemo.users.length; i++) {
-      if (PanoDemo.users[i].userId === userId) {
-        user = PanoDemo.users[i];
+  if (userId && PanoDemo.users.has(userId)) {
+    const users = Array.from(PanoDemo.users.values())
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].userId === userId) {
+        user = users[i];
         break;
       }
     }

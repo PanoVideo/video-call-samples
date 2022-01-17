@@ -12,6 +12,9 @@
       body {
         padding: 0 30px;
       }
+      td {
+        white-space: normal;
+      }
       td input {
         border: none;
         outline: none;
@@ -21,22 +24,23 @@
 </head>
 <body>
   <div id="params" style="display: flex; justify-content: center; white-space: nowrap">
-    <table border="1"  align = "center">
+    <table border="1" align="center" style="table-layout:fixed;">
       <tr align="center" height="40">
         <td colspan="2">Channel Parameters</td>
-    </tr>
-    <tr align="center" height="40"> 
-      <td>Note</td>
-      <td style="text-align: left;padding-left: 10px;font-size: 13px;">
-        Please refer to <a href="https://developer.pano.video/getting-started/terms/" target="developer">Glossary</a> to understand the meaning of App ID, Channel ID, Token, User ID, and User Name.
-        <br>请参考 <a href="https://developer.pano.video/getting-started/terms/" target="developer">名词解释</a> 了解App ID、Token、Channel ID、User ID、User Name的含义。
-        <br><br>You can use <a href="https://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token" target="developer">temporary token</a> for temporary testing.
-        <br>可以使用 <a href="https://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token" target="developer">临时token </a>来进行临时测试。</td>
+        <td>Note</td>
     </tr>
     <tr align="center" height="40"> 
       <td>RTCServer</td>
-      <td align="left"><input id="rtcServer" style="width: 100%;height: 38px;font-size:14px;" type="text"
-         placeholder="[私有化部署Pano系统时需要修改rtcServer(http或https开头)，公有云请留空]" value=""/></td>
+      <td align="left" width="500">
+        <input id="rtcServer" style="width: 100%;font-size:14px;" type="text"
+         placeholder="[私有化部署Pano系统时需要修改rtcServer(http或https开头)，公有云请留空]"/>
+      </td>
+      <td rowspan="7" style="width:450px;font-size: 14px;">
+        Please refer to <a href="https://developer.pano.video/getting-started/terms/" target="developer">Glossary</a> to understand the meaning of App ID, Channel ID, Token, User ID, and User Name.
+        <br>请参考 <a href="https://developer.pano.video/getting-started/terms/" target="developer">名词解释</a> 了解App ID、Token、Channel ID、User ID、User Name的含义。
+        <br><br>You can use <a href="https://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token" target="developer">temporary token</a> for temporary testing.
+        <br>可以使用 <a href="https://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token" target="developer">临时token </a>来进行临时测试。
+      </td>
     </tr>
     <tr align="center" height="40"> 
       <td>App ID</td>
@@ -44,9 +48,7 @@
     </tr>
     <tr align="center" height="40"> 
       <td>Token</td>
-      <td align="left"><input id="token" style="width: 100%;height: 38px;font-size:14px;" type="text" placeholder="[使用正式Token，或者在Pano控制台对应App下生成临时Token]"
-        value=""/>
-      </td>
+      <td align="left"><input id="token" style="width: 100%;height: 38px;font-size:14px;" type="text" placeholder="[使用正式Token，或者在Pano控制台对应App下生成临时Token]"/></td>
     </tr>
     <tr align="center" height="40"> 
       <td>Channel ID</td>
@@ -54,8 +56,7 @@
     </tr>
     <tr align="center" height="40"> 
       <td>Channel Mode</td>
-      <td style="text-align: left;padding-left:10px;">
-        meeting <input type="radio" value="meeting" name="channelMode" checked>
+      <td style="text-align: left;padding-left:10px;">meeting <input type="radio" value="meeting" name="channelMode" checked>
         <!-- 1_on_1 <input type="radio" value="1v1" name="channelMode"> -->
       </td>
     </tr>
