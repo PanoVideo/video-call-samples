@@ -5,7 +5,6 @@
   const {ipcRenderer} = require('electron')
   const {viewMgr} = require('./media_views');
   const enginejs = require('../engine');
-  var joined = false;
 
   /* Please refer to Glossary to understand the meaning of App ID, Channel ID, Token, User ID, and User Name:
      请参考 名词解释 了解 App ID、Channel ID、Token、User ID、User Name 的含义：
@@ -16,39 +15,35 @@
      https://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token
   */
   let appId = %% Your App ID %%;
-  let token = %% Your Token %%;
 
   let btnJoinChannel = document.getElementById("btn_join_channel")
+  let inputUserId = document.getElementById("text_user_id")
+  let inputUserName = document.getElementById("text_user_name")
   btnJoinChannel.addEventListener("click", joinChannel)
+  inputUserId.addEventListener("input", setUserName)
+
   function joinChannel() {
-    if (!joined) {
-      joined = true;
-      let settings = {
-        appId: appId,
-        token: token,
-        channelId: document.getElementById('text_channel_id').value,
-        userId: document.getElementById('text_user_id').value,
-        userName: document.getElementById('text_user_name').value,
-        micphone: getMicphone(),
-        speaker: getSpeaker(),
-        camera: getCamera()
-      };
-      
-      btnJoinChannel.innerText = 'Leave Channel';
-      document.getElementById('div_media').style.display = 'block';
-      document.getElementById('div_join').style.display = 'none';
+    let settings = {
+      appId: appId,
+      token: document.getElementById('text_token').value,
+      channelId: document.getElementById('text_channel_id').value,
+      userId: inputUserId.value,
+      userName: inputUserName.value,
+      micphone: getMicphone(),
+      speaker: getSpeaker(),
+      camera: getCamera()
+    };
+    
+    document.getElementById('div_media').style.display = 'block';
+    document.getElementById('div_join').style.display = 'none';
 
-      console.log('+++++ JS joinChannel');
-      enginejs.joinChannel(settings);
+    console.log('+++++ JS joinChannel');
+    enginejs.joinChannel(settings);
 
-      localStorage.setItem('pano_channel_settings', JSON.stringify(settings));
-    } else {
-      joined = false;
-      enginejs.leaveChannel();
-      btnJoinChannel.innerText = 'Join Channel';
-    }
+    localStorage.setItem('pano_channel_settings', JSON.stringify(settings));
   }
-  document.getElementById('text_user_id').value = Math.trunc(Math.random() * 1000 + 17000);
+
+  inputUserId.value = Math.trunc(Math.random() * 1000 + 17000);
 
   document.getElementById('div_media').style.display = 'none';
 
@@ -95,8 +90,9 @@
       let settings = JSON.parse(str_settings);
       if (settings) {
         document.getElementById('text_channel_id').value = settings.channelId;
-        if(settings.userId) document.getElementById('text_user_id').value = settings.userId;
-        document.getElementById('text_user_name').value = settings.userName;
+        if(settings.userId) inputUserId.value = settings.userId;
+        inputUserName.value = settings.userName;
+        document.getElementById('text_token').value = settings.token;
       }
     }
   }
@@ -127,6 +123,10 @@
       return null;
     }
     return selectCamera.options[selectCamera.selectedIndex].value;
+  }
+
+  function setUserName(){
+    inputUserName.value = "Electron_" + inputUserId.value;
   }
 
 })(window);
