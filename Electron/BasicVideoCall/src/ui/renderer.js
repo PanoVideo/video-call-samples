@@ -6,15 +6,7 @@
   const {viewMgr} = require('./media_views');
   const enginejs = require('../engine');
 
-  /* Please refer to Glossary to understand the meaning of App ID, Channel ID, Token, User ID, and User Name:
-     请参考 名词解释 了解 App ID、Channel ID、Token、User ID、User Name 的含义：
-     https://developer.pano.video/getting-started/terms/
-
-     You can use temporary token for temporary testing:
-     可以使用 临时token 来进行临时测试：
-     https://developer.pano.video/getting-started/firstapp/#14-%E7%94%9F%E6%88%90%E4%B8%B4%E6%97%B6token
-  */
-  let appId = %% Your App ID %%;
+  let inputAppId = document.getElementById("text_appid")
 
   let btnJoinChannel = document.getElementById("btn_join_channel")
   let inputUserId = document.getElementById("text_user_id")
@@ -24,7 +16,7 @@
 
   function joinChannel() {
     let settings = {
-      appId: appId,
+      appId: inputAppId.value,
       token: document.getElementById('text_token').value,
       channelId: document.getElementById('text_channel_id').value,
       userId: inputUserId.value,
@@ -89,6 +81,7 @@
     if (str_settings) {
       let settings = JSON.parse(str_settings);
       if (settings) {
+        inputAppId.value = settings.appId;
         document.getElementById('text_channel_id').value = settings.channelId;
         if(settings.userId) inputUserId.value = settings.userId;
         inputUserName.value = settings.userName;
